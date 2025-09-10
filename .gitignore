@@ -1,3 +1,9 @@
+# LaTeX files directory
+"Latex files"/
+
+# FYP resources directory (templates and build files)
+"FYP resources"/
+
 # LaTeX intermediate files
 *.aux
 *.bbl
