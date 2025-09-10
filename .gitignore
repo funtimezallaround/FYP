@@ -1,7 +1,5 @@
-# LaTeX files directory
+# Directories to ignore
 "Latex files"/
-
-# FYP resources directory (templates and build files)
 "FYP resources"/
 
 # LaTeX intermediate files
@@ -37,3 +35,6 @@
 *.auxlock
 *.pdf_tex
 *.eps_tex
+
+# PDF files (usually generated)
+*.pdf
