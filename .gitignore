@@ -42,3 +42,6 @@
 *.auxlock
 *.pdf_tex
 *.eps_tex
+
+# PDF files (usually generated)
+*.pdf
