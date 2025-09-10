@@ -1,0 +1,59 @@
+\documentclass{fict}
+
+\addbibresource{references.bib}
+
+\input{content/glossary}
+\input{content/acronyms}
+
+\title{Sample title}
+\author{Name Surname}
+\supervisor{Prof.\ Name Surname}
+% If you have no co-supervisor, remove the below line
+\cosupervisor{Dr Name Surname}
+\degreename{Something}
+\titledate{June 2025}
+
+\begin{document}
+
+\frontmatter{}
+\pagestyle{pageNumbersOnly}
+
+\input{content/title.tex}
+\input{content/abstract.tex}
+\input{content/acknowledgements.tex}
+\clearpage{}
+
+\tableofcontents{}
+\addcontentsline{toc}{chapter}{Contents}
+\clearpage{}
+
+\listoffigures{}
+\addcontentsline{toc}{chapter}{List of Figures}
+\clearpage{}
+
+\listoftables{}
+\addcontentsline{toc}{chapter}{List of Tables}
+\clearpage{}
+
+\printglossary[type=\acronymtype,nonumberlist,title=List of Abbreviations]
+\addcontentsline{toc}{chapter}{List of Abbreviations}
+\clearpage{}
+
+\printglossary[nonumberlist,title=Glossary of Symbols]
+\addcontentsline{toc}{chapter}{Glossary of Symbols}
+\clearpage{}
+
+\mainmatter{}
+\pagestyle{MainMatter}
+
+\input{content/chapters/1_introduction/introduction.tex}
+\input{content/chapters/2_background/background.tex}
+
+\printbibliography[title=References]
+
+\appendix{}
+
+\input{content/appendices/appendix_a.tex}
+\input{content/appendices/appendix_b.tex}
+
+\end{document}
