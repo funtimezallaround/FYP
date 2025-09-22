@@ -1,0 +1,191 @@
+\graphicspath{{content/chapters/2_background/figures/}}
+
+\chapter{Background}%
+\label{chp:background}
+
+% Figure~\ref{fig:sample} shows a sample figure and how to cross-reference
+% figures.
+%
+% \begin{figure}[htbp]
+%     \centering
+%     \includegraphics[width=\textwidth,keepaspectratio]{sample}
+%     \caption[Short sample caption.]{Longer caption that  and shows below the figure.\label{fig:sample}}
+% \end{figure}
+%
+
+
+\section{Literature Review}%
+\label{sec:literature_review}
+The effective analysis of swimming technique is a complex and crucial aspect of competitive swimming. Traditionally, this process has been performed by coaches who rely on their expertise and visual observation, often supplemented by slow-motion video playback. However, this manual approach is inherently subjective, time-consuming, and may miss subtle biomechanical inefficiencies. The emergence of AI and computer vision offers the potential to provide a more objective and consistent analysis, enabling swimmers and coaches to gain deeper insights into performance.
+
+This project's wider context is the burgeoning field of sports analytics, where AI is used to optimize training, prevent injuries, and enhance athletic performance across various disciplines. The anticipated benefits of the proposed system include the ability to provide instant, precise feedback on technique, helping swimmers to correct asymmetries and refine their stroke patterns. The likely users of this system are competitive swimmers, their coaches, and sports scientists seeking to research human motion.
+
+The theoretical foundation of this project lies in the fields of computer vision and machine learning. Specifically, the system will utilize pose estimation, a computer vision task that identifies the location of a person's joints from an image or video. This data is then used in a sequence modeling context to analyze temporal patterns of motion. The software development will utilize a programming language like Python, leveraging common AI libraries such as TensorFlow or PyTorch, and a chosen off-the-shelf pose estimation model.
+\section{Instructions}%
+\label{sec:instructions}
+
+This sentence refers to Section~\ref{sec:literature_review}, as an example of
+how to do cross-referencing.
+Equation~\eqref{eq:emc} shows one of the most famous equations.
+%
+\begin{equation}
+    \label{eq:emc}
+    e = mc^2
+\end{equation}
+%
+An example of how to create multiple equations, where they all align is given
+below.
+%
+\begin{align}
+    e & = mc^2          \\
+    m & = \frac{e}{c^2}
+\end{align}
+
+\section{Inserting references}%
+\label{sec:inserting_references}
+
+To insert a reference, the entry must be inserted in the \texttt{references.bib}
+file.
+The key or unique ID of the entry is then used to refer to it.
+\LaTeX{} will automatically number the entry and generate the list of
+references.
+The paper in~\cite{sample_key} is used as a referencing example.
+
+\section{Inserting acronyms}%
+\label{sec:inserting_acronyms_and_glossary_entries}
+
+The \gls{tcp} and \gls{udp} protocols are two layer 4 protocols, used for
+demonstrating how to use acronyms.
+On the second use of an acronym, only its initials are shown as demonstrated in
+the following sentence.
+The \gls{tcp} and \gls{udp} protocols are two layer 4 protocols, used for
+demonstrating how to use acronyms.
+
+\section{Using glossary terms}%
+\label{sec:using_glossary_terms}
+
+Let \gls{G} represent a loop-free directed graph, where \gls{V} and \gls{E}
+represent the set of nodes and edges, respectively.
+
+\section{Inserting a table}%
+\label{sec:inserting_a_table}
+
+A simple table is shown in Table~\ref{tab:simple}, with a more complex example
+given in Table~\ref{tab:complex}.
+
+\begin{table}
+    \caption{Simple table example.\label{tab:simple}}
+    \centering
+    \begin{tblr}{|c|S[table-format=3.2]|c|}
+        \hline
+        \textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} \\
+        \hline
+        1                 & 2.3               & Orange            \\
+        2                 & 100.5             & Blue              \\
+        3                 & 35.0              & Black             \\
+        \hline
+    \end{tblr}
+\end{table}
+
+\begin{table}
+    \centering
+    \caption{Complex table example.\label{tab:complex}}
+    \begin{tblr}{|Q[m,0.2\textwidth]|Q[m,0.2\textwidth]|Q[m,0.2\textwidth]|Q[m,0.2\textwidth]|}
+        \hline
+        \SetCell[r=2]{c} Table Head & \SetCell[c=3]{c} Table Column Head & & \\
+        \hline
+        & Table column subhead 1 & Table column subhead 2 & Table column subhead 3 \\
+        \hline
+        Item 1 & 2 & 3 & 4 \\
+        \hline
+        Item 2 & 2 & 3 & 4 \\
+        \hline
+        Item 3 & 2 & 3 & 4 \\
+        \hline
+        Item 4 & 2 & 3 & 4 \\
+        \hline
+    \end{tblr}
+\end{table}
+
+\section{Inserting code snippet}%
+\label{sec:inserting_code_snippet}
+
+The code snippet in Listing~\ref{lst:python_example} demonstrates a very simple
+python program.
+
+\begin{lstlisting}[language=Python,caption=Python example,label={lst:python_example}]
+def main() -> None:
+    print("Hello World")
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
+
+\section{Inserting theorems, corollaries and lemmas}%
+\label{sec:inserting_theorems,_corollaries_and_lemmas}
+
+\begin{theorem}
+    Let \(f\) be a function whose derivative exists in every point, then \(f\) is
+    a continuous function.
+\end{theorem}
+
+\begin{theorem}[Pythagorean theorem]
+    \label{pythagorean}
+    This is a theorem about right triangles and can be summarised in the next
+    equation
+    \[ x^2 + y^2 = z^2 \]
+\end{theorem}
+
+And a consequence of theorem \ref{pythagorean} is the statement in the next
+corollary.
+
+\begin{corollary}
+    There's no right rectangle whose sides measure 3cm, 4cm, and 6cm.
+\end{corollary}
+
+You can reference theorems such as \ref{pythagorean} when a label is assigned.
+
+\begin{lemma}
+    Given two line segments whose lengths are \(a\) and \(b\) respectively there is a
+    real number \(r\) such that \(b=ra\).
+\end{lemma}
+
+\section{Inserting an algorithm}%
+\label{sec:inserting_an_algorithm}
+
+The pseudocode for a basic \gls{ea} using NSGA-II is given in
+Algorithm~\ref{alg:evolutionaryAlgorithm}.
+
+\begin{algorithm}
+    \caption{Pseudocode for an Evolutionary Algorithm}%
+    \label{alg:evolutionaryAlgorithm}
+    \begin{algorithmic}
+        \State \( \mathcal{P} \) = Population Size
+        \State \( \chi \) = Number of Generations
+        \State \( \omega \) = Crossover Probability
+        \State \( \psi \) = Mutation Probability
+        \State
+        \State population = GenerateInitialPopulation(\( \mathcal{P} \))
+        \For{\( 1, 2, \ldots, \chi \)}
+        \State offspring = TournamentSelection(population, \( \mathcal{P} \))
+        % Crossover
+        \For{\(c_i \in \) offspring, \( i = 1, 3, 5, \ldots, \mathcal{P}\)}
+        \State \(z\) = random(0, 1)
+        \If{\( z < \omega \)}
+        \State Crossover(\( c_i, c_{i+1} \))
+        \EndIf
+        \EndFor
+        % Mutation
+        \For{\(c_i \in \) offspring}
+        \State \(z\) = random(0, 1)
+        \If{\( z < \psi \)}
+        \State Mutate(\( c_i \))
+        \EndIf
+        \EndFor
+        % Calculate fitness
+        \State CalculatePopulationFitness(offspring)
+        % Update population size
+        \State population = NSGA-II([population + offspring], \(\mathcal{P}\))
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
