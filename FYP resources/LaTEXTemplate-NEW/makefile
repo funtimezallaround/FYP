@@ -14,7 +14,7 @@ all: main.pdf font_embed
 
 # Compilation
 main.pdf: main.tex
-	@latexmk -halt-on-error -output-directory=build -synctex=1 -lualatex $<
+	@latexmk -halt-on-error -output-directory=build -synctex=1 -xelatex $<
 	@cp build/$(basename $^).pdf $@
 
 # Font embedding rule
