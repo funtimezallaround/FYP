@@ -15,7 +15,7 @@
 \RequirePackage[a4paper, top=2.54cm, bottom=2.54cm, left=3cm, right=2cm]{geometry}
 
 % Set the text to be left-aligned and indent of 1.27cm
-\raggedright{}
+% \raggedright{}
 \setlength{\parindent}{1.27cm}
 
 % Set 1.5 line spacing.

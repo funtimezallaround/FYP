@@ -1,17 +1,31 @@
 \chapter{Introduction}%
 \label{chp:introduction}
 
-\section{Introduction to the Area, Motivation for the Project, and a Defense of Why the Problem is Non-Trivial}
-The field of sports science has been significantly transformed by the integration of \textbf{Artificial Intelligence (AI)} and \textbf{computer vision (CV)}. These technologies provide objective, scalable methods for performance analysis that overcome the limitations of traditional, subjective coaching and manual data collection \cite{Naik2022}. In competitive swimming, a sport where marginal gains are critical, the precise quantification of a swimmer's technique is a major challenge. Key metrics such as stroke length and absolute speed are essential indicators of a swimmer's efficiency and power, yet they are almost impossible to obtain from standard video without a reliable spatial reference \cite{Dubois2012}.
+\section{Introduction to the Area}
+Artificial Intelligence (AI) and computer vision (CV) have revolutionized the field of sports analytics by enabling objective performance assessment that improves upon traditional, subjective coaching methods~\cite{Zhou2025}. In competitive swimming, where performance margins are minimal, and the environment is highly dynamic, the application of AI and CV presents unique challenges and opportunities. Metrics such as stroke rate, stroke length and swimmer velocity are critical for performance analysis, yet their accurate measurement remains locked behind expensive, specialized equipment or labour-intensive manual annotation~\cite{Tran2024}.%! adjust scope as necessary ---
 
-This project is motivated by the need to democratize access to this valuable kinematic data. Current solutions are often either labor-intensive, relying on human annotators, or prohibitively expensive, requiring specialized multi-camera setups or on-body sensors. For smaller clubs and individual athletes, this creates a significant barrier to data-driven performance enhancement. The problem is non-trivial because it requires a solution that can accurately metricize an environment that is constantly in motion and subject to visual distortions from water and camera angles. Our proposed solution addresses this by identifying and leveraging a ubiquitous, standardized object within the swimming environment: the lanerope.
+\section{Motivation}
+This project is motivated by the need for a low-cost, non-intrusive system for detailed biomechanical classification, drawing inspiration from recent and accessible systems using off-the-shelf camera footage~\cite{Camilleri2024}.
+
+\section{Problem Statement}
+The problem is non-trivial for the following two reasons:
+\begin{enumerate}
+    \item \textbf{lane rope Detection Robustness}: Establishing a reliable, frame-stable scale reference in a swimming pool environment is multifaceted in its complexity. Problems such as occlusion, water turbulence and distortion from water refraction can significantly impact the accuracy of traditional computer vision techniques~\cite{Cao2024}. Variation in lighting conditions and lane rope appearance from one pool to another introduces additional challenges for generalization, necessitating robust detection and segmentation methods that can adapt to diverse environments.
+    \item  \textbf{Scale Extraction and Accuracy}: Extracting meaningful distance measurements from pixel distances is inherently challenging due to the dynamic nature of swimming environments. One issue that arises is the presence of the solid red marks at the ends and in the middle of the lane rope~\cite{FINA2025}. Another issue comes from the fact that lane rope designs are not standardized, so while lane ropes commonly have an alternating blue and white pattern~\cite{competitorswim2022}, the exact length of each segment varies between manufacturers.
+\end{enumerate}
 
 \section{Aims and Objectives}
-The primary aim of this project is to develop and validate a computer vision system that can accurately determine a swimmer's distance traveled and derive key kinematic metrics using the lanerope as a spatial reference. To achieve this, the following objectives have been established:
+The primary Aim of this project is to build and evaluate a system to extract swimmer motion metrics from video footage, comparing traditional computer vision and deep learning techniques.
+The following Objectives have been established:
 \begin{enumerate}
-\item Develop a computer vision pipeline capable of detecting and tracking the discrete sections of a swimming lanerope from standard video footage.
-\item Establish a robust method for calibrating the video's pixel-to-distance ratio based on the known physical dimensions of the lanerope.
-\item Integrate the spatial scale with a swimmer tracking algorithm to calculate kinematic metrics, including absolute speed and stroke length.
-\item Evaluate the system's accuracy by comparing its calculated distance against known physical markers and quantifying the margin of error.
-\item Deliver an objective, low-cost performance analysis tool that can be used by coaches and swimmers with minimal equipment.
+    \item To detect and segment the lane rope's position from video footage using traditional computer vision and deep learning techniques.
+    \item To extract a pixel-to-metre scale from the lane rope's position, given the length of a coloured segment. 
+    \item To obtain swimmer motion metrics which are dependent on the pixel-to-metre scale, such as swimmer velocity, stroke length, impulse
+    \item To evaluate and compare the performance of the system on datasets containing different swimming strokes, pool environments and camera angles.
 \end{enumerate}
+
+\section{Project Structure}
+The remainder of this report is structured as follows:
+\begin{itemize}
+    \item \textcolor{red}{RED TEXT !!! do the outline}
+\end{itemize}

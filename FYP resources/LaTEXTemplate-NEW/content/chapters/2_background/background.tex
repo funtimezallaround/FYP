@@ -2,40 +2,58 @@
 
 \chapter{Background}%
 \label{chp:background}
-The application of CV in sports analytics is a well-established and growing field, with extensive research focused on player tracking, pose estimation, and event recognition across various sports \cite{Naik2022, Chen2021}. However, the specific challenge of obtaining absolute distance metrics from a single, uncalibrated camera remains a key research area. Many existing systems rely on expensive sensor-based methods, such as Inertial Measurement Units (IMUs), or require complex, multi-camera setups with sophisticated camera calibration techniques \cite{Dubois2012}.
 
-Recent research has explored vision-based swimming analysis, focusing on topics like swimmer segmentation, stroke type classification, and pose estimation \cite{Liao2020, Fani2018}. While these studies successfully analyze a swimmer's form and motion, they often fall short of providing absolute metrics like stroke length, as they lack a reliable method for converting pixel-based movement into real-world distance. Our proposed "Lanerope Method" fills this gap by utilizing a readily available fiducial marker (the lanerope) to establish a consistent and accurate spatial scale, allowing us to derive absolute kinematic data from simple video footage.
+Existing literature in sports biomechanics highlights the importance of kinematic metrics like stroke length and propulsion symmetry . Computer vision research has successfully applied deep learning for human pose estimation (HPE) and action recognition in water sports. However, a critical limitation in many CV-based swimming systems is the inability to convert pixel movement into absolute, real-world distances, often relying on relative metrics or requiring external sensors.
 
-\section{Proposed Solution}
-Our solution, the Lanerope Method, follows a structured computer vision pipeline.
+This project draws upon two key areas of research:
+\begin{itemize}
+    \item \textbf{Scale Estimation}: Research on using planar objects or known reference markers (fiducial markers) for depth and scale estimation is relevant, which we adapt by using the structured, repetitive nature of the lanerope.
+    \item \textbf{Kinematic Segmentation and Symmetry}: Work on segmenting continuous athletic motion (like running or swimming) into discrete phases is essential for calculating time-based metrics (e.g., wall contact time) and assessing symmetry by comparing left and right limb kinematic profiles.
+\end{itemize}
+
+\section{Proposed Solution: System Overview}
+The proposed system is partitioned into three functional steps: Lanerope Calibration, Feature Extraction, and System Output.
+
+\subsection{Step 1: Lanerope Calibration (Validation Reference)}
+This step is the foundation of the system, establishing a stable axis and scale for all downstream measurements. It involves a comparative study of two approaches:
 \begin{enumerate}
-\item \textbf{Object Detection and Tracking}: A pre-trained object detection model (e.g., a YOLO-based architecture) will be fine-tuned to specifically identify the discrete float sections of the swimming lanerope in each video frame. Concurrently, a robust multi-object tracking algorithm will maintain the identity of each detected float across subsequent frames. This ensures a consistent spatial reference.
-
-\item \textbf{Pixel-to-Distance Calibration}: Given that the physical dimensions of standard lanerope floats and their spacing are either known or can be measured, we will use the detected pixel locations of these floats to establish a consistent pixel-to-meter ratio. This ratio will be corrected for perspective distortion by analyzing the varying size and spacing of the floats as they recede into the distance. This step is critical for converting pixel movement to real-world distance.
-
-\item \textbf{Swimmer Detection and Kinematic Calculation}: The system will then track the swimmer's position within the same video frames. With the calibrated spatial scale, the swimmer's pixel movement will be translated into meters. By measuring the distance traveled over time and correlating it with the swimmer's stroke cycle (e.g., using a simple stroke counter based on arm motion), we can derive key metrics like stroke length, swimming speed, and impulse.
-
+    \item \textbf{Traditional CV Pipeline}: Utilising colour thresholding (to isolate the coloured floats), edge detection (e.g., Canny), and Hough Transform or RANSAC for line fitting to project a stable reference line along the lanerope's center.
+    \item \textbf{CNN-based Pipeline}: Implementing a keypoint detection or semantic segmentation model (e.g., a customised U-Net or Mask R-CNN) to identify the boundary or center points of the lanerope floats. This is expected to offer better robustness against water splash and varying lighting.
 \end{enumerate}
+The results of these two pipelines will be used to create the Calibration Module, converting pixel-based distances into real-world meters.
+
+\subsection{Step 2: Feature Extraction – Starts, Swim, and Turns}
+With the metric scale in place, a robust pose-estimation model will track the swimmer's key joints. A sequence-modelling approach will then segment the footage to extract biomechanical features across the three domains:
+\begin{itemize}
+    \item \textbf{Starts}: Metrics include reaction time, leap and flight times, underwater speed and distance, and shoulder/arm position at the end of the first pull.
+    \item \textbf{Swim (Mid-Pool)}: Focus on stroke length (hand entry to exit in meters) and impulse (distance covered per stroke). This step will also facilitate the left–right symmetry assessment by comparing the angular and linear velocities of the corresponding limbs during the catch and pull phases.
+    \item \textbf{Turns}: Metrics include stroke rate before the wall, entry-to-wall contact time, wall contact duration, and push-to-breakout measures (underwater distance and shoulder/arm positions leading to the second stroke).
+\end{itemize}
 
 \section{Evaluation Plan}
-The performance of the system will be evaluated using both qualitative and quantitative methods.
-\begin{enumerate}
-\item \textbf{Quantitative Evaluation}: The primary evaluation will involve a controlled experiment where a known distance is physically measured within a pool lane. Video footage of a swimmer traversing this distance will be processed by our system. The system's calculated distance will then be compared against the known physical distance to determine the system's accuracy and margin of error. This will be repeated for multiple swimmers and varying camera angles to assess robustness.
+The evaluation strategy is two-fold, encompassing a rigorous quantitative assessment of the core technology and a qualitative validation of the final derived metrics.
 
-\item \textbf{Qualitative Evaluation}: The derived kinematic metrics (e.g., stroke length) will be presented to a certified swimming coach for qualitative feedback. The coach's assessment of the swimmer's efficiency will be compared to the objective data provided by the system to ensure the metrics are meaningful and actionable.
+\subsection{Quantitative Evaluation}
+\begin{itemize}
+    \item \textbf{Lanerope Accuracy Comparison}: The two lanerope pipelines (Traditional CV and CNN) will be assessed against annotated ground truth. Metrics will include axis error (deviation from the true lanerope angle), scale error (difference from the known float interval distance), and frame-to-frame jitter (stability).
+    \item \textbf{Downstream Metric Accuracy}: The lanerope method yielding the lowest error will be used to calibrate the system. The final system's metric outputs (e.g., a calculated 5-meter distance) will be compared to a physically measured distance to quantify the final distance estimation accuracy.
+\end{itemize}
 
-\end{enumerate}
+\subsection{Qualitative Validation}
+\begin{itemize}
+    \item \textbf{Annotated Footage Comparison}: System outputs (keypoints, trajectories, and phase segmentations) will be overlaid onto the original video and validated against human-annotated samples.
+    \item \textbf{Expert Feedback}: Structured interviews and feedback sessions will be conducted with certified swimming coaches to assess the interpretability, practical value, and actionability of the generated performance reports (e.g., symmetry score, wall contact duration).
+\end{itemize}
 
 \section{Conclusions including Expected Outcomes and Difficulties/Challenges}
-This project is expected to result in a functional prototype that demonstrates the viability of the Lanerope Method for swimming performance analysis. The expected outcomes include a low-cost system that can accurately provide coaches and swimmers with objective kinematic data, thereby democratizing access to sports analytics.
+This project is expected to deliver a robust proof-of-concept system capable of providing high-value, objective biomechanical data from standard video. The expected outcomes include the validated optimal lanerope calibration method (Traditional CV or CNN) and a working pipeline that accurately calculates and visualises metrics across Starts, Swim, and Turns.
 
-The key challenges and difficulties anticipated include:
+Key challenges and difficulties anticipated include:
 \begin{itemize}
-\item \textbf{Occlusion}: The swimmer's body or the splash of water may temporarily obscure sections of the lanerope, making consistent tracking difficult.
-\item \textbf{Lighting and Water Distortion}: Variable lighting conditions and the refraction of light in water could affect the accuracy of the object detection algorithms.
-\item \textbf{Perspective Distortion}: As the camera is fixed, the perspective will change the appearance of the lanerope's floats as they get closer or further away. The calibration method must be robust enough to correct for this distortion.
+    \item \textbf{Data Annotation}: Obtaining sufficient, high-quality, frame-by-frame annotated footage for training the CNN-based lanerope model and for ground-truthing the pose/phase segmentation.
+    \item \textbf{Generalisation}: Ensuring the lanerope calibration method is robust against varying pool environments, lighting conditions, and camera angles (beyond a fixed setup).
+    \item \textbf{Symmetry Complexity}: Developing a sufficiently sensitive metric to accurately quantify left–right symmetry, given the inherent small variances in human movement.
 \end{itemize}
-Despite these challenges, we are confident that the proposed methodology offers a robust and innovative path to a widely accessible sports analysis tool.
 
 % % Figure~\ref{fig:sample} shows a sample figure and how to cross-reference
 % % figures.
