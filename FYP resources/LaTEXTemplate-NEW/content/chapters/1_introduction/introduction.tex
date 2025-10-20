@@ -5,10 +5,12 @@
 Artificial Intelligence (AI) and computer vision (CV) have revolutionized the field of sports analytics by enabling objective performance assessment that improves upon traditional, subjective coaching methods~\cite{Zhou2025}. In competitive swimming, where performance margins are minimal, and the environment is highly dynamic, the application of AI and CV presents unique challenges and opportunities. Metrics such as stroke rate, stroke length and swimmer velocity are critical for performance analysis, yet their accurate measurement remains locked behind expensive, specialized equipment or labour-intensive manual annotation~\cite{Tran2024}.%! adjust scope as necessary ---
 
 \section{Motivation}
-This project is motivated by the need for a low-cost, non-intrusive system for detailed biomechanical classification, drawing inspiration from recent and accessible systems using off-the-shelf camera footage~\cite{Camilleri2024}.
+This project is motivated by the lack of accurate and non-intrusive systems for detailed biomechanical analysis. Traditionally, swimming analytics have been achieved through expensive and specialized equipment due to the challenges of water refractions, reflections, occlusions, whereas in this project, the focus is on leveraging AI and CV techniques to provide a proof of concept for a similar level of detail and accuracy despite the challenging conditions.
+
+Furthermore, swimming pool environments provide an ideal case study for testing AI robustness, specifically the robustness of robust visual measurements in dynamic, semi-structured environments, implying broader applications than just swimming analytics.
 
 \section{Problem Statement}
-The problem is non-trivial for the following two reasons:
+The core research problems addressed are listed below:
 \begin{enumerate}
     \item \textbf{lane rope Detection Robustness}: Establishing a reliable, frame-stable scale reference in a swimming pool environment is multifaceted in its complexity. Problems such as occlusion, water turbulence and distortion from water refraction can significantly impact the accuracy of traditional computer vision techniques~\cite{Cao2024}. Variation in lighting conditions and lane rope appearance from one pool to another introduces additional challenges for generalization, necessitating robust detection and segmentation methods that can adapt to diverse environments.
     \item  \textbf{Scale Extraction and Accuracy}: Extracting meaningful distance measurements from pixel distances is inherently challenging due to the dynamic nature of swimming environments. One issue that arises is the presence of the solid red marks at the ends and in the middle of the lane rope~\cite{FINA2025}. Another issue comes from the fact that lane rope designs are not standardized, so while lane ropes commonly have an alternating blue and white pattern~\cite{competitorswim2022}, the exact length of each segment varies between manufacturers.
