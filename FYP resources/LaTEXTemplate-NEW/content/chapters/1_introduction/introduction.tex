@@ -13,17 +13,17 @@ Furthermore, swimming pool environments provide an ideal case study for testing 
 The core research problem addressed in this thesis is the development of a robust, generalizable CV pipeline that can detect lane rope features and extract accurate distance scales from standard swimming footage. The task is complicated by variable lighting, reflections, refraction, occlusions, and non-standard rope designs, all of which challenge both traditional rule-based image processing techniques, and modern deep learning approaches.
 
 The following specific research challenges are identified below:
-\begin{enumerate} %! continue here
+\begin{enumerate} 
     \item \textbf{lane rope Detection Robustness}: Establishing a reliable, frame-stable scale reference in a swimming pool environment is multifaceted in its complexity. Problems such as occlusion, water turbulence and distortion from water refraction pose great challenges to the accuracy of traditional computer vision techniques~\cite{Cao2024}. Variation in lighting conditions and lane rope appearance from one pool to another introduces additional challenges for generalization, necessitating robust detection and segmentation methods that can adapt to diverse environments.
-    \item  \textbf{Scale Extraction and Accuracy}: Extracting meaningful distance measurements from pixel distances is inherently challenging due to the dynamic nature of swimming environments. One issue that arises is the presence of the solid red marks at the ends and in the middle of the lane rope~\cite{FINA2025}. Another issue comes from the fact that lane rope designs are not standardized, so while lane ropes commonly have an alternating blue and white pattern~\cite{competitorswim2022}, the exact length of each segment varies between manufacturers.
+    \item  \textbf{Scale Extraction and Accuracy}: Extracting meaningful distance measurements from pixel distances is inherently challenging due to the dynamic nature of swimming environments. One issue that arises is the presence of the solid red marks at the ends and in the middle of the lane rope which are required according to the World Aquatics regulations~\cite{FINA2025}. Another issue comes from the fact that aside from the red sections of the lane rope, overall designs are not standardized, so while lane ropes commonly have an alternating blue and white pattern~\cite{competitorswim2022}, the exact length of each segment varies between manufacturers.
 \end{enumerate}
 
 \section{Aims and Objectives}
-The primary Aim of this project is to build and evaluate a system to extract swimmer motion metrics from video footage, comparing traditional computer vision and deep learning techniques.
+The primary aim of this project is to develop and evaluate an AI-driven CV system that detects and calibrates lane rope features from swimming footage to enable the extraction of motion metrics.
 The following Objectives have been established:
 \begin{enumerate}
-    \item To detect and segment the lane rope's position from video footage using traditional computer vision and deep learning techniques.
-    \item To extract a pixel-to-metre scale from the lane rope's position, given the length of a coloured segment. 
+    \item To implement and compare traditional and CNN-based methods for lane rope detection and segmentation, evaluating their accuracy and robustness across diverse swimming pool environments.
+    \item To compute a pixel-to-metre conversion factor using the detected lane rope features, accounting for variations in lane rope design.
     \item To obtain swimmer motion metrics which are dependent on the pixel-to-metre scale, such as swimmer velocity, stroke length, impulse
     \item To evaluate and compare the performance of the system on datasets containing different swimming strokes, pool environments and camera angles.
 \end{enumerate}
