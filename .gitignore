@@ -15,6 +15,13 @@
 *.lof
 *.lot
 *.idx
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
 *.ind
 *.ilg
 *.nav
