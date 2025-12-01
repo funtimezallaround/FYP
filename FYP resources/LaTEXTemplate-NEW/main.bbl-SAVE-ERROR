@@ -1,0 +1,227 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{Zhou2025}{article}{}{}
+      \name{author}{6}{}{%
+        {{hash=4443ec196d33177034f347dbb5c1a325}{%
+           family={Zhou},
+           familyi={Z\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+        {{hash=fbba29e0d4d107c54d8a5a919c3369f8}{%
+           family={Keogh},
+           familyi={K\bibinitperiod},
+           given={J.\bibnamedelimi W.\bibnamedelimi L.},
+           giveni={J\bibinitperiod\bibinitdelim W\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=66d365c9699fa36b959afcec99c12a36}{%
+           family={Ma},
+           familyi={M\bibinitperiod},
+           given={Y.},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=049127a670953dec98dabca6b8b25b2d}{%
+           family={Tong},
+           familyi={T\bibinitperiod},
+           given={R.\bibnamedelimi K.\bibnamedelimi Y.},
+           giveni={R\bibinitperiod\bibinitdelim K\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=61d3b39ab7badfb573f0ac7d4ec88c1e}{%
+           family={Khan},
+           familyi={K\bibinitperiod},
+           given={A.\bibnamedelimi R.},
+           giveni={A\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=6d0454396808f387e93a5a4e45611e62}{%
+           family={Jennings},
+           familyi={J\bibinitperiod},
+           given={N.\bibnamedelimi R.},
+           giveni={N\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \strng{namehash}{40cd1523a73944f0c3b70f6aa8f6f19d}
+      \strng{fullhash}{6114f4deaa435166f6a2696c3fabff6a}
+      \strng{fullhashraw}{6114f4deaa435166f6a2696c3fabff6a}
+      \strng{bibnamehash}{6114f4deaa435166f6a2696c3fabff6a}
+      \strng{authorbibnamehash}{6114f4deaa435166f6a2696c3fabff6a}
+      \strng{authornamehash}{40cd1523a73944f0c3b70f6aa8f6f19d}
+      \strng{authorfullhash}{6114f4deaa435166f6a2696c3fabff6a}
+      \strng{authorfullhashraw}{6114f4deaa435166f6a2696c3fabff6a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{J. Sports Sci.}
+      \field{title}{Artificial intelligence in sport: A narrative review of applications, challenges and future trends}
+      \field{year}{2025}
+    \endentry
+    \entry{Tran2024}{inproceedings}{}{}
+      \name{author}{8}{}{%
+        {{hash=082647bb51d1b204672dbd7ce9eff8ee}{%
+           family={Tran},
+           familyi={T\bibinitperiod},
+           given={Thu},
+           giveni={T\bibinitperiod}}}%
+        {{hash=9ad6b4a12db8c253c60cb96ef190d14e}{%
+           family={Choo},
+           familyi={C\bibinitperiod},
+           given={Kenny\bibnamedelimb Tsu\bibnamedelima Wei},
+           giveni={K\bibinitperiod\bibinitdelim T\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=7489b42623cd4b28569ab436b3d0afe2}{%
+           family={Foong},
+           familyi={F\bibinitperiod},
+           given={Shaohui},
+           giveni={S\bibinitperiod}}}%
+        {{hash=72c8dacb3a1585a690ad623dd4bec386}{%
+           family={Bhardwaj},
+           familyi={B\bibinitperiod},
+           given={Hitesh},
+           giveni={H\bibinitperiod}}}%
+        {{hash=6e1e4c24c790a1677e11e98b71e9c593}{%
+           family={Win},
+           familyi={W\bibinitperiod},
+           given={Shane\bibnamedelimb Kyi\bibnamedelima Hla},
+           giveni={S\bibinitperiod\bibinitdelim K\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=777c3ecae091423359b84b57fe50e71d}{%
+           family={Ang},
+           familyi={A\bibinitperiod},
+           given={Wei\bibnamedelima Jun},
+           giveni={W\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=19125dd78f35a8b0559e4f97eb7d29b6}{%
+           family={Goh},
+           familyi={G\bibinitperiod},
+           given={Kenneth},
+           giveni={K\bibinitperiod}}}%
+        {{hash=a5a5bda968ff0dcc85485190c473e4f6}{%
+           family={Balan},
+           familyi={B\bibinitperiod},
+           given={Rajesh\bibnamedelima Krishna},
+           giveni={R\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Tokyo, Japan}%
+      }
+      \list{publisher}{1}{%
+        {ACM}%
+      }
+      \strng{namehash}{828ffe90b826dea7b82a66574c8b5bff}
+      \strng{fullhash}{51443025ad6c3260744905fbc8289d0e}
+      \strng{fullhashraw}{51443025ad6c3260744905fbc8289d0e}
+      \strng{bibnamehash}{828ffe90b826dea7b82a66574c8b5bff}
+      \strng{authorbibnamehash}{828ffe90b826dea7b82a66574c8b5bff}
+      \strng{authornamehash}{828ffe90b826dea7b82a66574c8b5bff}
+      \strng{authorfullhash}{51443025ad6c3260744905fbc8289d0e}
+      \strng{authorfullhashraw}{51443025ad6c3260744905fbc8289d0e}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the Micro Aerial Vehicle Networks, Systems, and Applications (DroNet '24)}
+      \field{title}{Analyzing Swimming Performance Using Drone Captured Aerial Videos}
+      \field{year}{2024}
+      \verb{doi}
+      \verb 10.1145/3663464
+      \endverb
+    \endentry
+    \entry{Cao2024}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=4a297b95c96c16519286f9f0f03aaa92}{%
+           family={Cao},
+           familyi={C\bibinitperiod},
+           given={Xiaowen},
+           giveni={X\bibinitperiod}}}%
+        {{hash=07afe37cc213e980893d7543a12850e3}{%
+           family={Yan},
+           familyi={Y\bibinitperiod},
+           given={Wei\bibnamedelima Qi},
+           giveni={W\bibinitperiod\bibinitdelim Q\bibinitperiod}}}%
+      }
+      \strng{namehash}{cbdf64ae3aae37f37dbc79ca49036ee8}
+      \strng{fullhash}{cbdf64ae3aae37f37dbc79ca49036ee8}
+      \strng{fullhashraw}{cbdf64ae3aae37f37dbc79ca49036ee8}
+      \strng{bibnamehash}{cbdf64ae3aae37f37dbc79ca49036ee8}
+      \strng{authorbibnamehash}{cbdf64ae3aae37f37dbc79ca49036ee8}
+      \strng{authornamehash}{cbdf64ae3aae37f37dbc79ca49036ee8}
+      \strng{authorfullhash}{cbdf64ae3aae37f37dbc79ca49036ee8}
+      \strng{authorfullhashraw}{cbdf64ae3aae37f37dbc79ca49036ee8}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Conventional pose estimation methods for swimmers struggle in aquatic environments due to occlusion, water turbulence and refraction, lighting variation, and differences in lane rope appearance. This study proposes a robust deep learning-based technique to overcome these challenges for accurate swimmer analysis in diverse pool conditions.}
+      \field{journaltitle}{Multimedia Tools and Applications}
+      \field{title}{Pose estimation for swimmers in video surveillance}
+      \field{volume}{83}
+      \field{year}{2024}
+      \field{pages}{26566\bibrangedash 26580}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.1007/s11042-023-16618-w
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/s11042-023-16618-w
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/s11042-023-16618-w
+      \endverb
+    \endentry
+    \entry{FINA2025}{manual}{}{}
+      \list{organization}{1}{%
+        {World Aquatics (formerly FINA)}%
+      }
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labeltitlesource}{title}
+      \field{month}{7}
+      \field{note}{Official technical regulations for pools and equipment, including lane rope requirements}
+      \field{title}{World Aquatics (FINA) Competition Regulations, June 2025}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://resources.fina.org/fina/document/2025/07/01/ed3110a4-2291-411d-8526-6f641bd9237a/Competition-Regulations_June-2025_Clean-updated-01.07.2025-.pdf
+      \endverb
+      \verb{url}
+      \verb https://resources.fina.org/fina/document/2025/07/01/ed3110a4-2291-411d-8526-6f641bd9237a/Competition-Regulations_June-2025_Clean-updated-01.07.2025-.pdf
+      \endverb
+    \endentry
+    \entry{competitorswim2022}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=167a8aa1e1de67832f4526dd0073da1e}{%
+           family={Swim},
+           familyi={S\bibinitperiod},
+           given={Competitor},
+           giveni={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{167a8aa1e1de67832f4526dd0073da1e}
+      \strng{fullhash}{167a8aa1e1de67832f4526dd0073da1e}
+      \strng{fullhashraw}{167a8aa1e1de67832f4526dd0073da1e}
+      \strng{bibnamehash}{167a8aa1e1de67832f4526dd0073da1e}
+      \strng{authorbibnamehash}{167a8aa1e1de67832f4526dd0073da1e}
+      \strng{authornamehash}{167a8aa1e1de67832f4526dd0073da1e}
+      \strng{authorfullhash}{167a8aa1e1de67832f4526dd0073da1e}
+      \strng{authorfullhashraw}{167a8aa1e1de67832f4526dd0073da1e}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://www.competitorswim.com/what-color-should-your-swimming-lane-lines-be/}}
+      \field{note}{Accessed: 2025-10-15}
+      \field{title}{What Color Should Your Swimming Lane Lines Be?}
+      \field{year}{2022}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
