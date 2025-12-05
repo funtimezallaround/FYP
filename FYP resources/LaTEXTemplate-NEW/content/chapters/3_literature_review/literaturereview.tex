@@ -5,65 +5,64 @@
 
 Computer vision (CV) has fundamentally altered the landscape of sports analytics, transitioning from manual notation to automated, high-fidelity measurement. In the domain of modern sports science, AI-driven systems are now the standard for extracting kinematic data, estimating pose, and tracking athlete trajectories in real-time.
 
-As noted in \cite{Zhou2025}, AI has emerged as a transformative tool in sports science, enabling objective, high-frequency measurements that surpass the limitations of traditional coaching. In particular, deep learning models have been used to automate event detection, action recognition, and performance prediction across a range of sports such as football, basketball, and athletics. While these advances demonstrate the potential of data-driven methods to tackle complex spatio-temporal patterns, the transfer of such techniques to an underwater setting remains a relatively under-explored domain.
+As noted in~\cite{Zhou2025}, AI has emerged as a transformative tool in sports science, enabling objective, high-frequency measurements that surpass the limitations of traditional coaching. In particular, deep learning models have been used to automate event detection, action recognition, and performance prediction across a range of sports such as football, basketball, and athletics. While these advances demonstrate the potential of data-driven methods to tackle complex spatio-temporal patterns, the transfer of such techniques to an underwater setting remains a relatively under-explored domain.
 
-Field sports provide stable visual environments, but aquatic environments present unique noise factors. Consequently, sports analytics has emerged as a critical benchmark for evaluating the robustness and generalisation capabilities of AI models. If a system can perform accurately in the chaotic visual domain of a swimming pool, it demonstrates a level of geometric reasoning that far exceeds standard requirements.
+Field sports provide stable visual environments, but aquatic environments\newline present unique noise factors. Consequently, sports analytics has emerged as a critical benchmark for evaluating the robustness and generalization capabilities of AI models. If a system can perform accurately in the chaotic visual domain of a swimming pool, it demonstrates a level of geometric reasoning that far exceeds standard requirements.
 
 \section{Swimming as a Stress Test for AI Robustness}
 
 While swimming analytics provides value to coaches, from a computer vision perspective, the pool environment serves as an adversarial domain that stress-tests the limits of image processing algorithms. The aquatic setting introduces non-linear distortions that are rarely encountered in terrestrial datasets.
 
-The primary challenge is refraction. Light bending at the air-water interface creates unpredictable geometric distortions, effectively shifting the apparent location of underwater objects relative to the camera. This violates the pinhole camera model assumptions central to many standard calibration techniques. Furthermore, the environment is plagued by dynamic noise. As~\cite{giulietti_swimmernet_2023} highlights, measurements are ``strongly influenced by disturbing elements,'' specifically bubbles, splashes, and surface reflections. These elements introduce severe occlusion and high-frequency visual noise that can confuse feature extractors trained on clean data.
+The primary challenge is refraction. Light bending at the air-water interface creates unpredictable geometric distortions, effectively shifting the apparent location of underwater objects relative to the camera. This violates the pinhole camera model assumptions central to many standard calibration techniques. Furthermore, the environment is plagued by dynamic noise. As~\cite{giulietti_swimmernet_2023} highlights in their abstract, measurements are ``strongly influenced by disturbing elements'', specifically bubbles, splashes, and surface reflections. These elements introduce severe occlusion and high-frequency visual noise that can confuse feature extractors trained on clean data.
 
-% TODO: fix comment on lanerope
-Additionally, swimming pools lack standardisation. Lane rope designs vary (disks vs. cylinders), lighting conditions shift rapidly, and turbulence alters structural appearance. This constitutes a significant domain shift problem. For an AI model, a swimming pool is a chaotic noise generator; successful detection of structural features here represents a triumph of robust feature learning.
+Additionally, swimming pools lack standardization. Lane rope designs can vary in colour and sectioned lengths~\cite{FINA2025}, lighting conditions shift rapidly, and turbulence alters structural appearance. This constitutes a significant domain shift problem. For an AI model, a swimming pool is a chaotic, noisy environment, where the only way to achieve successful detection of structural features requires robust techniques.
 
 \section{Traditional Computer Vision Approaches}
 
-Historically, structural feature detection in swimming relied on ``handcrafted'' features and traditional image processing pipelines. These methods operate on the premise that semantic objects (like lane lines) can be defined by explicit mathematical properties—sharp intensity gradients or specific colour thresholds.
+Historically, structural feature detection in swimming relied on handcrafted features and traditional image processing pipelines. These methods operate on the premise that semantic objects such as lane lines can be defined by explicit mathematical properties, for example, sharp intensity gradients or specific colour thresholds.
 
 Common techniques include:
 \begin{itemize}
     \item Edge Detection \& Hough Transform: Algorithms like Canny or Sobel, combined with voting-based techniques to detect lines.
-    \item Colour Segmentation: Early methods relied on handcrafted colour thresholds to isolate the rope's blue-and-white pattern or the red sections mandated by World Aquatics regulations \cite{FINA2025}.
+    \item Colour Segmentation: Early methods relied on handcrafted colour thresholds to isolate the rope's blue-and-white pattern or the red sections mandated by World Aquatics regulations~\cite{FINA2025}.
 \end{itemize}
 
-However, these methods break down very quickly. The alternating colour bands and non-uniform spacing of blue/white sections vary across pool designs, compromising robustness. As discussed in \cite{holzmann_measuring_2012}, traditional stereo vision often requires controlled conditions. In a pool, a Canny edge detector cannot distinguish between a lane rope edge and a turbulent wave, and colour segmentation fails when reflections alter the apparent hue.
+However, these methods break down very quickly. The alternating colour bands and non-uniform spacing of blue/white sections vary across pool designs, compromising robustness. As discussed in~\cite{holzmann_measuring_2012}, traditional stereo vision often requires controlled conditions. In a pool, a Canny edge detector cannot distinguish between a lane rope edge and a turbulent wave, and colour segmentation fails when reflections alter the apparent hue.
 
 \section{CNN-Based Detection and Segmentation}
 
 The limitations of handcrafted features spurred the shift toward Convolutional Neural Networks (CNNs). Unlike traditional CV, CNNs learn hierarchical feature representations, allowing them to encode invariance to local noise like splashes or refraction.
 
-Modern approaches employ CNNs for semantic segmentation of rope pixels, followed by post-processing to merge fragmented segments. Notably, \cite{Tran2024} demonstrates that a lightweight U-Net can recover the rope's position even when the water surface induces significant distortion. Similarly, \cite{al-majnoni_moar_2025} demonstrated the utility of YOLOv8 for swimmer stroke identification, proving that CNNs can track complex motion even in aquatic footage.
+Modern approaches employ CNNs for semantic segmentation of rope pixels, followed by post-processing to merge fragmented segments. Notably,~\cite{Tran2024} demonstrates that a lightweight U-Net can recover the rope's position even when the water surface induces significant distortion. Similarly,~\cite{al-majnoni_moar_2025} demonstrated the utility of YOLOv8 for swimmer stroke identification, proving that CNNs can track complex motion even in aquatic footage.
 
-However, while CNNs offer superior robustness, the literature lacks a systematic investigation of how rope design variability impacts detection performance, especially when cameras are positioned at different angles or when the pool is subject to transient occlusions (e.g., swimmers' arms passing over the rope).
+However, while CNNs offer superior robustness, the literature lacks a systematic investigation of how rope design variability impacts detection performance, especially when cameras are positioned at different angles or when the pool is subject to transient occlusions such as parts of the swimmers' body blocking the lane rope. 
 
 \section{Pixel-to-Metre Scaling in Computer Vision}
 
-Extracting metric data (metres/seconds) from 2D pixel coordinates is a fundamental geometric inference problem. Without a reference scale, a velocity of ``100 pixels per second'' is meaningless.
+Extracting metric data, such as metres per second, from 2D pixel coordinates is a fundamental geometric inference problem. Without a reference scale it is impossible to obtain meaningful real-world data; A velocity of x pixels per second means nothing when the real-world distance described by x pixels changes every frame in a video. 
 
 \subsection*{Calibration Challenges}
-The gold standard is full camera calibration using a checkerboard, but this is impractical for broadcast footage. The alternative is \textbf{reference-based scaling} using the lane rope.
+The gold standard is full camera calibration using a chequerboard, but this is impractical for broadcast footage. The alternative is reference-based scaling using the lane rope. %TODO: Reword this
 
-\cite{Tran2024} describes a two-stage calibration strategy: first, estimating intrinsic parameters; second, computing a planar homography between the image plane and the pool floor using the rope as a known feature. The resulting homography yields a pixel-to-metre ratio applied uniformly across the frame. While effective for static setups, this strategy is influenced by the rope's colour fidelity and the refractive index of water, which can shrink or stretch the apparent rope width.
+~\cite{Tran2024} describes a two-stage calibration strategy: first, estimating intrinsic parameters; second, computing a planar homography between the image plane and the pool floor using the rope as a known feature. The resulting homography yields a pixel-to-metre ratio applied uniformly across the frame. While effective for static setups, this strategy is influenced by the rope's colour fidelity and the refractive index of water, which can shrink or stretch the apparent rope width. %TODO: Revisit this section
 
-Furthermore, World Aquatics' 2025 specifications \cite{FINA2025} prescribe the width and spacing of red bands—critical for ensuring consistent calibration—but these specifications are rarely incorporated into existing detection pipelines.
+Furthermore, World Aquatics' 2025 specifications~\cite{FINA2025} detail the width and spacing of the red sections of the lane rope which could be critical to acquiring a consistent calibration scale in certain scenarios, such as when the whole length of the lane rope is present in a video's frame. Unfortunately, in situations where this is not the case, different features must be considered.
 
 \section{AI Methods for Geometric Reasoning}
 
-Recent advancements in AI have moved beyond simple detection to geometric reasoning—inferring 3D structure or metric scale from 2D images.
+Recent advancements in AI have moved beyond simple detection to geometric reasoning, that is, inferring 3D structure or metric scale from 2D images.
 
 \begin{itemize}
-    \item Monocular Depth Estimation: Models like MiDaS \cite{-_ai-based_2025} use deep learning to predict relative depth maps from single images, ``hallucinating'' depth cues that traditional geometry misses.
-    \item Deep Distance Learning: \cite{haseeb_disnet_2018} introduced ``DisNet,'' estimating distance directly from bounding box parameters.
-    \item Category-Level Pose Estimation: \cite{lee_category-level_2021} proposed frameworks that jointly estimate shape and metric scale for objects.
+    \item Monocular Depth Estimation: Models like MiDaS~\cite{-_ai-based_2025} use deep learning to predict relative depth maps from single images, deriving depth cues that traditional geometry misses.
+    \item Deep Distance Learning:~\cite{haseeb_disnet_2018} introduced ``DisNet,'' estimating distance directly from bounding box parameters.
+    \item Category-Level Pose Estimation:~\cite{lee_category-level_2021} proposed frameworks that jointly estimate shape and metric scale for objects.
 \end{itemize}
 
-These ``geometry-aware'' networks suggest a pathway for swimming: instead of relying on brittle manual calibration or planar assumptions \cite{zuo_reference-free_2021}, a neural network could infer the scale factor by analysing the semantic structure of the lane ropes, treating the scaling factor as a learnable parameter.
+These ``geometry-aware'' networks suggest a pathway for swimming: instead of relying on brittle manual calibration or planar assumptions~\cite{zuo_reference-free_2021}, a neural network could infer the scale factor by analysing the semantic structure of the lane ropes, treating the scaling factor as a learnable parameter.
 
 \section{Computer Vision for Swimming Analytics}
 
-The end goal of many CV-based swimming studies is to recover motion-specific metrics. \cite{Tran2024} estimates distance travelled by tracking a swimmer's centre of mass, subsequently inferring velocity and average stroke length. \cite{al-majnoni_moar_2025} extends this by computing power output and kinetic energy through a hybrid CV–physics model that integrates 2-D pose estimates. Likewise, \cite{Cao2024} proposes a pose-estimation network trained on a large collection of swimming videos to localise key joints in the presence of water reflections.
+The end goal of many CV-based swimming studies is to recover motion-specific metrics.~\cite{Tran2024} estimates distance travelled by tracking a swimmer's centre of mass, subsequently inferring velocity and average stroke length.~\cite{al-majnoni_moar_2025} extends this by computing power output and kinetic energy through a hybrid CV-physics model that integrates 2-D pose estimates. Likewise,~\cite{Cao2024} proposes a pose-estimation network trained on a large collection of swimming videos to localize key joints in the presence of water reflections.
 
 These works illustrate that once spatial calibration is reliable, the task reduces to accurate temporal tracking. However, both studies note that surface turbulence and glare can degrade tracking accuracy. In particular, the rope's red bands—used as a visual cue for lap counting—introduce strong colour discontinuities that can mislead generic segmentation algorithms.
 
@@ -72,17 +71,17 @@ These works illustrate that once spatial calibration is reliable, the task reduc
 Reviewing the convergence of sports CV and swimming analytics reveals distinct gaps, particularly regarding datasets and robust scaling.
 
 \subsection*{Datasets and Benchmarks}
-The paucity of publicly available datasets tailored to markerless swimming analyses has hindered reproducibility. SwimmerNET \cite{giulietti_swimmernet_2023} provides annotated 2-D keypoints but lacks underwater scenes. Moar \cite{al-majnoni_moar_2025} provides 3-D joint trajectories but relies on markers. Few datasets contain exhaustive labels for the rope's colour bands or the red sections mandated by \cite{FINA2025}. Consequently, many studies train on limited subsets, limiting generalisation.
+The paucity of publicly available datasets tailored to markerless swimming analyses has hindered reproducibility. SwimmerNET~\cite{giulietti_swimmernet_2023} provides annotated 2-D keypoints but lacks underwater scenes. Moar~\cite{al-majnoni_moar_2025} provides 3-D joint trajectories but relies on markers. Few datasets contain exhaustive labels for the rope's colour bands or the red sections mandated by~\cite{FINA2025}. Consequently, many studies train on limited subsets, limiting generalization.
 
 \subsection*{Open Challenges}
 The reviewed literature confirms that persistent challenges remain:
 \begin{enumerate}
-    \item Optical Distortions: Refraction and glare render hand-crafted segmentation fragile \cite{Cao2024}.
-    \item Design Variability: The red bands and non-uniform spacing of blue/white bands \cite{competitorswim2022} introduce inter-pool variation rarely accounted for in existing models.
+    \item Optical Distortions: Refraction and glare render hand-crafted segmentation fragile~\cite{Cao2024}.
+    \item Design Variability: The red bands and non-uniform spacing of blue/white bands~\cite{competitorswim2022} introduce inter-pool variation which is acknowledged, but rarely accounted for in existing models.
     \item Absence of Automated Dynamic Scaling: Current analytics rely on manual calibration. There is no robust AI solution that utilizes the lane ropes themselves as dynamic calibration objects.
 \end{enumerate}
 
-These gaps highlight the need for a robust, generalisable AI pipeline that can detect lane rope features accurately and extract a stable pixel-to-metre scale. The present thesis builds upon the foundational work of \cite{Tran2024} and \cite{Cao2024}, extending it by developing a multi-scale, attention-based segmentation module and integrating a physics-informed homography estimator.
+These gaps highlight the need for a robust, generalizable AI pipeline that can detect lane rope features accurately and extract a stable pixel-to-metre scale. The present thesis builds upon the foundational work of~\cite{Tran2024} and~\cite{Cao2024}, extending it by developing a multiscale, attention-based segmentation module and integrating a physics-informed homography estimator.
 
 \section{Summary}
 
