@@ -21,21 +21,18 @@
 }
 
 \author{\IEEEauthorblockN{Daniel Pace}
-\IEEEauthorblockA{\textit{Faculty of Information \& Communication Technology} \\
-\textit{University of Malta}\\
-Msida, Malta \\
-daniel.pace.23@um.edu.mt}
+    \IEEEauthorblockA{\textit{Faculty of Information \& Communication Technology} \\
+        \textit{University of Malta}\\
+        Msida, Malta \\
+        daniel.pace.23@um.edu.mt}
 }
 
 \maketitle
 
 \begin{abstract}
-Computer vision analysis in aquatic environments presents unique challenges due to refraction, turbulence, and occlusion, which hinder the accuracy of standard motion tracking systems. This project proposes a non-intrusive AI-based system for stroke phase detection and symmetry analysis in competitive swimming. The core contribution is a novel methodology for dynamic pixel-to-meter scaling using standard lane ropes as calibration objects, addressing the limitations of fixed-camera setups in varying pool environments. This progress report outlines the comparative analysis between traditional computer vision pipelines (Canny/Hough) and Convolutional Neural Networks (U-Net/Mask R-CNN) for feature extraction. We present the system architecture, preliminary findings on lane rope calibration, and the evaluation plan utilizing both quantitative error metrics and qualitative expert feedback.
+    Computer vision analysis in aquatic environments presents unique challenges due to refraction, turbulence, and occlusion, which hinder the accuracy of standard motion tracking systems. This project proposes a non-intrusive AI-based system for stroke phase detection and symmetry analysis in competitive swimming. The core contribution is a novel methodology for dynamic pixel-to-meter scaling using standard lane ropes as calibration objects, addressing the limitations of fixed-camera setups in varying pool environments. This progress report outlines the comparative analysis between traditional computer vision pipelines and Convolutional Neural Networks for feature extraction. We present the system architecture, preliminary findings on lane rope calibration, and the evaluation plan utilizing both quantitative error metrics and qualitative expert feedback.
 \end{abstract}
 
-\begin{IEEEkeywords}
-Computer Vision, Sports Analytics, Swimming, Calibration, CNN, Stroke Detection
-\end{IEEEkeywords}
 
 \section{Introduction}
 
@@ -43,27 +40,27 @@ Computer Vision, Sports Analytics, Swimming, Calibration, CNN, Stroke Detection
 Performance analysis in competitive swimming is traditionally reliant on manual observation or expensive, sensor-based systems that can be intrusive to the athlete. While computer vision offers a non-intrusive alternative, the aquatic environment introduces significant noise. Light refraction at the air-water interface, surface turbulence caused by the swimmer, and occlusions (bubbles and splashes) degrade the quality of visual data. Furthermore, camera distances and angles vary significantly between venues, making consistent metric quantification (e.g., speed in meters/second) difficult without distinct calibration markers.
 
 \subsection{Motivation}
-There is a distinct lack of robust, automated systems that can operate on standard broadcast or training footage without requiring complex setup. A reliable system capable of extracting metric data from video alone would democratize access to high-level analytics for coaches and athletes. The ability to automatically detect stroke phases and analyze left-right symmetry is crucial for identifying technique flaws and preventing injury.
+There is a distinct lack of robust, automated systems that can operate on standard broadcast or training footage without requiring complex setup. A reliable system capable of extracting metric data from video alone would democratize access to high-level analytics for coaches and athletes. The ability to automatically detect stroke phases and analyse left-right symmetry is crucial for identifying technique flaws and preventing injury.
 
 \subsection{Aims and Objectives}
 The primary aim of this project is to develop a Proof of Concept (PoC) system that automates the extraction of swimming metrics. The specific objectives are:
 \begin{enumerate}
-    \item To investigate and compare the efficacy of Traditional Computer Vision techniques versus Deep Learning (CNN) approaches for feature extraction in water.
-    \item To develop a robust algorithm for computing dynamic pixel-to-meter conversion factors using swimming lane ropes as known reference objects.
-    \item To implement a pipeline for detecting key swimming phases (starts, swim, turns).
-    \item To analyze stroke symmetry and provide actionable feedback through visual overlays.
+    \item To implement and compare traditional and CNN-based methods for lane rope detection and segmentation, evaluating their accuracy and robustness across diverse swimming pool environments.
+    \item To compute a pixel-to-metre conversion factor using the detected lane rope features, accounting for variations in lane rope design.
+    \item To obtain swimmer motion metrics which are dependent on the pixel-to-metre scale, such as swimmer velocity, stroke length, impulse
+    \item To evaluate and compare the performance of the system on datasets containing different swimming strokes, pool environments and camera angles.
 \end{enumerate}
 
 \section{Related Work}
 
 \subsection{AI in Sports Analytics}
-Artificial Intelligence has revolutionized sports analytics, with mature applications in court-based sports like basketball and tennis. However, aquatic sports remain a "stress test" for AI models due to the environmental complexity. Current literature highlights that while pose estimation models (e.g., OpenPose) perform well on land, their accuracy drops significantly underwater due to the refractive index changes and visual distortions.
+Artificial Intelligence has revolutionized sports analytics, with mature applications in court-based sports like basketball and tennis. However, in the domain of aquatic sports, even state-of-the-art AI models struggle due to the environmental complexity. Current literature highlights that while pose estimation models perform well on land, their accuracy drops significantly underwater due to the refractive index changes and visual distortions.
 
 \subsection{Challenges in Aquatic Computer Vision}
-Research indicates that standard tracking algorithms often fail when subject to the "shimmer" of water and the rapid occlusion caused by splashing. Previous attempts have utilized underwater cameras to mitigate surface refraction, but such setups are not feasible for general competition analysis.
+Research indicates that standard tracking algorithms often fail when subject to reflections of water and the rapid occlusion caused by splashing. Previous attempts have utilized underwater cameras to mitigate surface refraction, but such setups have limitations of their own, including installation complexity and limited field of view.
 
 \subsection{Gap Analysis: Dynamic Scaling}
-A critical gap identified in the literature is the lack of automated scaling mechanisms for broadcast footage. Most existing solutions rely on manual calibration or fixed camera positions. While World Aquatics regulations mandate specific markings on lane ropes (e.g., the 15m red marker), the exact segment lengths can vary between manufacturers. This project addresses this gap by proposing a calibration method that robustly estimates scale despite these manufacturing variations.
+A critical gap identified in the literature is the lack of automated scaling mechanisms for broadcast footage. Most existing solutions rely on manual calibration or fixed camera positions. While World Aquatics regulations mandate specific markings on lane ropes such as the 15m red marker, the design of the rest of the lane rope can vary between manufacturers. This project addresses this gap by proposing a calibration method that robustly estimates scale despite these manufacturing variations.
 
 \section{Proposed Solution}
 
@@ -71,13 +68,13 @@ A critical gap identified in the literature is the lack of automated scaling mec
 The proposed solution is structured around a three-stage pipeline, designed to transform raw footage into analytical metrics.
 
 \subsubsection{Stage 1: Lane Rope Calibration}
-The foundational innovation of this system is the use of lane ropes for dynamic calibration. The system identifies the floating markers on the lane ropes. By detecting the periodic color changes (e.g., the transition from yellow to red markers), the system calculates a pixel-to-meter ratio. This allows for the normalization of data across different video resolutions and camera zoom levels.
+The foundational innovation of this system is the use of lane ropes for dynamic calibration. The system identifies the floating markers on the lane ropes. By detecting the periodic colour changes, the system calculates a pixel-to-meter ratio. This allows for the normalization of data across different video resolutions and camera zoom levels.
 
 \subsubsection{Stage 2: Feature Extraction}
 This stage is the core of the comparative study. We are implementing two parallel pipelines to evaluate performance:
 \begin{itemize}
-    \item \textbf{Traditional Pipeline:} Utilizes Canny Edge Detection and the Hough Transform to identify linear features (lane lines) and basic motion blobs. This approach is computationally inexpensive but susceptible to noise.
-    \item \textbf{CNN-based Pipeline:} Utilizes U-Net for semantic segmentation and Mask R-CNN for instance segmentation. These models are trained to ignore water turbulence and focus on the structural elements (swimmer body, lane markers).
+    \item Traditional Pipeline: Utilizes Canny Edge Detection and the Hough Transform to identify linear features, such as lane ropes, and basic motion blobs. This approach is computationally inexpensive but susceptible to noise.
+    \item CNN-based Pipeline: Utilizing a Neural Net for semantic segmentation and Mask R-CNN for instance segmentation. These models are trained to ignore water turbulence and focus on the structural elements.
 \end{itemize}
 
 \subsubsection{Stage 3: System Output}
@@ -96,24 +93,22 @@ The validation of the proposed system will be conducted through both quantitativ
 \subsection{Qualitative Evaluation}
 Expert feedback will be solicited from swimming coaches. They will assess the utility of the visual overlays and the relevance of the symmetry metrics. This feedback will be gathered via a structured survey focusing on the system's potential for real-world training integration.
 
-\section{Current Progress \& Conclusion}
-Currently, the architectural design is complete, and the literature review has identified the key challenges regarding calibration variability. Initial experiments with the "Traditional Pipeline" using edge detection have shown promise in static conditions but struggle with heavy turbulence, reinforcing the need for the CNN-based approach. The next phase of development focuses on training the U-Net model and refining the lane rope calibration algorithm.
 
 \begin{thebibliography}{00}
-% Placeholder references based on your topic.
-% You should replace these with the actual 12 references from your main.pdf
-\bibitem{b1} A. K. Jain, "Fundamentals of Digital Image Processing," Prentice-Hall, Inc., 1989.
-\bibitem{b2} K. He, G. Gkioxari, P. Dollár, and R. Girshick, "Mask R-CNN," in \emph{Proceedings of the IEEE international conference on computer vision}, 2017, pp. 2961--2969.
-\bibitem{b3} O. Ronneberger, P. Fischer, and T. Brox, "U-Net: Convolutional networks for biomedical image segmentation," in \emph{International Conference on Medical image computing and computer-assisted intervention}, Springer, 2015, pp. 234--241.
-\bibitem{b4} R. Cohen and M. J. Black, "Visual Analysis of Swimming: A Review," \emph{Computer Vision in Sports}, vol. 12, no. 3, pp. 45--67, 2023.
-\bibitem{b5} World Aquatics, "Facilities Rules 2024-2025," \emph{World Aquatics Competition Regulations}, 2024.
-\bibitem{b6} J. Redmon and A. Farhadi, "YOLOv3: An Incremental Improvement," arXiv preprint arXiv:1804.02767, 2018.
-\bibitem{b7} D. Zecha, M. Greif, and R. Lienhart, "Swimmer detection and pose estimation for continuous stroke rate determination," in \emph{Multimedia Content Access: Algorithms and Systems}, vol. 8668, 2013.
-\bibitem{b8} V. Victor, "Challenges in Underwater Computer Vision," \emph{Journal of Oceanic Engineering}, 2022.
-\bibitem{b9} S. Smith et al., "Kinematic Analysis of Freestyle Swimming," \emph{Journal of Sports Sciences}, 2024.
-\bibitem{b10} M. Brown and D. Lowe, "Automatic Panoramic Image Stitching using Invariant Features," \emph{International Journal of Computer Vision}, 2007.
-\bibitem{b11} L. Wang, "Action Recognition in the Dark: Neural Networks for Low-Light Sports," \emph{IEEE Transactions on Image Processing}, 2025.
-\bibitem{b12} T. H. Cormen, C. E. Leiserson, R. L. Rivest, and C. Stein, "Introduction to Algorithms," 3rd ed., MIT Press, 2009.
+    % Placeholder references based on your topic.
+    % You should replace these with the actual 12 references from your main.pdf
+    \bibitem{b1} A. K. Jain, "Fundamentals of Digital Image Processing," Prentice-Hall, Inc., 1989.
+    \bibitem{b2} K. He, G. Gkioxari, P. Dollár, and R. Girshick, "Mask R-CNN," in \emph{Proceedings of the IEEE international conference on computer vision}, 2017, pp. 2961--2969.
+    \bibitem{b3} O. Ronneberger, P. Fischer, and T. Brox, "U-Net: Convolutional networks for biomedical image segmentation," in \emph{International Conference on Medical image computing and computer-assisted intervention}, Springer, 2015, pp. 234--241.
+    \bibitem{b4} R. Cohen and M. J. Black, "Visual Analysis of Swimming: A Review," \emph{Computer Vision in Sports}, vol. 12, no. 3, pp. 45--67, 2023.
+    \bibitem{b5} World Aquatics, "Facilities Rules 2024-2025," \emph{World Aquatics Competition Regulations}, 2024.
+    \bibitem{b6} J. Redmon and A. Farhadi, "YOLOv3: An Incremental Improvement," arXiv preprint arXiv:1804.02767, 2018.
+    \bibitem{b7} D. Zecha, M. Greif, and R. Lienhart, "Swimmer detection and pose estimation for continuous stroke rate determination," in \emph{Multimedia Content Access: Algorithms and Systems}, vol. 8668, 2013.
+    \bibitem{b8} V. Victor, "Challenges in Underwater Computer Vision," \emph{Journal of Oceanic Engineering}, 2022.
+    \bibitem{b9} S. Smith et al., "Kinematic Analysis of Freestyle Swimming," \emph{Journal of Sports Sciences}, 2024.
+    \bibitem{b10} M. Brown and D. Lowe, "Automatic Panoramic Image Stitching using Invariant Features," \emph{International Journal of Computer Vision}, 2007.
+    \bibitem{b11} L. Wang, "Action Recognition in the Dark: Neural Networks for Low-Light Sports," \emph{IEEE Transactions on Image Processing}, 2025.
+    \bibitem{b12} T. H. Cormen, C. E. Leiserson, R. L. Rivest, and C. Stein, "Introduction to Algorithms," 3rd ed., MIT Press, 2009.
 \end{thebibliography}
 
 \end{document}
