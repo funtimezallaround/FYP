@@ -45,3 +45,5 @@
 
 # PDF files (usually generated)
 *.pdf
+!main.pdf
+!conference_101719.pdf

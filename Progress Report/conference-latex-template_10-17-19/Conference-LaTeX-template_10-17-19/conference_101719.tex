@@ -75,8 +75,8 @@ The proposed system is partitioned into three functional steps: Lanerope Calibra
 \subsection{Step 1: Lanerope Calibration (Validation Reference)}
 This step is the foundation of the system, establishing a stable axis and scale for all downstream measurements. It involves a comparative study of two approaches:
 \begin{enumerate}
-    \item \textbf{Traditional CV Pipeline}: Utilising colour thresholding (to isolate the coloured floats), edge detection (e.g., Canny), and Hough Transform or RANSAC for line fitting to project a stable reference line along the lanerope's center.
-    \item \textbf{CNN-based Pipeline}: Implementing a keypoint detection or semantic segmentation model (e.g., a customised U-Net or Mask R-CNN) to identify the boundary or center points of the lanerope floats. This is expected to offer better robustness against water splash and varying lighting.
+    \item \textbf{Traditional CV Pipeline}: Utilising colour thresholding (to isolate the coloured floats), edge detection (e.g., Canny), and Hough Transform or RANSAC for line fitting to project a stable reference line along the lanerope's centre.
+    \item \textbf{CNN-based Pipeline}: Implementing a keypoint detection or semantic segmentation model (e.g., a customized U-Net or Mask R-CNN) to identify the boundary or centre points of the lanerope floats. This is expected to offer better robustness against water splash and varying lighting.
 \end{enumerate}
 The results of these two pipelines will be used to create the Calibration Module, converting pixel-based distances into real-world meters.
 
