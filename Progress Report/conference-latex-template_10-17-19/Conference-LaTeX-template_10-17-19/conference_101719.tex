@@ -30,24 +30,24 @@
 \maketitle
 
 \begin{abstract}
-    Computer vision analysis in aquatic environments presents unique challenges due to refraction, turbulence, and occlusion, which hinder the accuracy of standard motion tracking systems. 
-    This project proposes a non-intrusive AI-based system for stroke phase detection and symmetry analysis in competitive swimming. 
-    The core contribution is a novel methodology for dynamic pixel-to-meter scaling using standard lane ropes as calibration objects, addressing the limitations of fixed-camera setups in varying pool environments. 
-    This progress report outlines the comparative analysis between traditional computer vision pipelines and Convolutional Neural Networks for feature extraction. 
-    It presents the system architecture, preliminary findings on lane rope calibration, and the evaluation plan utilizing both quantitative error metrics and qualitative expert feedback.
+    Computer vision analysis in aquatic environments presents unique challenges due to refraction, turbulence, and occlusion, which hinder the accuracy of standard motion tracking systems.
+    This project proposes a non-intrusive AI-based proof of concept system for reliable pixel-to-meter scaling using markers in the background.
+    The core contribution is a novel methodology for dynamic pixel-to-meter scaling using standard lane rope markers as calibration objects, addressing the limitations of fixed-camera setups in varying pool environments.
+    This progress report outlines the development of the modular marker prototypes and the architectural design of the computer vision pipeline. 
+    It concludes by defining the evaluation protocols and the remaining milestones required to validate the system's robustness in real-world scenarios
 \end{abstract}
 
 
 \section{Introduction}
 
 \subsection{Problem Statement}
-Performance analysis in competitive swimming is traditionally reliant on manual observation or expensive, sensor-based systems that can be intrusive to the athlete. 
-While computer vision offers a non-intrusive alternative, the aquatic environment introduces significant noise. 
-Light refraction at the air-water interface, surface turbulence caused by the swimmer, and occlusions like bubbles and splashes degrade the quality of visual data~\cite{ahmed2019, giulietti2023}. 
+Performance analysis in competitive swimming is traditionally reliant on manual observation or expensive, sensor-based systems that can be intrusive to the athlete.
+While computer vision offers a non-intrusive alternative, the aquatic environment introduces significant noise.
+Light refraction at the air-water interface, surface turbulence caused by the swimmer, and occlusions like bubbles and splashes degrade the quality of visual data~\cite{ahmed2019, giulietti2023}.
 Furthermore, camera distances and angles vary significantly between venues, making consistent metric quantification, such as speed in meters/second, difficult without distinct calibration markers.
 
 \subsection{Motivation}
-There is a distinct lack of standardized, automated systems for extracting swimming metrics from video footage that do not require complex setups. 
+There is a distinct lack of standardized, automated systems for extracting swimming metrics from video footage that do not require complex setups.
 A standard, simple, and well documented system capable of extracting metric data from video with minimal setup could act as a proof of concept, to prove the viability of such systems in aquatic environments. This project focuses on validating feasibility and robustness rather than achieving state-of-the-art performance.
 
 \subsection{Aims and Objectives}
@@ -65,7 +65,7 @@ Existing literature in sports biomechanics highlights the importance of kinemati
 
 This project draws upon two key areas of research:
 \begin{itemize}
-    \item Scale Estimation: Research on using planar objects or known reference markers for depth and scale estimation is relevant, which we adapt by fixing submerged markers to lane ropes at fixed intervals. 
+    \item Scale Estimation: Research on using planar objects or known reference markers for depth and scale estimation is relevant, which we adapt by fixing submerged markers to lane ropes at fixed intervals.
     \item Pose Detection \& Estimation: Advances in HPE using CNNs such as OpenPose or HRNet provide a foundation for tracking swimmer joint positions over time, enabling the calculation of stroke metrics once a reliable scale is established.
 \end{itemize}
 
@@ -104,11 +104,11 @@ The limitations of handcrafted features spurred the shift toward Convolutional N
 
 Modern approaches employ CNNs for semantic segmentation of rope pixels, followed by post-processing to merge fragmented segments. Notably,~\cite{tran2024} demonstrates that a lightweight U-Net can recover the rope's position even when the water surface induces significant distortion. Similarly,~\cite{almajnoni2025} demonstrated the utility of YOLOv8 for swimmer stroke identification, proving that CNNs can track complex motion even in aquatic footage.
 
-However, while CNNs offer superior robustness, the literature lacks a systematic investigation of how rope design variability impacts detection performance, especially when cameras are positioned at different angles or when the pool is subject to transient occlusions such as parts of the swimmers' body blocking the lane rope. 
+However, while CNNs offer superior robustness, the literature lacks a systematic investigation of how rope design variability impacts detection performance, especially when cameras are positioned at different angles or when the pool is subject to transient occlusions such as parts of the swimmers' body blocking the lane rope.
 
 \subsection{Pixel-to-Metre Scaling in Computer Vision}
 
-Extracting metric data, such as metres per second, from 2D pixel coordinates is a fundamental geometric inference problem. Without a reference scale it is impossible to obtain meaningful real-world data; A velocity of x pixels per second means nothing when the real-world distance described by x pixels changes every frame in a video. 
+Extracting metric data, such as metres per second, from 2D pixel coordinates is a fundamental geometric inference problem. Without a reference scale it is impossible to obtain meaningful real-world data; A velocity of x pixels per second means nothing when the real-world distance described by x pixels changes every frame in a video.
 
 \subsection*{Calibration Challenges}
 The gold standard requires full camera calibration using a planar reference grid, but this is impractical for broadcast footage. Consequently, systems may rely on alternative scaling methods derived from the environment.~\cite{tran2024} bypass the need for explicit intrinsic calibration or planar homography by operating a drone at a consistent height to ensure a uniform scale and perspective. Instead of using lane ropes for pixel-to-meter conversion, the strategy estimates velocity by leveraging the standard 10-metre distance between lane markers as a ground truth reference. While this approach avoids the complexity of scale calibration, their system assumed a fixed camera height and angle, and relied on specific pre-defined colour thresholds.
@@ -152,105 +152,94 @@ These gaps highlight the need for a robust, generalizable AI pipeline that can d
 
 
 \section{Proposed Solution: System Overview}
-The proposed system is partitioned into three functional steps: Marker Set-up, Scale Calibration, and Feature Extraction.
+The proposed system is partitioned into the following three steps:
 
-\subsection{Step 1: Marker Calibration (Validation Reference)}
-This step is the foundation of the system, establishing a stable axis and scale for all downstream measurements. A CNN-based pipeline implementing a keypoint detection or semantic segmentation model to identify the boundary  of the marker segments.
+\subsection{Marker Calibration}
+This step is the foundation of the system, establishing a stable axis and scale for all downstream measurements. A CNN-based object detection model will identify the lane rope markers and the swimmer in each frame.
 
-\subsection{Step 2: Feature Extraction – Starts, Swim, and Turns}
-With the metric scale in place, a robust pose-estimation model will track the swimmer's key joints. A sequence-modelling approach will then segment the footage to extract biomechanical features across the three domains:
-\begin{itemize}
-    \item \textbf{Starts}: Metrics include reaction time, leap and flight times, underwater speed and distance, and shoulder/arm position at the end of the first pull.
-    \item \textbf{Swim (Mid-Pool)}: Focus on stroke length (hand entry to exit in meters) and impulse (distance covered per stroke). This step will also facilitate the left–right symmetry assessment by comparing the angular and linear velocities of the corresponding limbs during the catch and pull phases.
-    \item \textbf{Turns}: Metrics include stroke rate before the wall, entry-to-wall contact time, wall contact duration, and push-to-breakout measures (underwater distance and shoulder/arm positions leading to the second stroke).
-\end{itemize}
+\subsection{Feature Extraction}
+In this step, the keypoints of the swimmer will be extracted using a pre-trained pose-estimation model fine-tuned on swimming footage. The lane rope markers detected in Step 1 will be used to compute a pixel-to-metre scale for each frame.
+
+\subsection{Metric Calculation}
+Using the pixel-to-metre scale from Step 1 and the keypoints from Step 2, swimming metrics such as velocity and stroke length will be calculated. 
 
 \section{Evaluation Plan}
 The evaluation strategy is two-fold, encompassing a rigorous quantitative assessment of the core technology and a qualitative validation of the final derived metrics.
 
-\subsection{Quantitative Evaluation}
-\begin{itemize}
-    \item \textbf{Lanerope Accuracy Comparison}: The two lanerope pipelines (Traditional CV and CNN) will be assessed against annotated ground truth. Metrics will include axis error (deviation from the true lanerope angle), scale error (difference from the known float interval distance), and frame-to-frame jitter (stability).
-    \item \textbf{Downstream Metric Accuracy}: The lanerope method yielding the lowest error will be used to calibrate the system. The final system's metric outputs (e.g., a calculated 5-meter distance) will be compared to a physically measured distance to quantify the final distance estimation accuracy.
-\end{itemize}
+\subsection{Evaluation Plan}
+To evaluate the performance of step 1, the detection rate, as well as Intersection over Union (IoU), will be calculated against a manually annotated ground truth dataset. For step 2, the accuracy of the pose estimation will be assessed using standard metrics such as Percentage of Correct Keypoints (PCK) and Mean Per Joint Position Error (MPJPE) against annotated keypoints.
 
-\subsection{Qualitative Validation}
-\begin{itemize}
-    \item \textbf{Annotated Footage Comparison}: System outputs (keypoints, trajectories, and phase segmentations) will be overlaid onto the original video and validated against human-annotated samples.
-    \item \textbf{Expert Feedback}: Structured interviews and feedback sessions will be conducted with certified swimming coaches to assess the interpretability, practical value, and actionability of the generated performance reports (e.g., symmetry score, wall contact duration).
-\end{itemize}
+To evaluate step 3, the calculated metrics (velocity, stroke length) will be compared against ground truth measurements obtained from manual timing and distance measurements during controlled swimming trials.
 
 \section{Conclusions including Expected Outcomes and Difficulties/Challenges}
-This project is expected to deliver a robust proof-of-concept system capable of providing high-value, objective biomechanical data from standard video. The expected outcomes include the validated optimal lanerope calibration method (Traditional CV or CNN) and a working pipeline that accurately calculates and visualises metrics across Starts, Swim, and Turns.
+This project is expected to deliver a robust proof of concept system demonstrating a novel approach to dynamic pixel-to-metre scaling in swimming footage by proposing a standardized lane rope marker design. The expected outcome is a working pipeline capable of extracting meaningful swimming metrics from video data.
 
 Key challenges and difficulties anticipated include:
 \begin{itemize}
-    \item \textbf{Data Annotation}: Obtaining sufficient, high-quality, frame-by-frame annotated footage for training the CNN-based lanerope model and for ground-truthing the pose/phase segmentation.
-    \item \textbf{Generalisation}: Ensuring the lanerope calibration method is robust against varying pool environments, lighting conditions, and camera angles (beyond a fixed setup).
-    \item \textbf{Symmetry Complexity}: Developing a sufficiently sensitive metric to accurately quantify left–right symmetry, given the inherent small variances in human movement.
+    \item Data Annotation: Obtaining sufficient, frame-by-frame annotated footage to provide ground truth for both marker detection and pose estimation.
+    \item Scale Stability: Ensuring that the pixel-to-metre scale remains stable across frames despite turbulence and occlusions.
+    \item Metric Consistency: Validating that the derived metrics align closely with manual measurements, accounting for potential sources of error in both the video analysis and ground truth data.
 \end{itemize}
 
-
-\section{Conclusion}
-
-This report outlines the implementation achieved thus far and details the remaining steps for the proposed solution. 
+In summary, this report outlines the implementation achieved thus far and details the remaining steps for the proposed solution.
 For the full project schedule, refer to the Gantt chart located in Appendix A.
+
 
 \begin{thebibliography}{00}
 
-% 1. Navigational system for visually impaired people
-\bibitem{ahmed2019}
-S. Ahmed, ``Navigational system for visually impaired people in a swimming pool,'' KTH, Stockholm, Sweden, 2019. [Online]. Available: https://urn.kb.se/resolve?urn=urn:nbn:se:kth:diva-269431
+    % 1. Navigational system for visually impaired people
+    \bibitem{ahmed2019}
+    S. Ahmed, ``Navigational system for visually impaired people in a swimming pool,'' KTH, Stockholm, Sweden, 2019. [Online]. Available: https://urn.kb.se/resolve?urn=urn:nbn:se:kth:diva-269431
 
-% 2. AI-Based Object Measurement (Cleaned up authors)
-\bibitem{chauhan2025}
-D. Chauhan, D. Panchal, J. Patel, and D. Bhatt, ``AI-Based Object Measurement Using MiDaS Depth Estimation and MobileNetV3 Edge Detection,'' \emph{International Journal on Science and Technology}, vol. 16, no. 2, p. 3924, Apr. 2025.
+    % 2. AI-Based Object Measurement (Cleaned up authors)
+    \bibitem{chauhan2025}
+    D. Chauhan, D. Panchal, J. Patel, and D. Bhatt, ``AI-Based Object Measurement Using MiDaS Depth Estimation and MobileNetV3 Edge Detection,'' \emph{International Journal on Science and Technology}, vol. 16, no. 2, p. 3924, Apr. 2025.
 
-% 3. Reference-free video-to-real distance
-\bibitem{zuo2021}
-F. Zuo, J. Gao, A. Kurkcu, H. Yang, K. Ozbay, and Q. Ma, ``Reference-free video-to-real distance approximation-based urban social distancing analytics amid COVID-19 pandemic,'' \emph{Journal of Transport \& Health}, vol. 21, p. 101032, Jun. 2021.
+    % 3. Reference-free video-to-real distance
+    \bibitem{zuo2021}
+    F. Zuo, J. Gao, A. Kurkcu, H. Yang, K. Ozbay, and Q. Ma, ``Reference-free video-to-real distance approximation-based urban social distancing analytics amid COVID-19 pandemic,'' \emph{Journal of Transport \& Health}, vol. 21, p. 101032, Jun. 2021.
 
-% 4. Measuring distance with mobile phones
-\bibitem{holzmann2012}
-C. Holzmann and M. Hochgatterer, ``Measuring distance with mobile phones using single-camera stereo vision,'' in \emph{2012 32nd International Conference on Distributed Computing Systems Workshops}, 2012, pp. 88--93.
+    % 4. Measuring distance with mobile phones
+    \bibitem{holzmann2012}
+    C. Holzmann and M. Hochgatterer, ``Measuring distance with mobile phones using single-camera stereo vision,'' in \emph{2012 32nd International Conference on Distributed Computing Systems Workshops}, 2012, pp. 88--93.
 
-% 5. DisNet
-\bibitem{haseeb2018}
-M. A. Haseeb, J. Guan, D. Ristic-Durrant, and A. Gräser, ``DisNet: A novel method for distance estimation from monocular camera,'' in \emph{10th Planning, Perception and Navigation for Intelligent Vehicles (PPNIV18), IROS}, 2018.
+    % 5. DisNet
+    \bibitem{haseeb2018}
+    M. A. Haseeb, J. Guan, D. Ristic-Durrant, and A. Gräser, ``DisNet: A novel method for distance estimation from monocular camera,'' in \emph{10th Planning, Perception and Navigation for Intelligent Vehicles (PPNIV18), IROS}, 2018.
 
-% 6. Experiment on distance measurement
-\bibitem{saputra2021}
-D. E. Saputra, A. S. M. Senjaya, J. Ivander, and A. W. Chandra, ``Experiment on distance measurement using single camera,'' in \emph{2021 4th International Conference on Information and Communications Technology (ICOIACT)}, 2021, pp. 80--85.
+    % 6. Experiment on distance measurement
+    \bibitem{saputra2021}
+    D. E. Saputra, A. S. M. Senjaya, J. Ivander, and A. W. Chandra, ``Experiment on distance measurement using single camera,'' in \emph{2021 4th International Conference on Information and Communications Technology (ICOIACT)}, 2021, pp. 80--85.
 
-% 7. Category-Level Metric Scale
-\bibitem{lee2021}
-T. Lee, B.-U. Lee, M. Kim, and I. S. Kweon, ``Category-Level Metric Scale Object Shape and Pose Estimation,'' \emph{IEEE Robotics and Automation Letters}, vol. 6, no. 4, pp. 8575--8582, Oct. 2021.
+    % 7. Category-Level Metric Scale
+    \bibitem{lee2021}
+    T. Lee, B.-U. Lee, M. Kim, and I. S. Kweon, ``Category-Level Metric Scale Object Shape and Pose Estimation,'' \emph{IEEE Robotics and Automation Letters}, vol. 6, no. 4, pp. 8575--8582, Oct. 2021.
 
-% 8. Analyzing Swimming Performance (Drone)
-\bibitem{tran2024}
-T. Tran \emph{et al.}, ``Analyzing Swimming Performance Using Drone Captured Aerial Videos,'' in \emph{Proceedings of the 10th Workshop on Micro Aerial Vehicle Networks, Systems, and Applications}, Minato-ku, Tokyo, Japan, Jun. 2024, pp. 7--12.
+    % 8. Analyzing Swimming Performance (Drone)
+    \bibitem{tran2024}
+    T. Tran \emph{et al.}, ``Analyzing Swimming Performance Using Drone Captured Aerial Videos,'' in \emph{Proceedings of the 10th Workshop on Micro Aerial Vehicle Networks, Systems, and Applications}, Minato-ku, Tokyo, Japan, Jun. 2024, pp. 7--12.
 
-% 9. SwimmerNET
-\bibitem{giulietti2023}
-N. Giulietti, A. Caputo, P. Chiariotti, and P. Castellini, ``SwimmerNET: Underwater 2D Swimmer Pose Estimation Exploiting Fully Convolutional Neural Networks,'' \emph{Sensors}, vol. 23, no. 4, p. 2364, Jan. 2023.
+    % 9. SwimmerNET
+    \bibitem{giulietti2023}
+    N. Giulietti, A. Caputo, P. Chiariotti, and P. Castellini, ``SwimmerNET: Underwater 2D Swimmer Pose Estimation Exploiting Fully Convolutional Neural Networks,'' \emph{Sensors}, vol. 23, no. 4, p. 2364, Jan. 2023.
 
-% 10. Pose estimation for swimmers (HRNet)
-\bibitem{cao2024}
-X. Cao and W. Q. Yan, ``Pose estimation for swimmers in video surveillance,'' \emph{Multimedia Tools and Applications}, vol. 83, no. 9, pp. 26565--26580, Mar. 2024.
+    % 10. Pose estimation for swimmers (HRNet)
+    \bibitem{cao2024}
+    X. Cao and W. Q. Yan, ``Pose estimation for swimmers in video surveillance,'' \emph{Multimedia Tools and Applications}, vol. 83, no. 9, pp. 26565--26580, Mar. 2024.
 
-% 11. AI in Sport (Narrative Review)
-\bibitem{zhou2025}
-D. Zhou, J. W. L. Keogh, Y. Ma, R. K. Y. Tong, A. R. Khan, and N. R. Jennings, ``Artificial intelligence in sport: A narrative review of applications, challenges and future trends,'' \emph{Journal of Sports Sciences}, pp. 1--16, 2025.
+    % 11. AI in Sport (Narrative Review)
+    \bibitem{zhou2025}
+    D. Zhou, J. W. L. Keogh, Y. Ma, R. K. Y. Tong, A. R. Khan, and N. R. Jennings, ``Artificial intelligence in sport: A narrative review of applications, challenges and future trends,'' \emph{Journal of Sports Sciences}, pp. 1--16, 2025.
 
-% 12. Moar: Swimming Style Identification
-\bibitem{almajnoni2025}
-A. Al-Majnoni, J. Al-Sahli, D. Al-Ahmady, A. Al-Mutairi, A. Alsini, and M. Alharbi, ``Moar: A Swimmer Motion Swimming Style Identification Model using Deep Learning,'' \emph{Engineering, Technology \& Applied Science Research}, vol. 15, no. 1, pp. 19295--19302, Feb. 2025.
+    % 12. Moar: Swimming Style Identification
+    \bibitem{almajnoni2025}
+    A. Al-Majnoni, J. Al-Sahli, D. Al-Ahmady, A. Al-Mutairi, A. Alsini, and M. Alharbi, ``Moar: A Swimmer Motion Swimming Style Identification Model using Deep Learning,'' \emph{Engineering, Technology \& Applied Science Research}, vol. 15, no. 1, pp. 19295--19302, Feb. 2025.
 
-\bibitem{FINA2025}
-World Aquatics (formerly FINA), ``World Aquatics (FINA) Competition Regulations, June 2025,'' Jul. 2025. [Online].
+    \bibitem{FINA2025}
+    World Aquatics (formerly FINA), ``World Aquatics (FINA) Competition Regulations, June 2025,'' Jul. 2025. [Online].
 
-\bibitem{competitorswim2022}
-Competitor Swim, ``What Color Should Your Swimming Lane Lines Be?,'' 2022. [Online]. Available: https://www.competitorswim.com/what-color-should-your-swimming-lane-lines-be/. [Accessed: Oct. 15, 2025].
+    \bibitem{competitorswim2022}
+    Competitor Swim, ``What Color Should Your Swimming Lane Lines Be?,'' 2022. [Online]. Available: https://www.competitorswim.com/what-color-should-your-swimming-lane-lines-be/. [Accessed: Oct. 15, 2025].
 
 \end{thebibliography}
 \pagebreak
