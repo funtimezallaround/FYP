@@ -43,78 +43,32 @@
 \subsection{Problem Statement}
 Performance analysis in competitive swimming is traditionally reliant on manual observation or expensive, sensor-based systems that can be intrusive to the athlete. 
 While computer vision offers a non-intrusive alternative, the aquatic environment introduces significant noise. 
-Light refraction at the air-water interface, surface turbulence caused by the swimmer, and occlusions (bubbles and splashes) degrade the quality of visual data~\cite{ahmed2019, giulietti2023}. 
-Furthermore, camera distances and angles vary significantly between venues, making consistent metric quantification (e.g., speed in meters/second) difficult without distinct calibration markers.
+Light refraction at the air-water interface, surface turbulence caused by the swimmer, and occlusions like bubbles and splashes degrade the quality of visual data~\cite{ahmed2019, giulietti2023}. 
+Furthermore, camera distances and angles vary significantly between venues, making consistent metric quantification, such as speed in meters/second, difficult without distinct calibration markers.
 
 \subsection{Motivation}
 There is a distinct lack of standardized, automated systems for extracting swimming metrics from video footage that do not require complex setups. 
-A standard, simple, and well documented system capable of extracting metric data from video with minimal setup could act as a proof of concept, to prove the viability of such systems in aquatic environments. 
+A standard, simple, and well documented system capable of extracting metric data from video with minimal setup could act as a proof of concept, to prove the viability of such systems in aquatic environments. This project focuses on validating feasibility and robustness rather than achieving state-of-the-art performance.
 
 \subsection{Aims and Objectives}
 The primary aim of this project is to develop a Proof of Concept system that enables the extraction of swimming metrics from video footage. The specific objectives are:
 \begin{enumerate}
-    \item To design, prototype, and create a modular, under-water marker design that can be affixed to standard lane ropes.
-    \item To create and annotate a small dataset of swimming footage with the newly-designed markers visible.
-    \item To establish a pipeline for dynamic pixel-to-meter scale extraction using the lane rope markers for calibration.
+    \item To design, prototype, and create a modular, under-water marker design that maximizes underwater visibility.
+    \item To create and annotate a small dataset of swimming footage using the designed markers in the background.
+    \item To establish a pipeline for dynamic pixel-to-meter scale extraction using the markers for calibration.
     \item To calculate simple metrics such as swimmer velocity and stroke length using the calibrated scale. % or shall this objective be reserved for evaluation?
 \end{enumerate}
 
-\section{Background Research}
+\section{Background Research \& Literature Review}
 
 Existing literature in sports biomechanics highlights the importance of kinematic metrics like stroke length and propulsion symmetry. Computer vision research has successfully applied deep learning for human pose estimation (HPE) and action recognition in water sports. However, a critical limitation in many CV-based swimming systems is the inability to convert pixel movement into absolute, real-world distances, often relying on relative metrics or requiring external sensors.
 
 This project draws upon two key areas of research:
 \begin{itemize}
-    \item \textbf{Scale Estimation}: Research on using planar objects or known reference markers (fiducial markers) for depth and scale estimation is relevant, which we adapt by using the structured, repetitive nature of the lanerope.
-    \item \textbf{Kinematic Segmentation and Symmetry}: Work on segmenting continuous athletic motion (like running or swimming) into discrete phases is essential for calculating time-based metrics (e.g., wall contact time) and assessing symmetry by comparing left and right limb kinematic profiles.
+    \item Scale Estimation: Research on using planar objects or known reference markers for depth and scale estimation is relevant, which we adapt by fixing submerged markers to lane ropes at fixed intervals. 
+    \item Pose Detection \& Estimation: Advances in HPE using CNNs such as OpenPose or HRNet provide a foundation for tracking swimmer joint positions over time, enabling the calculation of stroke metrics once a reliable scale is established.
 \end{itemize}
 
-\section{Proposed Solution: System Overview}
-The proposed system is partitioned into three functional steps: Lanerope Calibration, Feature Extraction, and System Output.
-
-\subsection{Step 1: Lanerope Calibration (Validation Reference)}
-This step is the foundation of the system, establishing a stable axis and scale for all downstream measurements. It involves a comparative study of two approaches:
-\begin{enumerate}
-    \item \textbf{Traditional CV Pipeline}: Utilising colour thresholding (to isolate the coloured floats), edge detection (e.g., Canny), and Hough Transform or RANSAC for line fitting to project a stable reference line along the lanerope's centre.
-    \item \textbf{CNN-based Pipeline}: Implementing a keypoint detection or semantic segmentation model (e.g., a customized U-Net or Mask R-CNN) to identify the boundary or centre points of the lanerope floats. This is expected to offer better robustness against water splash and varying lighting.
-\end{enumerate}
-The results of these two pipelines will be used to create the Calibration Module, converting pixel-based distances into real-world meters.
-
-\subsection{Step 2: Feature Extraction – Starts, Swim, and Turns}
-With the metric scale in place, a robust pose-estimation model will track the swimmer's key joints. A sequence-modelling approach will then segment the footage to extract biomechanical features across the three domains:
-\begin{itemize}
-    \item \textbf{Starts}: Metrics include reaction time, leap and flight times, underwater speed and distance, and shoulder/arm position at the end of the first pull.
-    \item \textbf{Swim (Mid-Pool)}: Focus on stroke length (hand entry to exit in meters) and impulse (distance covered per stroke). This step will also facilitate the left–right symmetry assessment by comparing the angular and linear velocities of the corresponding limbs during the catch and pull phases.
-    \item \textbf{Turns}: Metrics include stroke rate before the wall, entry-to-wall contact time, wall contact duration, and push-to-breakout measures (underwater distance and shoulder/arm positions leading to the second stroke).
-\end{itemize}
-
-\section{Evaluation Plan}
-The evaluation strategy is two-fold, encompassing a rigorous quantitative assessment of the core technology and a qualitative validation of the final derived metrics.
-
-\subsection{Quantitative Evaluation}
-\begin{itemize}
-    \item \textbf{Lanerope Accuracy Comparison}: The two lanerope pipelines (Traditional CV and CNN) will be assessed against annotated ground truth. Metrics will include axis error (deviation from the true lanerope angle), scale error (difference from the known float interval distance), and frame-to-frame jitter (stability).
-    \item \textbf{Downstream Metric Accuracy}: The lanerope method yielding the lowest error will be used to calibrate the system. The final system's metric outputs (e.g., a calculated 5-meter distance) will be compared to a physically measured distance to quantify the final distance estimation accuracy.
-\end{itemize}
-
-\subsection{Qualitative Validation}
-\begin{itemize}
-    \item \textbf{Annotated Footage Comparison}: System outputs (keypoints, trajectories, and phase segmentations) will be overlaid onto the original video and validated against human-annotated samples.
-    \item \textbf{Expert Feedback}: Structured interviews and feedback sessions will be conducted with certified swimming coaches to assess the interpretability, practical value, and actionability of the generated performance reports (e.g., symmetry score, wall contact duration).
-\end{itemize}
-
-\section{Conclusions including Expected Outcomes and Difficulties/Challenges}
-This project is expected to deliver a robust proof-of-concept system capable of providing high-value, objective biomechanical data from standard video. The expected outcomes include the validated optimal lanerope calibration method (Traditional CV or CNN) and a working pipeline that accurately calculates and visualises metrics across Starts, Swim, and Turns.
-
-Key challenges and difficulties anticipated include:
-\begin{itemize}
-    \item \textbf{Data Annotation}: Obtaining sufficient, high-quality, frame-by-frame annotated footage for training the CNN-based lanerope model and for ground-truthing the pose/phase segmentation.
-    \item \textbf{Generalisation}: Ensuring the lanerope calibration method is robust against varying pool environments, lighting conditions, and camera angles (beyond a fixed setup).
-    \item \textbf{Symmetry Complexity}: Developing a sufficiently sensitive metric to accurately quantify left–right symmetry, given the inherent small variances in human movement.
-\end{itemize}
-
-
-\section{Literature Review}
 
 \subsection{AI in Sports Computer Vision}
 
@@ -157,9 +111,7 @@ However, while CNNs offer superior robustness, the literature lacks a systematic
 Extracting metric data, such as metres per second, from 2D pixel coordinates is a fundamental geometric inference problem. Without a reference scale it is impossible to obtain meaningful real-world data; A velocity of x pixels per second means nothing when the real-world distance described by x pixels changes every frame in a video. 
 
 \subsection*{Calibration Challenges}
-The gold standard is full camera calibration using a chequerboard, but this is impractical for broadcast footage. The alternative is reference-based scaling using the lane rope. %TODO: Reword this
-
-~\cite{tran2024} describes a two-stage calibration strategy: first, estimating intrinsic parameters; second, computing a planar homography between the image plane and the pool floor using the rope as a known feature. The resulting homography yields a pixel-to-metre ratio applied uniformly across the frame. While effective for static setups, this strategy is influenced by the rope's colour fidelity and the refractive index of water, which can shrink or stretch the apparent rope width. %TODO: Revisit this section
+The gold standard requires full camera calibration using a planar reference grid, but this is impractical for broadcast footage. Consequently, systems may rely on alternative scaling methods derived from the environment.~\cite{tran2024} bypass the need for explicit intrinsic calibration or planar homography by operating a drone at a consistent height to ensure a uniform scale and perspective. Instead of using lane ropes for pixel-to-meter conversion, the strategy estimates velocity by leveraging the standard 10-metre distance between lane markers as a ground truth reference. While this approach avoids the complexity of scale calibration, their system assumed a fixed camera height and angle, and relied on specific pre-defined colour thresholds.
 
 Furthermore, World Aquatics' 2025 specifications~\cite{FINA2025} detail the width and spacing of the red sections of the lane rope which could be critical to acquiring a consistent calibration scale in certain scenarios, such as when the whole length of the lane rope is present in a video's frame. Unfortunately, in situations where this is not the case, different features must be considered.
 
@@ -173,30 +125,71 @@ Recent advancements in AI have moved beyond simple detection to geometric reason
     \item Category-Level Pose Estimation:~\cite{lee2021} proposed frameworks that jointly estimate shape and metric scale for objects.
 \end{itemize}
 
-These ``geometry-aware'' networks suggest a pathway for swimming: instead of relying on brittle manual calibration or planar assumptions~\cite{zuo2021}, a neural network could infer the scale factor by analysing the semantic structure of the lane ropes, treating the scaling factor as a learnable parameter.
+These ``geometry-aware'' networks suggest a pathway for swimming: instead of relying on brittle manual calibration or planar assumptions~\cite{zuo2021}, a neural network could infer the scale factor by analysing the semantic structure of the markers, treating the scaling factor as a learnable parameter. While geometry-aware networks suggest future extensions, this thesis limits implementation to 2D planar approximations assuming a constant depth for the markers and swimmer.
 
 \subsection{Computer Vision for Swimming Analytics}
 
-The end goal of many CV-based swimming studies is to recover motion-specific metrics.~\cite{tran2024} estimates distance travelled by tracking a swimmer's centre of mass, subsequently inferring velocity and average stroke length.~\cite{almajnoni2025} extends this by computing power output and kinetic energy through a hybrid CV-physics model that integrates 2-D pose estimates. Likewise,~\cite{cao2024} proposes a pose-estimation network trained on a large collection of swimming videos to localize key joints in the presence of water reflections.
+The end goal of many CV-based swimming studies is to recover motion-specific metrics.~\cite{almajnoni2025} Leverages NNs to classify what stroke a swimmer is detected to be swimming. Likewise,~\cite{cao2024} proposes a pose-estimation network trained on a large collection of swimming videos to localize key joints in the presence of water reflections.~\cite{tran2024} estimates distance travelled by tracking a swimmer's centre of mass, subsequently inferring velocity and average stroke length.
 
-These works illustrate that once spatial calibration is reliable, the task reduces to accurate temporal tracking. However, both studies note that surface turbulence and glare can degrade tracking accuracy. In particular, the rope's red bands—used as a visual cue for lap counting—introduce strong colour discontinuities that can mislead generic segmentation algorithms.
+These works illustrate that modern approaches temporal tracking over spatial calibration. The works cited above all agree that surface turbulence and glare can degrade tracking accuracy. However, none of these works address the critical challenge of dynamic pixel-to-metre scaling in detail. Most either assume a fixed camera setup or rely on relative metrics, limiting their applicability across different pool environments.
 
 \subsection{Gap Analysis and Research Need}
 
-Reviewing the convergence of sports CV and swimming analytics reveals distinct gaps, particularly regarding datasets and robust scaling.
+Reviewing the convergence of CV in sports and swimming analytics reveals distinct gaps, particularly regarding datasets and robust scaling.
 
 \subsection*{Datasets and Benchmarks}
-The paucity of publicly available datasets tailored to markerless swimming analyses has hindered reproducibility. SwimmerNET~\cite{giulietti2023} provides annotated 2-D keypoints but lacks underwater scenes. Moar~\cite{almajnoni2025} provides 3-D joint trajectories but relies on markers. Few datasets contain exhaustive labels for the rope's colour bands or the red sections mandated by~\cite{FINA2025}. Consequently, many studies train on limited subsets, limiting generalization.
+The scarcity of publicly available datasets in swimming analytics is a significant barrier. SwimmerNET~\cite{giulietti2023} provides annotated 2-D keypoints but lacks underwater scenes. Moar~\cite{almajnoni2025} provides 3-D joint trajectories, relying on markers. Few papers exist that provide swimming analytics, each relying on a different dataset, making cross-comparison difficult.
 
 \subsection*{Open Challenges}
 The reviewed literature confirms that persistent challenges remain:
 \begin{enumerate}
     \item Optical Distortions: Refraction and glare render hand-crafted segmentation fragile~\cite{cao2024}.
-    \item Design Variability: The red bands and non-uniform spacing of blue/white bands~\cite{competitorswim2022} introduce inter-pool variation which is acknowledged, but rarely accounted for in existing models.
-    \item Absence of Automated Dynamic Scaling: Current analytics rely on manual calibration. There is no robust AI solution that utilizes the lane ropes themselves as dynamic calibration objects.
+    \item Variable Environments: Pool designs and lighting vary widely, complicating generalization~\cite{tran2024}.
+    \item Lack of suitable calibration features: Existing works either assume fixed camera setups or lack robust pixel-to-metre scaling methods~\cite{tran2024, cao2024}.
 \end{enumerate}
 
-These gaps highlight the need for a robust, generalizable AI pipeline that can detect lane rope features accurately and extract a stable pixel-to-metre scale. The present thesis builds upon the foundational work of~\cite{tran2024} and~\cite{cao2024}, extending it by developing a multiscale, attention-based segmentation module and integrating a physics-informed homography estimator.
+These gaps highlight the need for a robust, generalizable AI pipeline that can detect marker features accurately and extract a stable pixel-to-metre scale. The present thesis builds upon the foundational work of~\cite{tran2024} and~\cite{cao2024}, extending it by developing a multiscale, attention-based segmentation module and integrating a physics-informed homography estimator.
+
+
+\section{Proposed Solution: System Overview}
+The proposed system is partitioned into three functional steps: Marker Set-up, Scale Calibration, and Feature Extraction.
+
+\subsection{Step 1: Marker Calibration (Validation Reference)}
+This step is the foundation of the system, establishing a stable axis and scale for all downstream measurements. A CNN-based pipeline implementing a keypoint detection or semantic segmentation model to identify the boundary  of the marker segments.
+
+\subsection{Step 2: Feature Extraction – Starts, Swim, and Turns}
+With the metric scale in place, a robust pose-estimation model will track the swimmer's key joints. A sequence-modelling approach will then segment the footage to extract biomechanical features across the three domains:
+\begin{itemize}
+    \item \textbf{Starts}: Metrics include reaction time, leap and flight times, underwater speed and distance, and shoulder/arm position at the end of the first pull.
+    \item \textbf{Swim (Mid-Pool)}: Focus on stroke length (hand entry to exit in meters) and impulse (distance covered per stroke). This step will also facilitate the left–right symmetry assessment by comparing the angular and linear velocities of the corresponding limbs during the catch and pull phases.
+    \item \textbf{Turns}: Metrics include stroke rate before the wall, entry-to-wall contact time, wall contact duration, and push-to-breakout measures (underwater distance and shoulder/arm positions leading to the second stroke).
+\end{itemize}
+
+\section{Evaluation Plan}
+The evaluation strategy is two-fold, encompassing a rigorous quantitative assessment of the core technology and a qualitative validation of the final derived metrics.
+
+\subsection{Quantitative Evaluation}
+\begin{itemize}
+    \item \textbf{Lanerope Accuracy Comparison}: The two lanerope pipelines (Traditional CV and CNN) will be assessed against annotated ground truth. Metrics will include axis error (deviation from the true lanerope angle), scale error (difference from the known float interval distance), and frame-to-frame jitter (stability).
+    \item \textbf{Downstream Metric Accuracy}: The lanerope method yielding the lowest error will be used to calibrate the system. The final system's metric outputs (e.g., a calculated 5-meter distance) will be compared to a physically measured distance to quantify the final distance estimation accuracy.
+\end{itemize}
+
+\subsection{Qualitative Validation}
+\begin{itemize}
+    \item \textbf{Annotated Footage Comparison}: System outputs (keypoints, trajectories, and phase segmentations) will be overlaid onto the original video and validated against human-annotated samples.
+    \item \textbf{Expert Feedback}: Structured interviews and feedback sessions will be conducted with certified swimming coaches to assess the interpretability, practical value, and actionability of the generated performance reports (e.g., symmetry score, wall contact duration).
+\end{itemize}
+
+\section{Conclusions including Expected Outcomes and Difficulties/Challenges}
+This project is expected to deliver a robust proof-of-concept system capable of providing high-value, objective biomechanical data from standard video. The expected outcomes include the validated optimal lanerope calibration method (Traditional CV or CNN) and a working pipeline that accurately calculates and visualises metrics across Starts, Swim, and Turns.
+
+Key challenges and difficulties anticipated include:
+\begin{itemize}
+    \item \textbf{Data Annotation}: Obtaining sufficient, high-quality, frame-by-frame annotated footage for training the CNN-based lanerope model and for ground-truthing the pose/phase segmentation.
+    \item \textbf{Generalisation}: Ensuring the lanerope calibration method is robust against varying pool environments, lighting conditions, and camera angles (beyond a fixed setup).
+    \item \textbf{Symmetry Complexity}: Developing a sufficiently sensitive metric to accurately quantify left–right symmetry, given the inherent small variances in human movement.
+\end{itemize}
+
 
 \section{Conclusion}
 
