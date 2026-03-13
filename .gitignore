@@ -1,49 +1,70 @@
-# Directories to ignore
-"Latex files"/
-"FYP resources"/
+# Project documents/templates not needed in code repo
+Latex files/*
+FYP resources/*
+Progress Report/*
 
-# LaTeX intermediate files
+# Generated PDFs (keep selected deliverables only)
+*.pdf
+!main.pdf
+!conference_101719.pdf
+
+# LaTeX build artifacts
 *.aux
-*.bbl
-*.blg
-*.fdb_latexmk
-*.fls
-*.log
-*.out
-*.synctex.gz
-*.toc
-*.lof
-*.lot
-*.idx
 *.acn
 *.acr
 *.alg
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
 *.glg
 *.glo
 *.gls
 *.ist
-*.ind
-*.ilg
-*.nav
-*.snm
-*.vrb
-*.bcf
+*.lof
+*.log
+*.lot
+*.out
 *.run.xml
-*.figlist
-*.makefile
-*.fignore
-*.figlist
-*.makefile
-*.figlist
-*.auxlock
-*.figlist
-*.makefile
-*.figlist
-*.auxlock
-*.pdf_tex
-*.eps_tex
+*.synctex.gz
+*.toc
+texput.log
 
-# PDF files (usually generated)
-*.pdf
-!main.pdf
-!conference_101719.pdf
+# IDE/editor state
+.vscode/
+
+# Python cache/build
+__pycache__/
+*.py[cod]
+*.pyo
+.ipynb_checkpoints/
+
+# Local environments
+.venv/
+venv/
+env/
+SAM2/sam2/sam2_env/
+
+# Large local media and derived outputs
+videos/
+*.mp4
+!videos/**/*.ignore
+swimmer_velocity_annotated.mp4
+
+# Training/inference outputs
+runs/
+frames/**/*.jpg
+frames/**/*.jpeg
+*.cache
+
+# Datasets and labels generated locally
+yolo_dataset/images/
+yolo_dataset/labels/
+yolo_dataset/*.cache
+
+# Model binaries
+*.pt
+
+# SAM2 local runtime assets/checkpoints
+SAM2/*

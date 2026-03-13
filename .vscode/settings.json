@@ -2,5 +2,18 @@
     "cSpell.words": [
         "keypoint",
         "thresholding"
+    ],
+    "ROS2.distro": "jazzy",
+    "python.autoComplete.extraPaths": [
+        "/home/user/ros2_ws/install/my_py_pkg/lib/python3.12/site-packages",
+        "/home/user/ros2_ws/src/build/service_tuto",
+        "/home/user/ros2_ws/src/install/service_tuto/lib/python3.12/site-packages",
+        "/home/user/ros2_ws/src/install/my_py_pkg/lib/python3.12/site-packages",
+        "/home/user/ros2_ws/src/install/multi_node_demo/lib/python3.12/site-packages",
+        "/opt/ros/jazzy/lib/python3.12/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "C:\\Users\\Daniel\\miniconda3\\envs\\robits\\Lib\\site-packages\\mediapipe\\__init__.py",
+        "./SAM2/sam2"
     ]
 }
