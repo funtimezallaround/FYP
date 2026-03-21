@@ -1,6 +1,0 @@
-path: /mnt/c/Users/Daniel/OneDrive/Desktop/Programs/Python/FYP/yolo_dataset
-train: images
-val:   images
-
-nc: 2
-names: ['marker', 'swimmer']

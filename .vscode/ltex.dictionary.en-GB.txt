@@ -1,8 +1,0 @@
-lanerope
-keypoint
-Lanerope
-Sobel
-keypoints
-thresholding
-thresholding
-homography
