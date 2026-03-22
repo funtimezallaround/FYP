@@ -1,0 +1,71 @@
+# Project documents/templates not needed in code repo
+Latex files/*
+FYP resources/*
+Progress Report/*
+
+# Generated PDFs (keep selected deliverables only)
+*.pdf
+!main.pdf
+!conference_101719.pdf
+
+# LaTeX build artifacts
+*.aux
+*.acn
+*.acr
+*.alg
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.glg
+*.glo
+*.gls
+*.ist
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+texput.log
+
+# IDE/editor state
+.vscode/
+
+# Python cache/build
+__pycache__/
+*.py[cod]
+*.pyo
+.ipynb_checkpoints/
+
+# Local environments
+.venv/
+venv/
+env/
+SAM2/sam2/sam2_env/
+
+# Large local media and derived outputs
+videos/
+*.mp4
+!videos/**/*.ignore
+swimmer_velocity_annotated.mp4
+*.zip
+
+# Training/inference outputs
+runs/
+frames/**/*.jpg
+frames/**/*.jpeg
+*.cache
+
+# Datasets and labels generated locally
+yolo_dataset/images/
+yolo_dataset/labels/
+yolo_dataset/*.cache
+
+# Model binaries
+*.pt
+
+# SAM2 local runtime assets/checkpoints
+SAM2/*
