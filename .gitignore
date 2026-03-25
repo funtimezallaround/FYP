@@ -60,9 +60,7 @@ frames/**/*.jpeg
 *.cache
 
 # Datasets and labels generated locally
-yolo_dataset/images/
-yolo_dataset/labels/
-yolo_dataset/*.cache
+yolo_*
 
 # Model binaries
 *.pt
