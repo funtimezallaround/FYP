@@ -1,0 +1,24 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- UNIVERSAL PREAMBLE BLOCK ---
+\usepackage[a4paper, top=2.5cm, bottom=2.5cm, left=2cm, right=2cm]{geometry}
+\usepackage{fontspec}
+
+
+
+\begin{document}
+
+{\noindent \LARGE \textbf{Dynamic Pixel-to-Metre Calibration in Competitive Swimming Using Lane Rope Markers: A Computer Vision Proof of Concept}}
+\vspace{0.5cm}
+
+In competitive swimming, victory is often decided by fractions of a second. Athletes and coaches constantly seek ways to refine technique and improve efficiency. Traditionally, gathering precise performance data required manual observation or attaching physical sensors to the athlete. However, sensors can be uncomfortable, add drag, and disrupt a swimmer's natural movement. Video analysis offers a non-intrusive alternative, but the aquatic environment makes this incredibly difficult. Splashes, bubbles, and the way water bends light create a chaotic visual environment that easily confuses standard artificial intelligence systems.
+
+When a camera records through the water's surface, light refraction creates unpredictable distortions. What looks like a continuous straight line to the human eye might appear broken or warped to a computer. Furthermore, the turbulent waves caused by the swimmer introduce severe visual noise. One of the biggest hurdles in analysing these swimming videos is figuring out real-world distances. A camera only sees a flat grid of pixels. Without knowing exactly how far the camera is from the pool, calculating an athlete's true speed in metres per second is nearly impossible. Existing solutions often require complex, fixed camera setups that are not practical for everyday training sessions across different pools.
+
+This final-year project introduces a coaching aid that uses computer vision and artificial intelligence to track swimming performance using standard video footage. The innovation presented in this thesis is the use of standard, 3D printed high-contrast markers. By training a model to automatically detect these markers, the artificial intelligence can automatically figure out the scale of the video. This dynamic calibration instantly converts pixels on the screen into actual metres in the pool, regardless of the camera's angle.
+
+Once the scale is established, the system uses deep learning to estimate the swimmer's pose. It identifies key joints, such as the shoulders, elbows, and knees, tracking their continuous movement across every frame of the video. By combining the real-world scale with these bodily coordinates, the system calculates important performance metrics like the swimmer's exact velocity over the course of the video. 
+
+Ultimately, this proof of concept proves that high-level sports biomechanics can be extracted reliably without needing perfect laboratory conditions. It removes the barrier of expensive setups or wearable technology. By turning a standard video recording into a precise analytical tool, this system paves the way for automated coaching tools that can help swimmers of all levels understand their technique, correct their form, and achieve their full potential.
+
+\end{document}
