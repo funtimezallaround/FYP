@@ -16,7 +16,7 @@ def __main__():
     for filename in all_filenames_list:
 
         # for now keep videos from the most recent data collection session only
-        should_skip = 'P034_1' not in filename
+        should_skip = 'P035' not in filename
 
         # check which videos have already been extracted and remove them from the to_extract_list
         if not should_skip:
