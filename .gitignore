@@ -61,6 +61,7 @@ frames/**/*.jpeg
 
 # Datasets and labels generated locally
 yolo_*
+temp_*
 
 # Model binaries
 *.pt
