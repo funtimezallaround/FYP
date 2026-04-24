@@ -1,0 +1,27 @@
+\chapter{Introduction}%
+\label{chp:introduction}
+
+\section{Problem Statement}
+Performance analysis in competitive swimming is traditionally reliant on manual observation or expensive, sensor-based systems that can be intrusive to the athlete.
+While computer vision offers a non-intrusive alternative, the aquatic environment introduces significant noise.
+Light refraction at the air-water interface, surface turbulence caused by the swimmer, and occlusions like bubbles and splashes degrade the quality of visual data~\cite{ahmed2019, giulietti_swimmernet_2023}.
+Furthermore, environment conditions, camera distances and angles vary significantly between venues, making consistent metric quantification, such as speed in meters/second, difficult without distinct calibration markers.
+
+\section{Motivation}
+There is a distinct lack of standardized, automated systems for extracting swimming metrics from video footage that do not require complex setups.
+A standard, simple, and well documented system capable of extracting metric data from video with minimal setup could act as a proof of concept, to prove the viability of such systems in aquatic environments. This project focuses on validating feasibility and robustness rather than achieving state-of-the-art performance.
+
+\section{Aims and Objectives}
+The primary aim of this project is to develop a Proof of Concept system that enables the extraction of swimming metrics from video footage. The specific objectives are:
+\begin{enumerate}
+    \item To design, prototype, and create a modular, under-water marker design that maximizes underwater visibility.
+    \item To create and annotate a small dataset of swimming footage using the designed markers in the background.
+    \item To establish a pipeline for dynamic pixel-to-meter scale extraction using the markers for calibration.
+    \item To calculate simple metrics such as swimmer velocity and stroke length using the calibrated scale. % or shall this objective be reserved for evaluation?
+\end{enumerate}
+
+\section{Project Structure}
+The remainder of this report is structured as follows:
+\begin{itemize}
+    \item \textcolor{red}{TO BE COMPLETED}
+\end{itemize}

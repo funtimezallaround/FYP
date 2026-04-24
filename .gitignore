@@ -2,6 +2,10 @@
 Latex files/*
 FYP resources/*
 Progress Report/*
+!FYP resources/**/
+!FYP resources/**/*.tex
+!FYP resources/**/*.pdf
+
 
 # Generated PDFs (keep selected deliverables only)
 *.pdf
