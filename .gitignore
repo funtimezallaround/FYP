@@ -17,8 +17,8 @@ Progress Report/*
 *.acn
 *.acr
 *.alg
-*.bbl
-*.bcf
+*.bbl*
+*.bcf*
 *.blg
 *.fdb_latexmk
 *.fls
@@ -30,6 +30,7 @@ Progress Report/*
 *.log
 *.lot
 *.out
+*.xdv
 *.run.xml
 *.synctex.gz
 *.toc
