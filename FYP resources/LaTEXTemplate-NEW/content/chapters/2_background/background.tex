@@ -3,13 +3,22 @@
 \chapter{Background}%
 \label{chp:background}
 
-Existing literature in sports biomechanics highlights the importance of kinematic metrics like stroke length and propulsion symmetry. Computer vision research has successfully applied deep learning for human pose estimation (HPE) and action recognition in water sports. However, a critical limitation in many CV-based swimming systems is the inability to convert pixel movement into absolute, real-world distances, often relying on relative metrics or requiring external sensors.
+Existing literature in sports biomechanics highlights the importance of kinematic metrics like acceleration and hand trajectory. While computer vision research has successfully applied deep learning for detection, classification, segmentation, and human pose estimation (HPE), a critical limitation in many CV-based swimming systems is the conversion of distances from the pixel space to real-world units, often relying on relative metrics or requiring external sensors.
 
-This project draws upon two key areas of research:
-\begin{itemize}
-    \item \textbf{Scale Estimation}: Research on using planar objects or known reference markers (fiducial markers) for depth and scale estimation is relevant, which we adapt by using the structured, repetitive nature of the lanerope.
-    \item \textbf{Kinematic Segmentation and Symmetry}: Work on segmenting continuous athletic motion (like running or swimming) into discrete phases is essential for calculating time-based metrics (e.g., wall contact time) and assessing symmetry by comparing left and right limb kinematic profiles.
-\end{itemize}
+%TODO: kept for reference, can remove once finished
+% This project draws upon two key areas of research:
+% \begin{itemize}
+%     \item \textbf{Scale Estimation}: Research on using planar objects or known reference markers (fiducial markers) for depth and scale estimation is relevant, which we adapt by using the structured, repetitive nature of the lanerope.
+%     \item \textbf{Kinematic Segmentation and Symmetry}: Work on segmenting continuous athletic motion (like running or swimming) into discrete phases is essential for calculating time-based metrics (e.g., wall contact time) and assessing symmetry by comparing left and right limb kinematic profiles.
+% \end{itemize}
+
+This project draws upon the following key areas of research. % TODO: rephrase
+
+\section{Object Detection and Classification}
+
+\section{Semantic Segmentation}
+
+\section{Human Pose Estimation}
 
 \section{Proposed Solution: System Overview}
 The proposed system is partitioned into three functional steps: Lanerope Calibration, Feature Extraction, and System Output.
