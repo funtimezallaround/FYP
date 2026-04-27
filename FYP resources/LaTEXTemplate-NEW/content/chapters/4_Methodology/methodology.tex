@@ -1,0 +1,22 @@
+\chapter{Methodology}%
+\label{chp:methodology}
+
+\section{Proposed Solution: System Overview}
+The proposed system is partitioned into three functional steps: Lanerope Calibration, Feature Extraction, and System Output.
+
+\subsection{Step 1: Lanerope Calibration (Validation Reference)}
+This step is the foundation of the system, establishing a stable axis and scale for all downstream measurements. It involves a comparative study of two approaches:
+\begin{enumerate}
+    \item \textbf{Traditional CV Pipeline}: Utilising colour thresholding (to isolate the coloured floats), edge detection (e.g., Canny), and Hough Transform or RANSAC for line fitting to project a stable reference line along the lanerope's center.
+    \item \textbf{CNN-based Pipeline}: Implementing a keypoint detection or semantic segmentation model (e.g., a customised U-Net or Mask R-CNN) to identify the boundary or center points of the lanerope floats. This is expected to offer better robustness against water splash and varying lighting.
+\end{enumerate}
+The results of these two pipelines will be used to create the Calibration Module, converting pixel-based distances into real-world meters.
+
+\subsection{Step 2: Feature Extraction – Starts, Swim, and Turns}
+With the metric scale in place, a robust pose-estimation model will track the swimmer's key joints. A sequence-modelling approach will then segment the footage to extract biomechanical features across the three domains:
+\begin{itemize}
+    \item \textbf{Starts}: Metrics include reaction time, leap and flight times, underwater speed and distance, and shoulder/arm position at the end of the first pull.
+    \item \textbf{Swim (Mid-Pool)}: Focus on stroke length (hand entry to exit in meters) and impulse (distance covered per stroke). This step will also facilitate the left–right symmetry assessment by comparing the angular and linear velocities of the corresponding limbs during the catch and pull phases.
+    \item \textbf{Turns}: Metrics include stroke rate before the wall, entry-to-wall contact time, wall contact duration, and push-to-breakout measures (underwater distance and shoulder/arm positions leading to the second stroke).
+\end{itemize}
+
