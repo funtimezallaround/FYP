@@ -156,21 +156,64 @@ Training was conducted over 200 epochs with an image resolution of $640 \times 6
 The resulting model outputs high-confidence bounding boxes that serve as the foundation for physical distance estimation, leveraging the known dimensions of the physical markers to establish spatial scale.
 \subsection{Refraction-Aware Scaling}
 As identified in preliminary experiments (Section 4.2), frame-independent scaling is susceptible to refractive noise. To stabilize the scale, the system implements a Median Absolute Deviation (MAD) inlier mask~\cite{leys2013detecting}. This filter calculates the pixel-to-meter ratio ($px/m$) for all visible marker pairs and rejects outliers that deviate significantly from the median, ensuring a stable calibration constant $C$ for each frame.
+
 \section{Kinematic Metric Extraction}
-The final objective involves the synthesis of pose estimation and scaling logic to calculate performance metrics.
 
-\subsection{Swimmer Tracking via ViTPose}
-The swimmer's position is tracked using~\cite{xu2022vitpose}. The system extracts the coordinates of the hip keypoints to estimate the centre of mass (CoM). This approach is more robust than simple bounding box tracking, as it remains focused on the athlete's core during the stroke cycle.
+The final phase synthesises the outputs of marker detection, ego-motion compensation, and pose estimation to produce absolute positional and kinematic metrics for the swimmer.
 
-\subsection{Velocity and Kinematic Profile Extraction}
-The instantaneous velocity ($v$) is calculated by taking the first derivative of the smoothed displacement ($d$) over time ($t$). To transform pixel displacement ($\Delta p$) into meters, the calibration constant $C$ from Phase 3 is applied:
+\subsection{Ego-Motion Compensation}
+
+Because the camera is hand-held and moved manually alongside the swimmer, raw pixel coordinates are subject to both lateral drift and incidental shake between frames, making them incomparable across time without compensation. To recover an absolute reference frame, the system exploits the lane markers as stationary anchors. For each consecutive frame pair, the horizontal pixel displacement of each detected marker is computed and matched to the nearest marker in the previous frame within a 50-pixel tolerance window. The median of all valid per-marker displacements gives a robust estimate of the camera's pixel shift $\Delta x_{\text{cam}}$, which is accumulated into a running global offset $X_{\text{cam}}$. The median is used in preference to the mean, providing robustness against the non-uniform jitter introduced by handheld camera movement:
 
 \begin{equation}
-    v = \frac{\Delta p \cdot C}{\Delta t}
+    X_{\text{cam}}^{(t)} = X_{\text{cam}}^{(t-1)} - \Delta x_{\text{cam}}^{(t)}
 \end{equation}
 
-To mitigate high-frequency jitter and observation noise, the raw tracking records undergo an initial robust outlier removal using a Median Absolute Deviation (MAD) mask and a temporal jump filter. The cleaned trajectory is then smoothed using a discrete-time Kalman Filter \cite{kalman1960new}, which simultaneously estimates the swimmer's continuous position and instantaneous velocity. From these filtered state estimates, kinematic profiles such as absolute speed, peak velocity, and mean velocity are derived for analysis.
+If no markers are detected in a given frame, the previous frame's displacement estimate is propagated forward (linear projection), preventing a discontinuity in the accumulated offset. The global pixel position of the swimmer is then:
 
+\begin{equation}
+    p_{\text{global}} = p_{\text{pixel}} + X_{\text{cam}}
+\end{equation}
+
+where $p_{\text{pixel}}$ is the swimmer's raw horizontal pixel coordinate in the current frame.
+
+\subsection{Metric Scale Calibration}
+
+The pixel-to-metre conversion factor $\rho$ ($px/m$) is estimated from the detected marker positions in each frame. Given $N$ markers detected and sorted left-to-right, the outermost pair spans $N-1$ physical intervals of known separation $d_{\text{real}}$ (metres). The scale is therefore:
+
+\begin{equation}
+    \rho = \frac{\lVert \mathbf{p}_N - \mathbf{p}_1 \rVert_2}{(N-1)\, d_{\text{real}}}
+\end{equation}
+
+The estimate from the most recent frame in which two or more markers are visible is carried forward to frames where the marker count drops below two. The swimmer's absolute position in metres is then:
+
+\begin{equation}
+    x_{\text{m}} = \frac{p_{\text{global}}}{\rho}
+\end{equation}
+
+\subsection{Swimmer Localisation via ViTPose}
+
+The swimmer's position is localised using the ViTPose pose estimation model~\cite{xu2022vitpose}. Rather than using the bounding box centroid, the system extracts the left and right hip keypoints (COCO indices 11 and 12) and computes their midpoint as a proxy for the centre of mass (CoM):
+
+\begin{equation}
+    \mathbf{c}_{\text{hip}} = \frac{\mathbf{k}_{11} + \mathbf{k}_{12}}{2}
+\end{equation}
+
+This approach is more stable than bounding box tracking, as the hip midpoint is less affected by arm extension during the stroke cycle. To account for any lateral offset between the swimmer and the marker baseline, the hip centroid is orthogonally projected onto the line segment connecting the outermost detected markers before the position is converted to metres.
+
+Wrist keypoints (COCO indices 9 and 10) are additionally extracted with a confidence threshold of 0.3, providing left- and right-wrist positions in the global reference frame. These are recorded alongside the hip CoM position for downstream stroke-cycle analysis.
+
+\subsection{Velocity and Kinematic Profile Extraction}
+
+The raw per-frame position records are first subjected to a Median Absolute Deviation (MAD) outlier filter and a temporal jump filter to remove implausible discontinuities. The cleaned trajectory is then processed by a discrete-time Kalman Filter~\cite{kalman1960new}, which models the swimmer as a constant-velocity system and simultaneously estimates position and instantaneous velocity from the noisy observations.
+
+The instantaneous velocity is obtained from the Kalman state vector directly as the estimated rate of change of position. Equivalently, it may be expressed as the first derivative of the smoothed displacement with respect to time:
+
+\begin{equation}
+    v(t) = \frac{\mathrm{d}}{\mathrm{d}t}\left(\frac{p_{\text{global}}(t)}{\rho}\right)
+\end{equation}
+
+From the filtered state estimates, summary kinematic metrics are derived: absolute speed profile, peak velocity, and mean velocity over the analysed swim segment.
 
 \section{Summary}
-The methodology follows a logical progression from the physical environment to digital metrics. By aligning each phase with the project objectives, the system provides a robust framework that accounts for the unique adversarial factors of the aquatic domain.
+This chapter presented a four-phase methodology for extracting swimmer kinematics from handheld poolside video. First, a modular 3D-printed marker system was designed to remain visually identifiable under the refractive and turbulent conditions of the aquatic environment. Second, a Model-in-the-Loop annotation pipeline, combining SAM 2 propagation with IQR-based outlier filtering and human verification, was used to construct a domain-specific training dataset for a fine-tuned YOLO26s detector. Third, a refraction-aware MAD inlier filter was applied to stabilise the per-frame pixel-to-metre scale estimate derived from the known marker spacing. Finally, ego-motion compensation, ViTPose-based hip localisation, and a Kalman filter smoothing stage were combined to produce absolute positional and velocity profiles from the raw tracking output. Each phase directly addresses one of the project objectives and mitigates a specific source of error introduced by the aquatic recording environment.
