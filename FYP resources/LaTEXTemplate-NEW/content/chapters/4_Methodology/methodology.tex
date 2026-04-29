@@ -1,22 +1,176 @@
-\chapter{Methodology}%
+\graphicspath{{content/chapters/4_Methodology/figures/}}
+
+\chapter{Methodology}
 \label{chp:methodology}
 
-\section{Proposed Solution: System Overview}
-The proposed system is partitioned into three functional steps: Lanerope Calibration, Feature Extraction, and System Output.
+This chapter details the technical implementation of the proof-of-concept system. The methodology is structured around the four primary project objectives, transitioning from physical marker design to the final kinematic extraction engine.
 
-\subsection{Step 1: Lanerope Calibration (Validation Reference)}
-This step is the foundation of the system, establishing a stable axis and scale for all downstream measurements. It involves a comparative study of two approaches:
-\begin{enumerate}
-    \item \textbf{Traditional CV Pipeline}: Utilising colour thresholding (to isolate the coloured floats), edge detection (e.g., Canny), and Hough Transform or RANSAC for line fitting to project a stable reference line along the lanerope's center.
-    \item \textbf{CNN-based Pipeline}: Implementing a keypoint detection or semantic segmentation model (e.g., a customised U-Net or Mask R-CNN) to identify the boundary or center points of the lanerope floats. This is expected to offer better robustness against water splash and varying lighting.
-\end{enumerate}
-The results of these two pipelines will be used to create the Calibration Module, converting pixel-based distances into real-world meters.
+\section{Marker Design and Visibility}
+The first objective required a modular marker design capable of withstanding the high-turbulence environment of a swimming pool while remaining identifiable under varying refractive conditions.
 
-\subsection{Step 2: Feature Extraction – Starts, Swim, and Turns}
-With the metric scale in place, a robust pose-estimation model will track the swimmer's key joints. A sequence-modelling approach will then segment the footage to extract biomechanical features across the three domains:
+The lack of existing documentation on underwater marker design for computer vision applications necessitated an iterative prototyping approach. This led to the decision to create a modular design for a 3d-printed marker that could be easily set up along the lane. The final design, as shown in Figure~\ref{fig:marker-design}, consists of high-contrast, alternating black and white segments, which seamlessly screw into one another. This decision to use a modular design allowed us to test various configurations, mainly how many segments to stack, effectively altering the height of the marker.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth,keepaspectratio]{marker_design.jpg}
+    \caption{An image of the final marker design in use.\label{fig:marker-design}}
+\end{figure}
+
+Each segment is 10 cm in height, with a 5 cm diameter, and the alternating pattern provides a unique visual signature that can be reliably detected by computer vision algorithms. The design also incorporates a screw mechanism that allows for easy assembly and disassembly, enabling quick setup along the lane for calibration purposes. This modularity not only facilitates testing different configurations but also ensures that the markers can be easily transported and stored when not in use.
+
+The spacing between the markers was determined based on multiple tests, which revealed that an interval of 2.5m provided a good balance between visibility and the number of markers required for accurate calibration. This spacing allows for sufficient coverage along the lane while minimizing the number of markers needed, which is crucial for minimizing setup time and complexity.
+
+
+\section{Dataset Generation and Model-in-the-Loop Annotation}
+To address the second objective, necessitated by the lack of annotated underwater datasets, a ``Model-in-the-Loop'' (MITL) workflow was developed. This phase utilized foundation models to automate the labelling process for the downstream YOLO26 detector. The entire dataset creation pipeline is visualized in Figure~\ref{fig:training_pipeline}.
+
+\subsection{Automated Labelling with SAM 2}
+The Segment Anything Model 2 (SAM 2)~\cite{ravi2024sam} was utilized to propagate marker bounding boxes across video sequences.
+Prompts were provided from the initial frames, propagated through the video. Once all tracked markers exited the frame, the process was repeated for the next chunk of frames until the entire video was annotated. This approach significantly reduced manual annotation time while maintaining high-quality labels. This process was repeated for multiple videos, resulting in a dataset of over 4,000 annotated frames, and over 7,000 bounding boxes.
+
+\subsection{Outlier Filtering}
+Automated tracking via foundation models, while efficient, is susceptible to ``mask jitter'' and drift, particularly when visual features are distorted by water refraction or transient occlusions. To ensure the robustness of the downstream YOLO detector, a statistical filtering stage was implemented to prune the raw SAM 2 output.
+
+The filtering process focuses on the geometric consistency of the generated bounding boxes. Based on the assumption that the physical dimensions of the markers are constant, any significant variation in the predicted box area or aspect ratio was flagged as tracking noise. The system utilizes the Interquartile Range (IQR) method~\cite{tukey1977exploratory} to identify and remove these outliers. For a set of bounding box areas $A$, the filtering bounds are defined as:
+\begin{equation}
+    [\text{Lower Bound}, \text{Upper Bound}] = [Q_1 - 1.5 \times \text{IQR}, Q_3 + 1.5 \times \text{IQR}]
+\end{equation}
+where $Q_1$ and $Q_3$ represent the first and third quartiles, respectively. Any frame containing boxes falling outside these bounds, often caused by SAM 2 ``bleeding'' into a splash or expanding to cover the background, was excluded from the training set. This ensured that the model was trained only on high-confidence, geometrically plausible representations of the underwater markers.
+    
+\subsection{Dataset Selection}
+To ensure the large YOLO26 model was trained using the best possible dataset, an A/B testing approach was implemented. Two datasets were created: Dataset A, which included all SAM-generated labels, and Dataset B, which included only the filtered labels after the IQR outlier removal process. Both datasets were used to train separate YOLO26n models, and their performance was compared using standard metrics such as mean Average Precision (mAP) and visual inspection of the predicted bounding boxes. The dataset that yielded the best performance was selected for the final training of the final YOLO26s model.
+
+\subsection{Human-in-the-Loop Verification}
+To ensure the high precision required for metric extraction, a custom-developed graphical verification tool was utilized to perform a final audit of the filtered dataset. This tool, implemented using the Tkinter framework, allowed for the rapid visual inspection of the SAM-generated labels. 
+
+The interface provided the functionality to manually adjust bounding box boundaries or delete erroneous detections that bypassed the statistical IQR filter. This hybrid approach of combining foundation model speed with human precision addressed the ``domain-shift'' problem inherent in aquatic footage, where surface glare can occasionally mirror markers. This step was crucial for establishing a ground truth used for the final model fine-tuning and the subsequent accuracy evaluations in Chapter~\ref{chp:evaluation}.
+
+\begin{figure}[htbp]
+    \centering
+    % Resizes the diagram to fit the width of the page text perfectly
+    \resizebox{\textwidth}{!}{
+        \begin{tikzpicture}[
+                % Define styles for the boxes and lines
+                base/.style = {rectangle, rounded corners, draw=black, thick, minimum width=3.5cm, minimum height=1.2cm, text centered, font=\sffamily\small, text width=3.2cm, fill=white},
+                decision/.style = {diamond, aspect=1.5, draw=black, thick, text centered, font=\sffamily\footnotesize, text width=2.2cm, fill=white, inner sep=0pt},
+                terminal/.style = {rectangle, rounded corners=0.6cm, draw=black, thick, minimum width=3.5cm, minimum height=1.2cm, text centered, font=\sffamily\small, text width=3.2cm, fill=green!5},
+                arrow/.style = {thick, ->, >=stealth},
+                phase_arrow/.style = {thick, ->, >=stealth, blue!80!black, rounded corners},
+                phase_box/.style = {draw=gray!80, thick, dashed, inner sep=12pt, fill=gray!5, rounded corners}
+            ]
+
+            % ---------------------------------------------------
+            % PHASE 0 NODES (Column 1)
+            % ---------------------------------------------------
+            \node (A) [base] {Extract Video Frames};
+            \node (B) [base, below=0.5cm of A] {Initialize CUDA \& SAM2 Model};
+            \node (C) [base, below=0.5cm of B] {Draw Bounding Boxes using an intactive GUI};
+            \node (D) [base, below=0.5cm of C] {Save Initial Marker Coordinates \& Classes};
+
+            % ---------------------------------------------------
+            % PHASE 1 NODES (Column 2)
+            % ---------------------------------------------------
+            % Increased spacing to 1.6cm to make room for arrows between columns
+            \node (E) [base, right=1.6cm of A] {Run SAM2 Tracking over Video Chunk};
+            \node (F) [base, below=0.5cm of E] {Generate Object Masks for Each Frame};
+            \node (G) [base, below=0.5cm of F] {Convert Masks to Bounding Boxes};
+            \node (H) [base, below=0.5cm of G] {Export Images \& Labels into YOLO Format};
+
+            % ---------------------------------------------------
+            % PHASE 1.5 NODES (Column 3)
+            % ---------------------------------------------------
+            \node (I) [base, right=1.6cm of E] {Analyze Box Dimensions};
+            \node (J) [base, below=0.5cm of I] {Filter Outlier Boxes via IQR Method};
+            \node (K) [base, below=0.5cm of J] {Train Lightweight YOLOv8n (A/B Testing)};
+            \node (L) [base, below=0.5cm of K] {Compare Loss, mAP \& Visual Results};
+            \node (M) [decision, below=0.4cm of L] {Select Best Dataset};
+
+            % ---------------------------------------------------
+            % PHASE 2 NODES (Column 4)
+            % ---------------------------------------------------
+            \node (N) [base, right=1.6cm of I] {Spot-Check Final Labels Visually};
+            \node (O) [base, below=0.5cm of N] {Inject Hard Negatives (Background frames)};
+            \node (P) [base, below=0.5cm of O] {Write YOLO Configuration YAML};
+            \node (Q) [base, below=0.5cm of P] {Execute Training with Best Dataset};
+            \node (R) [terminal, below=0.5cm of Q] {Save the best weights to \texttt{best.pt}};
+
+            % ---------------------------------------------------
+            % DRAW PHASE BACKGROUND BOXES
+            % ---------------------------------------------------
+            \begin{scope}[on background layer]
+                \node (P0) [phase_box, fit=(A) (D), label={[font=\sffamily\bfseries]above:Setup \& Annotation}] {};
+                \node (P1) [phase_box, fit=(E) (H), label={[font=\sffamily\bfseries]above:Tracking \& Export}] {};
+                \node (P15) [phase_box, fit=(I) (M), label={[font=\sffamily\bfseries]above:Dataset Optimization}] {};
+                \node (P2) [phase_box, fit=(N) (R), label={[font=\sffamily\bfseries]above:Final YOLO Fine-Tuning}] {};
+            \end{scope}
+
+            % ---------------------------------------------------
+            % DRAW CONNECTING ARROWS (Inside Columns)
+            % ---------------------------------------------------
+            \draw [arrow] (A) -- (B);
+            \draw [arrow] (B) -- (C);
+            \draw [arrow] (C) -- (D);
+
+            \draw [arrow] (E) -- (F);
+            \draw [arrow] (F) -- (G);
+            \draw [arrow] (G) -- (H);
+
+            \draw [arrow] (I) -- (J);
+            \draw [arrow] (J) -- (K);
+            \draw [arrow] (K) -- (L);
+            \draw [arrow] (L) -- (M);
+
+            \draw [arrow] (N) -- (O);
+            \draw [arrow] (O) -- (P);
+            \draw [arrow] (P) -- (Q);
+            \draw [arrow] (Q) -- (R);
+
+            % ---------------------------------------------------
+            % DRAW CONNECTING ARROWS (Between Columns)
+            % ---------------------------------------------------
+            % These arrows now drop out the bottom, go right into the gap, climb up the gap, and enter the left side of the next node
+            \draw [phase_arrow] (D.south) -- ++(0,-0.6) -| ([xshift=-0.8cm]E.west) -- (E.west);
+            \draw [phase_arrow] (H.south) -- ++(0,-0.6) -| ([xshift=-0.8cm]I.west) -- (I.west);
+            \draw [phase_arrow] (M.south) -- ++(0,-0.6) -| ([xshift=-0.8cm]N.west) -- (N.west);
+
+        \end{tikzpicture}
+    }
+    \caption{Marker Detection Model Training Pipeline.}
+    \label{fig:training_pipeline}
+\end{figure}
+
+\section{Dynamic Scale Extraction Pipeline}
+Objective 3 focuses on establishing a stable reference for converting image coordinates into metric units.
+
+\subsection{Marker Detection via YOLO26}
+A custom YOLO26s model~\cite{jocher_ultralytics_2023} was fine-tuned on the SAM-generated dataset to provide a robust method for localizing markers. To ensure high localization accuracy, which is critical for the subsequent pixel-to-meter ratio calculation, the training process utilized a Distribution Focal Loss (DFL) gain of $1.5$ and a Box Loss gain of $7.5$. These settings prioritize bounding box regression over classification accuracy, as the project involves a single-class detection task.
+
+Training was conducted over 200 epochs with an image resolution of $640 \times 640$ pixels. To mitigate overfitting on the SAM-generated dataset, several regularization and augmentation strategies were employed:
 \begin{itemize}
-    \item \textbf{Starts}: Metrics include reaction time, leap and flight times, underwater speed and distance, and shoulder/arm position at the end of the first pull.
-    \item \textbf{Swim (Mid-Pool)}: Focus on stroke length (hand entry to exit in meters) and impulse (distance covered per stroke). This step will also facilitate the left–right symmetry assessment by comparing the angular and linear velocities of the corresponding limbs during the catch and pull phases.
-    \item \textbf{Turns}: Metrics include stroke rate before the wall, entry-to-wall contact time, wall contact duration, and push-to-breakout measures (underwater distance and shoulder/arm positions leading to the second stroke).
+    \item \textbf{Optimization Strategy:} An initial learning rate of $0.01$ was used with a 3-epoch warm-up period and a momentum of $0.937$ to stabilize early gradient descent.
+    \item \textbf{Spatial Augmentations:} The model utilized Mosaic augmentation ($1.0$) and Random Erasing ($0.4$) to simulate occlusions and varying marker densities, forcing the network to learn robust features rather than memorizing specific marker placements.
+    \item \textbf{Colour Distortions:} Variations in lighting and glare were accounted for by adjusting HSV (Hue, Saturation, Value) gains ($hsv\_h=0.015, hsv\_s=0.7, hsv\_v=0.4$), ensuring the detector remains effective under inconsistent illumination.
+    \item \textbf{Early Stopping:} A patience of 20 epochs was implemented to terminate training if the validation fitness failed to improve, ensuring the model generalizes well to real-world frames.
 \end{itemize}
 
+The resulting model outputs high-confidence bounding boxes that serve as the foundation for physical distance estimation, leveraging the known dimensions of the physical markers to establish spatial scale.
+\subsection{Refraction-Aware Scaling}
+As identified in preliminary experiments (Section 4.2), frame-independent scaling is susceptible to refractive noise. To stabilize the scale, the system implements a Median Absolute Deviation (MAD) inlier mask~\cite{leys2013detecting}. This filter calculates the pixel-to-meter ratio ($px/m$) for all visible marker pairs and rejects outliers that deviate significantly from the median, ensuring a stable calibration constant $C$ for each frame.
+\section{Kinematic Metric Extraction}
+The final objective involves the synthesis of pose estimation and scaling logic to calculate performance metrics.
+
+\subsection{Swimmer Tracking via ViTPose}
+The swimmer's position is tracked using~\cite{xu2022vitpose}. The system extracts the coordinates of the hip keypoints to estimate the centre of mass (CoM). This approach is more robust than simple bounding box tracking, as it remains focused on the athlete's core during the stroke cycle.
+
+\subsection{Velocity and Kinematic Profile Extraction}
+The instantaneous velocity ($v$) is calculated by taking the first derivative of the smoothed displacement ($d$) over time ($t$). To transform pixel displacement ($\Delta p$) into meters, the calibration constant $C$ from Phase 3 is applied:
+
+\begin{equation}
+    v = \frac{\Delta p \cdot C}{\Delta t}
+\end{equation}
+
+To mitigate high-frequency jitter and observation noise, the raw tracking records undergo an initial robust outlier removal using a Median Absolute Deviation (MAD) mask and a temporal jump filter. The cleaned trajectory is then smoothed using a discrete-time Kalman Filter \cite{kalman1960new}, which simultaneously estimates the swimmer's continuous position and instantaneous velocity. From these filtered state estimates, kinematic profiles such as absolute speed, peak velocity, and mean velocity are derived for analysis.
+
+
+\section{Summary}
+The methodology follows a logical progression from the physical environment to digital metrics. By aligning each phase with the project objectives, the system provides a robust framework that accounts for the unique adversarial factors of the aquatic domain.
