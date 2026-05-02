@@ -1,22 +1,26 @@
-\chapter{Conclusion}%
-\label{chp:conclusion}
+\chapter{Conclusion}
+\label{ch:conclusion}
 
+\section{Project Summary}
+This project successfully developed an AI-based proof-of-concept system for the non-intrusive extraction of swimming kinematics from uncalibrated, handheld poolside video footage. Driven by the need to overcome severe visual distortions present in aquatic environments, such as refraction, turbulence, and occlusion, a modular computer vision pipeline was proposed. By introducing a novel dynamic pixel-to-meter scaling methodology utilizing custom-designed underwater markers, the system demonstrated the feasibility of extracting real-world metric data without relying on rigid camera setups. The integration of advanced deep learning foundation models, including SAM 2 for temporal segmentation, YOLO26 for marker detection, and ViTPose for human pose estimation, provided a robust framework for tracking swimmer movements and addressing domain-specific data scarcity.
 
-\section{Conclusions including Expected Outcomes and Difficulties/Challenges}
-This project is expected to deliver a robust proof-of-concept system capable of providing high-value, objective biomechanical data from standard video. The expected outcomes include the validated optimal lanerope calibration method (Traditional CV or CNN) and a working pipeline that accurately calculates and visualises metrics across Starts, Swim, and Turns.
-
-Key challenges and difficulties anticipated include:
-\begin{itemize}
-    \item \textbf{Data Annotation}: Obtaining sufficient, high-quality, frame-by-frame annotated footage for training the CNN-based lanerope model and for ground-truthing the pose/phase segmentation.
-    \item \textbf{Generalisation}: Ensuring the lanerope calibration method is robust against varying pool environments, lighting conditions, and camera angles (beyond a fixed setup).
-    \item \textbf{Symmetry Complexity}: Developing a sufficiently sensitive metric to accurately quantify left–right symmetry, given the inherent small variances in human movement.
-\end{itemize}
-
-\subsection{Aims and Objectives}
-The primary aim of this project is to develop a Proof of Concept system that enables the extraction of swimming metrics from video footage. The specific objectives are:
+\section{Achievement of Objectives}
+The project successfully met its core objectives:
 \begin{enumerate}
-    \item To design, prototype, and create a modular, under-water marker design that maximizes underwater visibility.
-    \item To create and annotate a small dataset of swimming footage using the designed markers in the background.
-    \item To establish a pipeline for dynamic pixel-to-meter scale extraction using the markers for calibration.
-    \item To calculate simple metrics such as swimmer velocity and stroke length using the calibrated scale. % or shall this objective be reserved for evaluation?
+    \item \textbf{Marker Design:} A highly visible, modular 3D-printed marker system was developed to withstand underwater turbulence and provide a reliable calibration reference at 2.5\,m intervals.
+    \item \textbf{Dataset Generation (MITL):} A Model-in-the-Loop annotation pipeline leveraging SAM 2, statistical outlier filtering (IQR), and human verification was implemented to construct a domain-specific dataset for training a custom YOLO26s detector.
+    \item \textbf{Dynamic Scale Extraction:} A refraction-aware pipeline was established, utilizing Median Absolute Deviation (MAD) filtering to stabilize the pixel-to-meter scale derived from the known marker spacing.
+    \item \textbf{Kinematic Metric Extraction:} Combining ego-motion compensation, ViTPose localization, and a Kalman filter smoothing stage, the system successfully produced absolute positional and velocity profiles from the raw tracking output. 
 \end{enumerate}
+
+\section{Limitations and Challenges}
+Despite proving the feasibility of the concept, the evaluation highlighted several inherent challenges in the aquatic domain. The positional accuracy evaluation on a 50\,m breaststroke sequence yielded a Mean Absolute Error (MAE) of 1.005\,s and a Root Mean Square Error (RMSE) of 1.210\,s across 18 checkpoints. A primary limitation was the non-linear fluctuation in scale estimation on the outbound leg, leading to alternating periods of overestimated and underestimated swimming speeds. Furthermore, while macroscopic centroid tracking was successfully extracted, tracking distal keypoints such as the wrists remained noisy underwater and exhibited substantial high-frequency artefacts. Consequently, fine-grain kinematic noise limited the utility of the current system for precision technique analysis. Lastly, the evaluation relied on single-observer manual ground truth split times, which inherently introduces a limitation regarding inter-rater reliability.
+
+\section{Future Work}
+Building upon this proof of concept, several avenues for future research and refinement have been identified:
+\begin{itemize}
+    \item \textbf{Enhancement of Pose Estimation:} Future iterations should target the refinement of distal keypoint tracking (particularly for wrists) to enable detailed, centroid-relative technique analysis.
+    \item \textbf{Advanced Scale Stabilisation:} Methods to mitigate the non-linear scaling fluctuations caused by severe refraction should be explored to improve the continuous monotonic accuracy of the estimated swimming speed. 
+    \item \textbf{Broader Dataset Validation:} While the proof of concept successfully evaluated a breaststroke sequence, future work should validate the system's robustness across different strokes, variable lighting, and different pools.
+    \item \textbf{Automated Ground Truth Collection:} Replacing manual, single-observer timestamp recording with sensor-based timing systems (such as touchpads) would provide a more objective baseline for positional accuracy evaluation.
+\end{itemize}
