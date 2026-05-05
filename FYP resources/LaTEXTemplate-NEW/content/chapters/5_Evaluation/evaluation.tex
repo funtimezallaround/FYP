@@ -10,7 +10,33 @@ This chapter evaluates the proof-of-concept system against quantitative ground t
 Ground truth split times were collected retrospectively by reviewing the underwater video footage and manually recording the timestamp at which the swimmer's body cross-ed each 2.5 m marker boundary. This produced 10 outbound checkpoints (2.5 m to 25.0 m) and 10 return checkpoints (22.5 m back to 0.0 m), for a total of 20 reference observations. Times are expressed relative to the detected swim start, defined as the first frame in which sustained forward motion is observed. %!TODO: clarify how the start was defined and detected
 All splits were recorded by a single observer, thus no inter-rater reliability measure was applied, which represents an inherent limitation of the ground truth.
 
+\section{Marker Detection Accuracy}
+\label{sec:marker_detection}
+A foundational element of the positional tracking pipeline is the robust identification of the 2.5 m pool markers. To evaluate the generalisability of the trained object detection model, qualitative assessments were performed comparing its accuracy on the original training video's test split against an unseen video captured in the same pool but under varying environmental conditions.
+
+Figure~\ref{fig:marker_detection_comparison} presents this comparison. The left panels demonstrate the model's performance on test frames extracted from the same sequence used during training. Under these consistent conditions, the model exhibits high confidence and precise bounding box localisation. The right panels depict the model's inference on the unseen sequence. While the physical pool geometry remains identical, differences in ambient lighting, water turbidity, surface glare, and camera positioning introduce a noticeable domain shift. %!TODO: add images to illustrate different env conditions
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{image_011a7b.png}\\[0.2cm]
+        \includegraphics[width=\linewidth]{image_011a60.png}
+        \caption*{In-Distribution (Test Frames)}
+    \end{minipage}\hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{image_0116a2.png}\\[0.2cm]
+        \includegraphics[width=\linewidth]{image_01169b.png}
+        \caption*{Out-of-Distribution (Unseen Video)}
+    \end{minipage}
+    \caption{Comparison of marker detection accuracy. Left: Inference on test frames from the training video, showing high confidence and precision. Right: Inference on an unseen video from the same pool, illustrating the impact of environmental variations such as lighting and turbidity on detection robustness.\label{fig:marker_detection_comparison}}
+\end{figure}
+
+Consequently, the model experiences variations in confidence scores and occasional bounding box jitter in the unseen footage. This highlights a common limitation in underwater computer vision: high sensitivity to environmental fluctuations. These variations directly impact the stability of the frame-to-frame pixel-to-metre scale estimation. The subsequent application of the MAD-based inlier filter and Kalman smoothing (discussed in Section~\ref{sec:trajectory_optimisation}) is therefore critical to mitigate these detection inconsistencies and prevent them from propagating as severe positional drift.
+
 \section{Trajectory Optimisation and Pre-Evaluation Processing}
+\label{sec:trajectory_optimisation}
 
 \subsection{Outlier Removal}
 Prior to evaluation, the raw tracking records were subjected to the MAD-based inlier filter and temporal jump filter described in Chapter~\ref{chp:methodology}. Of the 4,052 raw records, 723 were flagged as significant deviations and removed, leaving 3329 records for downstream processing. A secondary velocity ceiling of 5.0 m/s was subsequently applied, removing a further 32 records whose implied speed was physiologically implausible for competitive breaststroke swimming. %!TODO: add citation for record breaststroke speed and justification why 5m/s 
@@ -109,7 +135,7 @@ Despite the inherent noise in individual trajectories, evaluating the coordinati
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=1.0\textwidth]{wrist_symmetry_heatmap.png}
+    \includegraphics[width=0.8\textwidth]{wrist_symmetry_heatmap.png}
     \caption{Symmetry heatmap illustrating the spatial correlation between the left and right wrist motions relative to the swimmer's centroid. High-density areas indicate the most common spatial relationship between the limbs during the stroke cycle.\label{fig:wrist_symmetry}}
 \end{figure}
 
