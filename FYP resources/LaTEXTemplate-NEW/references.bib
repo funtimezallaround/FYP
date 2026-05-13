@@ -1,24 +1,494 @@
+% ------ Sports analytics / AI in sport ----------------------
+
 @article{Zhou2025,
-  author  = {D. Zhou and J. W. L. Keogh and Y. Ma and R. K. Y. Tong and A. R. Khan and N. R. Jennings},
-  title   = {Artificial intelligence in sport: A narrative review of applications, challenges and future trends},
-  journal = {J. Sports Sci.},
-  year    = {2025}
+  author   = {Zhou, Diwei and Keogh, Justin W.L. and Ma, Yingliang
+              and Tong, Raymond K.Y. and Khan, Abdul R. and Jennings, Nicholas R.},
+  title    = {Artificial Intelligence in Sport: {A} Narrative Review of
+              Applications, Challenges and Future Trends},
+  journal  = {Journal of Sports Sciences},
+  volume   = {0},
+  number   = {0},
+  pages    = {1--16},
+  year     = {2025},
+  issn     = {0264-0414},
+  doi      = {10.1080/02640414.2025.2518694},
+  url      = {https://doi.org/10.1080/02640414.2025.2518694},
+  pmid     = {40518658},
+  keywords = {Machine learning, biomechanics, data and ethical considerations,
+              performance enhancement, sports medicine and health, talent identification}
 }
 
+% ------ Swimming-specific CV / pose estimation --------------
+
 @inproceedings{Camilleri2024,
-  author    = {Vanessa Camilleri and Justine Scicluna and Gianluca Aquilina and Dylan Seychell and Emma Swanwick},
-  title     = {DIVE: A Data-driven Intelligent Video Evaluation System for Enhancing Swimming Performance},
+  author    = {Camilleri, Vanessa and Scicluna, Justine and Aquilina, Gianluca
+               and Seychell, Dylan and Swanwick, Emma},
+  title     = {{DIVE}: {A} Data-driven Intelligent Video Evaluation System
+               for Enhancing Swimming Performance},
   booktitle = {Proceedings of the University of Malta},
   address   = {Malta},
   publisher = {University of Malta},
-  email     = {vanessa.camilleri@um.edu.mt, justine.scicluna@gmail.com, gianluca.aquilina@um.edu.mt, dylan.seychell@um.edu.mt, ek.swanwick@gmail.com},
-  abstract  = {This paper presents DIVE (Data-driven Intelligent Video Evaluation), a lightweight system designed to analyse underwater swimming videos using pose estimation and domain-informed feature extraction. The system aims to support coaches and athletes by providing interpretable biomechanical metrics without the need for expensive motion-capture infrastructure.},
-  keywords  = {Swimming, Pose Estimation, Biomechanics, Computer Vision, Sports Performance, Underwater Video Analysis}
+  year      = {2024},
+  keywords  = {Swimming, Pose Estimation, Biomechanics, Computer Vision,
+               Sports Performance, Underwater Video Analysis}
 }
+
+@article{giulietti_swimmernet_2023,
+  author   = {Giulietti, Nicola and Caputo, Alessia and Chiariotti, Paolo and Castellini, Paolo},
+  title    = {{SwimmerNET}: {Underwater} {2D} Swimmer Pose Estimation Exploiting
+              Fully Convolutional Neural Networks},
+  journal  = {Sensors},
+  volume   = {23},
+  number   = {4},
+  pages    = {2364},
+  year     = {2023},
+  issn     = {1424-8220},
+  doi      = {10.3390/s23042364},
+  url      = {https://www.mdpi.com/1424-8220/23/4/2364},
+  keywords = {athlete's performance measurements, fully convolutional neural networks,
+              swimmers pose estimation, vision-based underwater measurements}
+}
+
+@article{Cao2024,
+  author   = {Cao, Xiaowen and Yan, Wei Qi},
+  title    = {Pose Estimation for Swimmers in Video Surveillance},
+  journal  = {Multimedia Tools and Applications},
+  volume   = {83},
+  number   = {9},
+  pages    = {26565--26580},
+  year     = {2024},
+  issn     = {1573-7721},
+  doi      = {10.1007/s11042-023-16618-w},
+  url      = {https://doi.org/10.1007/s11042-023-16618-w},
+  keywords = {DCNN, HRNet, Motion Detection, Pose estimation, Swimmer}
+}
+
+@article{al-majnoni_moar_2025,
+  author   = {Al-Majnoni, Atheer and Al-Sahli, Jumana and Al-Ahmady, Dana
+              and Al-Mutairi, Amani and Alsini, Areej and Alharbi, Manal},
+  title    = {Moar: {A} Swimmer Motion Swimming Style Identification Model
+              Using Deep Learning},
+  journal  = {Engineering, Technology \& Applied Science Research},
+  volume   = {15},
+  number   = {1},
+  pages    = {19295--19302},
+  year     = {2025},
+  issn     = {1792-8036},
+  doi      = {10.48084/etasr.9309},
+  url      = {https://etasr.com/index.php/ETASR/article/view/9309},
+  keywords = {YOLOv8, artificial intelligence, computer vision, swimming styles}
+}
+
+@inproceedings{einfalt2018activity,
+  author       = {Einfalt, Moritz and Zecha, Dan and Lienhart, Rainer},
+  title        = {Activity-Conditioned Continuous Human Pose Estimation for
+                  Performance Analysis of Athletes Using the Example of Swimming},
+  booktitle    = {2018 {IEEE} Winter Conference on Applications of Computer
+                  Vision ({WACV})},
+  pages        = {446--455},
+  year         = {2018},
+  organization = {IEEE},
+  doi          = {10.1109/WACV.2018.00055}
+}
+
+@inproceedings{Tran2024,
+  author    = {Tran, Thu and Choo, Kenny Tsu Wei and Foong, Shaohui
+               and Bhardwaj, Hitesh and Win, Shane Kyi Hla and Ang, Wei Jun
+               and Goh, Kenneth and Balan, Rajesh Krishna},
+  title     = {Analyzing Swimming Performance Using Drone Captured Aerial Videos},
+  booktitle = {Proceedings of the 10th Workshop on Micro Aerial Vehicle
+               Networks, Systems, and Applications ({DroNet} '24)},
+  pages     = {7--12},
+  year      = {2024},
+  address   = {Minato-ku Tokyo, Japan},
+  publisher = {ACM},
+  isbn      = {9798400706561},
+  doi       = {10.1145/3661810.3663464},
+  url       = {https://dl.acm.org/doi/10.1145/3661810.3663464}
+}
+
+% ------ Pose estimation / human body models -----------------
+
+@article{cao2019openpose,
+  author    = {Cao, Zhe and Hidalgo, Gines and Simon, Tomas and Wei, Shih-En and Sheikh, Yaser},
+  title     = {{OpenPose}: Realtime Multi-Person {2D} Pose Estimation Using
+               Part Affinity Fields},
+  journal   = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  volume    = {43},
+  number    = {1},
+  pages     = {172--186},
+  year      = {2019},
+  publisher = {IEEE}
+}
+
+@article{xu2022vitpose,
+  author  = {Xu, Yufei and Zhang, Jing and Zhang, Qiming and Tao, Dacheng},
+  title   = {{ViTPose}: Simple Vision Transformer Baselines for Human Pose Estimation},
+  journal = {Advances in Neural Information Processing Systems},
+  volume  = {35},
+  pages   = {38571--38584},
+  year    = {2022}
+}
+
+@article{wang2020deep,
+  author    = {Wang, Jingdong and Sun, Ke and Cheng, Tianheng and Jiang, Borui
+               and Deng, Chaorui and Zhao, Yang and Liu, Dong and Mu, Yadong
+               and Tan, Mingkui and Wang, Xinggang and others},
+  title     = {Deep High-Resolution Representation Learning for Visual Recognition},
+  journal   = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  volume    = {43},
+  number    = {10},
+  pages     = {3349--3364},
+  year      = {2020},
+  publisher = {IEEE}
+}
+
+@article{mathis2018deeplabcut,
+  author    = {Mathis, Alexander and Mamidanna, Pranav and Cury, Kevin M and Abe, Taiga
+               and Murthy, Venkatesh N and Mathis, Mackenzie Weygandt and Bethge, Matthias},
+  title     = {{DeepLabCut}: Markerless Pose Estimation of User-Defined Body Parts
+               with Deep Learning},
+  journal   = {Nature Neuroscience},
+  volume    = {21},
+  number    = {9},
+  pages     = {1281--1289},
+  year      = {2018},
+  publisher = {Nature Publishing Group US New York}
+}
+
+@article{sanders2015reliability,
+  author  = {Sanders, Ross H and Gonjo, Tomohiro and McCabe, Carla B},
+  title   = {Reliability of Three-Dimensional Linear Kinematics and Kinetics of
+             Swimming Derived from Digitized Video at 25 and 50 {Hz} with 10 and
+             5 Frame Extensions to the 4th Order {Butterworth} Smoothing Window},
+  journal = {Journal of Sports Science \& Medicine},
+  volume  = {14},
+  number  = {2},
+  pages   = {441--451},
+  year    = {2015}
+}
+
+% ------ Foundation models / segmentation --------------------
+
+@article{ravi2024sam,
+  author  = {Ravi, Nikhila and Gabeur, Valentin and Hu, Yuan-Ting and Hu, Ronghang
+             and Ryali, Chaitanya and Ma, Tengyu and Khedr, Haitham and R{\"a}dle, Roman
+             and Rolland, Chloe and Gustafson, Laura and others},
+  title   = {{SAM 2}: Segment Anything in Images and Videos},
+  journal = {arXiv preprint arXiv:2408.00714},
+  year    = {2024}
+}
+
+@inproceedings{kirillov2023segment,
+  author    = {Kirillov, Alexander and Mintun, Eric and Ravi, Nikhila and Mao, Hanzi
+               and Rolland, Chloe and Gustafson, Laura and Xiao, Tete
+               and Whitehead, Spencer and Berg, Alexander C and Lo, Wan-Yen and others},
+  title     = {Segment Anything},
+  booktitle = {Proceedings of the {IEEE/CVF} International Conference on
+               Computer Vision ({ICCV})},
+  pages     = {4015--4026},
+  year      = {2023}
+}
+
+@inproceedings{caron2021emerging,
+  author    = {Caron, Mathilde and Touvron, Hugo and Misra, Ishan and J{\'e}gou, Herv{\'e}
+               and Mairal, Julien and Bojanowski, Piotr and Joulin, Armand},
+  title     = {Emerging Properties in Self-Supervised Vision Transformers},
+  booktitle = {Proceedings of the {IEEE/CVF} International Conference on
+               Computer Vision ({ICCV})},
+  pages     = {9650--9660},
+  year      = {2021}
+}
+
+@article{oquab2023dinov2,
+  author  = {Oquab, Maxime and Darcet, Timoth{\'e}e and Moutakanni, Th{\'e}o and Vo, Huy
+             and Szafraniec, Marc and Khalidov, Vasil and Fernandez, Pierre and Haziza, Daniel
+             and Massa, Francisco and El-Nouby, Alaaeldin and others},
+  title   = {{DINOv2}: Learning Robust Visual Features without Supervision},
+  journal = {arXiv preprint arXiv:2304.07193},
+  year    = {2023}
+}
+
+% ------ Deep learning foundations ---------------------------
+
+@article{krizhevsky2012imagenet,
+  author  = {Krizhevsky, Alex and Sutskever, Ilya and Hinton, Geoffrey E},
+  title   = {{ImageNet} Classification with Deep Convolutional Neural Networks},
+  journal = {Advances in Neural Information Processing Systems},
+  volume  = {25},
+  year    = {2012}
+}
+
+@article{lecun2002gradient,
+  author    = {LeCun, Yann and Bottou, L{\'e}on and Bengio, Yoshua and Haffner, Patrick},
+  title     = {Gradient-Based Learning Applied to Document Recognition},
+  journal   = {Proceedings of the {IEEE}},
+  volume    = {86},
+  number    = {11},
+  pages     = {2278--2324},
+  year      = {1998},
+  publisher = {IEEE}
+}
+
+@inproceedings{he2016deep,
+  author    = {He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  title     = {Deep Residual Learning for Image Recognition},
+  booktitle = {Proceedings of the {IEEE} Conference on Computer Vision and
+               Pattern Recognition ({CVPR})},
+  pages     = {770--778},
+  year      = {2016}
+}
+
+@article{dosovitskiy2020image,
+  author  = {Dosovitskiy, Alexey and Beyer, Lucas and Kolesnikov, Alexander
+             and Weissenborn, Dirk and Zhai, Xiaohua and Unterthiner, Thomas
+             and Dehghani, Mostafa and Minderer, Matthias and Heigold, Georg
+             and Gelly, Sylvain and others},
+  title   = {An Image is Worth 16$\times$16 Words: Transformers for Image
+             Recognition at Scale},
+  journal = {arXiv preprint arXiv:2010.11929},
+  year    = {2020}
+}
+
+% ------ Object detection ------------------------------------
+
+@misc{jocher_ultralytics_2023,
+  author    = {Jocher, Glenn and Qiu, Jing and Chaurasia, Ayush},
+  title     = {Ultralytics {YOLO}},
+  year      = {2023},
+  month     = jan,
+  url       = {https://github.com/ultralytics/ultralytics},
+  copyright = {AGPL-3.0},
+  note      = {original-date: 2022-09-11}
+}
+
+@inproceedings{wang2023yolov7,
+  author    = {Wang, Chien-Yao and Bochkovskiy, Alexey and Liao, Hong-Yuan Mark},
+  title     = {{YOLOv7}: Trainable Bag-of-Freebies Sets New State-of-the-Art
+               for Real-Time Object Detectors},
+  booktitle = {Proceedings of the {IEEE/CVF} Conference on Computer Vision and
+               Pattern Recognition ({CVPR})},
+  pages     = {7464--7475},
+  year      = {2023}
+}
+
+% ------ Semi-supervised / annotation methods ----------------
+
+@article{sohn2020fixmatch,
+  author  = {Sohn, Kihyuk and Berthelot, David and Carlini, Nicholas and Zhang, Zizhao
+             and Zhang, Han and Raffel, Colin A and Cubuk, Ekin Dogus and Kurakin, Alexey
+             and Li, Chun-Liang},
+  title   = {{FixMatch}: Simplifying Semi-Supervised Learning with Consistency
+             and Confidence},
+  journal = {Advances in Neural Information Processing Systems},
+  volume  = {33},
+  pages   = {596--608},
+  year    = {2020}
+}
+
+@inproceedings{lee2013pseudo,
+  author       = {Lee, Dong-Hyun and others},
+  title        = {Pseudo-Label: The Simple and Efficient Semi-Supervised Learning
+                  Method for Deep Neural Networks},
+  booktitle    = {Workshop on Challenges in Representation Learning, {ICML}},
+  volume       = {3},
+  number       = {2},
+  pages        = {896},
+  year         = {2013},
+  organization = {Atlanta}
+}
+
+% ------ Underwater optics / calibration ---------------------
+
+@inproceedings{agrawal2012theory,
+  author       = {Agrawal, Amit and Ramalingam, Srikumar and Taguchi, Yuichi and Chari, Visesh},
+  title        = {A Theory of Multi-Layer Flat Refractive Geometry},
+  booktitle    = {2012 {IEEE} Conference on Computer Vision and Pattern Recognition ({CVPR})},
+  pages        = {3346--3353},
+  year         = {2012},
+  organization = {IEEE}
+}
+
+@article{harvey1998calibration,
+  author    = {Harvey, Evan S and Shortis, Mark R},
+  title     = {Calibration Stability of an Underwater Stereo-Video System:
+               Implications for Measurement Accuracy and Precision},
+  journal   = {Marine Technology Society Journal},
+  volume    = {32},
+  number    = {2},
+  pages     = {3--17},
+  year      = {1998},
+  publisher = {Marine Technology Society}
+}
+
+@article{shortis2015calibration,
+  author    = {Shortis, Mark},
+  title     = {Calibration Techniques for Accurate Measurements by Underwater
+               Camera Systems},
+  journal   = {Sensors},
+  volume    = {15},
+  number    = {12},
+  pages     = {30810--30826},
+  year      = {2015},
+  publisher = {MDPI},
+  doi       = {10.3390/s151229829}
+}
+
+% ------ Datasets / benchmarks -------------------------------
+
+@inproceedings{lin2014microsoft,
+  author       = {Lin, Tsung-Yi and Maire, Michael and Belongie, Serge and Hays, James
+                  and Perona, Pietro and Ramanan, Deva and Doll{\'a}r, Piotr
+                  and Zitnick, C Lawrence},
+  title        = {Microsoft {COCO}: Common Objects in Context},
+  booktitle    = {European Conference on Computer Vision ({ECCV})},
+  pages        = {740--755},
+  year         = {2014},
+  organization = {Springer}
+}
+
+@inproceedings{andriluka20142d,
+  author    = {Andriluka, Mykhaylo and Pishchulin, Leonid and Gehler, Peter and Schiele, Bernt},
+  title     = {{2D} Human Pose Estimation: New Benchmark and State of the Art Analysis},
+  booktitle = {Proceedings of the {IEEE} Conference on Computer Vision and
+               Pattern Recognition ({CVPR})},
+  pages     = {3686--3693},
+  year      = {2014}
+}
+
+% ------ CV geometry / tracking ------------------------------
+
+@book{hartley2003multiple,
+  author    = {Hartley, Richard and Zisserman, Andrew},
+  title     = {Multiple View Geometry in Computer Vision},
+  year      = {2003},
+  publisher = {Cambridge University Press}
+}
+
+@article{kalman1960new,
+  author = {Kalman, Rudolph Emil},
+  title  = {A New Approach to Linear Filtering and Prediction Problems},
+  year   = {1960}
+}
+
+@article{lee_category-level_2021,
+  author  = {Lee, Taeyeop and Lee, Byeong-Uk and Kim, Myungchul and Kweon, In So},
+  title   = {Category-Level Metric Scale Object Shape and Pose Estimation},
+  journal = {IEEE Robotics and Automation Letters},
+  volume  = {6},
+  number  = {4},
+  pages   = {8575--8582},
+  year    = {2021},
+  issn    = {2377-3766},
+  doi     = {10.1109/LRA.2021.3110538},
+  url     = {https://ieeexplore.ieee.org/abstract/document/9531548}
+}
+
+% ------ Distance / metric estimation ------------------------
+
+@inproceedings{holzmann_measuring_2012,
+  author    = {Holzmann, Clemens and Hochgatterer, Matthias},
+  title     = {Measuring Distance with Mobile Phones Using Single-Camera Stereo Vision},
+  booktitle = {2012 32nd International Conference on Distributed Computing
+               Systems Workshops},
+  pages     = {88--93},
+  year      = {2012},
+  publisher = {IEEE},
+  url       = {https://ieeexplore.ieee.org/abstract/document/6258139/}
+}
+
+@article{haseeb_disnet_2018,
+  author  = {Haseeb, Muhammad Abdul and Guan, Jianyu and Ristic-Durrant, Danijela
+             and Gr{\"a}ser, Axel},
+  title   = {{DisNet}: {A} Novel Method for Distance Estimation from Monocular Camera},
+  journal = {10th Planning, Perception and Navigation for Intelligent Vehicles
+             ({PPNIV18}), {IROS}},
+  year    = {2018},
+  url     = {https://project.inria.fr/ppniv18/files/2018/10/paper22.pdf}
+}
+
+@inproceedings{saputra_experiment_2021,
+  author    = {Saputra, Dany Eka and Senjaya, Aloysius Shendy Mulyana
+               and Ivander, Joshua and Chandra, Alex William},
+  title     = {Experiment on Distance Measurement Using Single Camera},
+  booktitle = {2021 4th International Conference on Information and Communications
+               Technology ({ICOIACT})},
+  pages     = {80--85},
+  year      = {2021},
+  publisher = {IEEE},
+  url       = {https://ieeexplore.ieee.org/abstract/document/9564010/}
+}
+
+@article{zuo_reference-free_2021,
+  author  = {Zuo, Fan and Gao, Jingqin and Kurkcu, Abdullah and Yang, Hong
+             and Ozbay, Kaan and Ma, Qingyu},
+  title   = {Reference-Free Video-to-Real Distance Approximation-Based Urban
+             Social Distancing Analytics Amid {COVID}-19 Pandemic},
+  journal = {Journal of Transport \& Health},
+  volume  = {21},
+  pages   = {101032},
+  year    = {2021},
+  issn    = {2214-1405},
+  doi     = {10.1016/j.jth.2021.101032},
+  pmid    = {36567866},
+  pmcid   = {PMC9765816}
+}
+
+% ------ AI measurement / explainability ---------------------
+
+@article{-_ai-based_2025,
+  author  = {{Chauhan Devanshi} and {Mr. Dhruv Panchal} and {Asst. Prof. Janki Patel}
+             and {Mrs. Dulari Bhatt}},
+  title   = {{AI}-Based Object Measurement Using {MiDaS} Depth Estimation and
+             {MobileNetV3} Edge Detection},
+  journal = {International Journal on Science and Technology},
+  volume  = {16},
+  number  = {2},
+  pages   = {3924},
+  year    = {2025},
+  issn    = {2229-7677},
+  doi     = {10.71097/IJSAT.v16.i2.3924}
+}
+
+@misc{hsieh_comprehensive_2024,
+  author    = {Hsieh, Weiche and Bi, Ziqian and Jiang, Chuanqi and others},
+  title     = {A Comprehensive Guide to Explainable {AI}: From Classical Models
+               to {LLM}s},
+  year      = {2024},
+  publisher = {arXiv},
+  doi       = {10.48550/ARXIV.2412.00800},
+  url       = {https://arxiv.org/abs/2412.00800},
+  copyright = {arXiv.org perpetual, non-exclusive license}
+}
+
+% ------ Statistics ------------------------------------------
+
+@book{tukey1977exploratory,
+  author    = {Tukey, John Wilder and others},
+  title     = {Exploratory Data Analysis},
+  volume    = {2},
+  year      = {1977},
+  publisher = {Springer}
+}
+
+@article{leys2013detecting,
+  author    = {Leys, Christophe and Ley, Christophe and Klein, Olivier
+               and Bernard, Philippe and Licata, Laurent},
+  title     = {Detecting Outliers: Do Not Use Standard Deviation Around the Mean,
+               Use Absolute Deviation Around the Median},
+  journal   = {Journal of Experimental Social Psychology},
+  volume    = {49},
+  number    = {4},
+  pages     = {764--766},
+  year      = {2013},
+  publisher = {Elsevier}
+}
+
+% ------ Regulations / miscellaneous -------------------------
 
 @mastersthesis{ahmed2019,
   author  = {Ahmed, S.},
-  title   = {Navigational system for visually impaired people in a swimming pool},
+  title   = {Navigational System for Visually Impaired People in a Swimming Pool},
   school  = {KTH Royal Institute of Technology},
   address = {Stockholm, Sweden},
   year    = {2019},
@@ -26,349 +496,26 @@
   note    = {Online}
 }
 
-@inproceedings{Tran2024,
-  author    = {Tran, Thu and Choo, Kenny Tsu Wei and Foong, Shaohui and Bhardwaj, Hitesh and Win, Shane Kyi Hla and Ang, Wei Jun and Goh, Kenneth and Balan, Rajesh Krishna},
-  title     = {Analyzing Swimming Performance Using Drone Captured Aerial Videos},
-  booktitle = {Proceedings of the Micro Aerial Vehicle Networks, Systems, and Applications (DroNet '24)},
-  year      = {2024},
-  location  = {Tokyo, Japan},
-  publisher = {ACM},
-  doi       = {10.1145/3663464}
-}
-
-@article{Cao2024,
-  author   = {Xiaowen Cao and Wei Qi Yan},
-  title    = {Pose estimation for swimmers in video surveillance},
-  journal  = {Multimedia Tools and Applications},
-  year     = {2024},
-  volume   = {83},
-  pages    = {26566–26580},
-  doi      = {10.1007/s11042-023-16618-w},
-  url      = {https://doi.org/10.1007/s11042-023-16618-w},
-  abstract = {Conventional pose estimation methods for swimmers struggle in aquatic environments due to occlusion, water turbulence and refraction, lighting variation, and differences in lane rope appearance. This study proposes a robust deep learning-based technique to overcome these challenges for accurate swimmer analysis in diverse pool conditions.}
-}
-
-
 @manual{FINA2025,
-  title        = {World Aquatics (FINA) Competition Regulations, June 2025},
+  title        = {World Aquatics ({FINA}) Competition Regulations, June 2025},
   organization = {World Aquatics (formerly FINA)},
   year         = {2025},
   month        = {7},
   url          = {https://resources.fina.org/fina/document/2025/07/01/ed3110a4-2291-411d-8526-6f641bd9237a/Competition-Regulations_June-2025_Clean-updated-01.07.2025-.pdf},
-  note         = {Official technical regulations for pools and equipment, including lane rope requirements}
+  note         = {Official technical regulations for pools and equipment,
+                  including lane rope requirements}
 }
 
 @misc{competitorswim2022,
-  author       = {Competitor Swim},
+  author       = {{Competitor Swim}},
   title        = {What Color Should Your Swimming Lane Lines Be?},
   year         = {2022},
   howpublished = {\url{https://www.competitorswim.com/what-color-should-your-swimming-lane-lines-be/}},
   note         = {Accessed: 2025-10-15}
 }
 
-
 @misc{noauthor_layout_nodate,
-  title   = {layout: forward target: https://developers.google.com/mediapipe/solutions/vision/hand\_landmarker title: {Hands} parent: {MediaPipe} {Legacy} {Solutions} nav\_order: 4 — {MediaPipe} v0.7.5 documentation},
+  title   = {{MediaPipe} Hands Solution — {MediaPipe} v0.7.5 Documentation},
   url     = {https://mediapipe.readthedocs.io/en/latest/solutions/hands.html},
   urldate = {2025-11-12}
-}
-
-@article{-_ai-based_2025,
-  title    = {{AI}-{Based} {Object} {Measurement} {Using} {MiDaS} {Depth} {Estimation} and {MobileNetV3} {Edge} {Detection}},
-  volume   = {16},
-  issn     = {2229-7677},
-  url      = {https://www.ijsat.org/research-paper.php?id=3924},
-  doi      = {10.71097/IJSAT.v16.i2.3924},
-  abstract = {In the modern age, Artificial Intelligence (AI) is transforming industries with solutions to functions based on human estimation and manual equipment conventionally. Among them, object dimension measurement, essential across applications from health and biometrics to industrial quality control, is a major area of application. In this research, an AI system for estimating real-world object length based on depth estimation, edge detection models, and computer vision is investigated. The computer vision problem was created in two stages and initially provides a Streamlit-based prototype coded in Python through which users may upload pictures or provide live camera shots to measure objects by choosing two points manually. The MiDaS model for monocular depth estimation and MobileNetV3 for edge detection are used to assist with precise measurement without physical reference objects. Measure results are reported in measurements such as meters or centimeters with visual overlays for ease of use. The second is creating an end-to-end React web application for mobile-first use. The build contains ONNX-converted AI models and a minimal UI, live camera streaming, live video point tagging, and page modules such as Home, Help, and Settings. With onboarding-type design and instructional popups integrated, the app is able to sustain a user-friendly experience without compromising measurement precision. This work enriches the AI-based measurement literature in medical imaging, biometrics, and industrial measurement with a web-based, flexible solution alternative to domain-specific solutions. Using lightweight AI models with responsive UI promises scalable, user-friendly measurement solutions deployable across devices and environments.},
-  number   = {2},
-  urldate  = {2025-11-06},
-  journal  = {International Journal on Science and Technology},
-  author   = {-, Chauhan Devanshi and -, Mr. Dhruv Panchal and -, Asst. Prof. Janki Patel and -, Mrs. Dulari Bhatt},
-  month    = apr,
-  year     = {2025},
-  pages    = {3924}
-}
-
-@article{zuo_reference-free_2021,
-  title    = {Reference-free video-to-real distance approximation-based urban social distancing analytics amid {COVID}-19 pandemic},
-  volume   = {21},
-  issn     = {2214-1405},
-  url      = {https://pmc.ncbi.nlm.nih.gov/articles/PMC9765816/},
-  doi      = {10.1016/j.jth.2021.101032},
-  abstract = {Introduction
-              The rapidly evolving COVID-19 pandemic has dramatically reshaped urban travel patterns. In this research, we explore the relationship between “social distancing,” a concept that has gained worldwide familiarity, and urban mobility during the pandemic. Understanding social distancing behavior will allow urban planners and engineers to better understand the new norm of urban mobility amid the pandemic, and what patterns might hold for individual mobility post-pandemic or in the event of a future pandemic.
-              
-              Methods
-              There are still few efforts to obtain precise information on social distancing patterns of pedestrians in urban environments. This is largely attributed to numerous burdens in safely deploying any effective field data collection approaches during the crisis. This paper aims to fill that gap by developing a data-driven analytical framework that leverages existing public video data sources and advanced computer vision techniques to monitor the evolution of social distancing patterns in urban areas. Specifically, the proposed framework develops a deep-learning approach with a pre-trained convolutional neural network to mine the massive amount of public video data captured in urban areas. Real-time traffic camera data collected in New York City (NYC) was used as a case study to demonstrate the feasibility and validity of using the proposed approach to analyze pedestrian social distancing patterns.
-              
-              Results
-              The results show that microscopic pedestrian social distancing patterns can be quantified by using a generalized real-distance approximation method. The estimated distance between individuals can be compared to social distancing guidelines to evaluate policy compliance and effectiveness during a pandemic. Quantifying social distancing adherence will provide decision-makers with a better understanding of prevailing social contact challenges. It also provides insights into the development of response strategies and plans for phased reopening for similar future scenarios.},
-  urldate  = {2025-11-06},
-  journal  = {Journal of Transport \& Health},
-  author   = {Zuo, Fan and Gao, Jingqin and Kurkcu, Abdullah and Yang, Hong and Ozbay, Kaan and Ma, Qingyu},
-  month    = jun,
-  year     = {2021},
-  pmid     = {36567866},
-  pmcid    = {PMC9765816},
-  pages    = {101032}
-}
-
-@inproceedings{holzmann_measuring_2012,
-  title     = {Measuring distance with mobile phones using single-camera stereo vision},
-  url       = {https://ieeexplore.ieee.org/abstract/document/6258139/},
-  urldate   = {2025-11-05},
-  booktitle = {2012 32nd {International} conference on distributed computing systems workshops},
-  publisher = {IEEE},
-  author    = {Holzmann, Clemens and Hochgatterer, Matthias},
-  year      = {2012},
-  pages     = {88--93}
-}
-
-@article{haseeb_disnet_2018,
-  title      = {{DisNet}: {A} novel method for distance estimation from monocular camera},
-  shorttitle = {{DisNet}},
-  url        = {https://project.inria.fr/ppniv18/files/2018/10/paper22.pdf},
-  urldate    = {2025-11-05},
-  journal    = {10th Planning, Perception and Navigation for Intelligent Vehicles (PPNIV18), IROS},
-  author     = {Haseeb, Muhammad Abdul and Guan, Jianyu and Ristic-Durrant, Danijela and Gräser, Axel},
-  year       = {2018}
-}
-
-@inproceedings{saputra_experiment_2021,
-  title     = {Experiment on distance measurement using single camera},
-  url       = {https://ieeexplore.ieee.org/abstract/document/9564010/},
-  urldate   = {2025-11-05},
-  booktitle = {2021 4th {International} {Conference} on {Information} and {Communications} {Technology} ({ICOIACT})},
-  publisher = {IEEE},
-  author    = {Saputra, Dany Eka and Senjaya, Aloysius Shendy Mulyana and Ivander, Joshua and Chandra, Alex William},
-  year      = {2021},
-  pages     = {80--85}
-}
-
-@article{haseeb_disnet_2018-1,
-  title      = {{DisNet}: {A} novel method for distance estimation from monocular camera},
-  shorttitle = {{DisNet}},
-  url        = {https://project.inria.fr/ppniv18/files/2018/10/paper22.pdf},
-  urldate    = {2025-11-05},
-  journal    = {10th Planning, Perception and Navigation for Intelligent Vehicles (PPNIV18), IROS},
-  author     = {Haseeb, Muhammad Abdul and Guan, Jianyu and Ristic-Durrant, Danijela and Gräser, Axel},
-  year       = {2018}
-}
-
-@article{lee_category-level_2021,
-  title    = {Category-{Level} {Metric} {Scale} {Object} {Shape} and {Pose} {Estimation}},
-  volume   = {6},
-  issn     = {2377-3766},
-  url      = {https://ieeexplore.ieee.org/abstract/document/9531548},
-  doi      = {10.1109/LRA.2021.3110538},
-  abstract = {Advances in deep learning recognition have led to accurate object detection with 2D images. However, these 2D perception methods are insufficient for complete 3D world information. Concurrently, advanced 3D shape estimation approaches focus on the shape itself, without considering metric scale. These methods cannot determine the accurate location and orientation of objects. To tackle this problem, we propose a framework that jointly estimates a metric scale shape and pose from a single RGB image. Our framework has two branches: the Metric Scale Object Shape branch (MSOS) and the Normalized Object Coordinate Space branch (NOCS). The MSOS branch estimates the metric scale shape observed in the camera coordinates. The NOCS branch predicts the normalized object coordinate space (NOCS) map and performs similarity transformation with the rendered depth map from a predicted metric scale mesh to obtain 6D pose and size. Additionally, we introduce the Normalized Object Center Estimation (NOCE) to estimate the geometrically aligned distance from the camera to the object center. We validated our method on both synthetic and real-world datasets to evaluate category-level object pose and shape.},
-  number   = {4},
-  urldate  = {2025-11-05},
-  journal  = {IEEE Robotics and Automation Letters},
-  author   = {Lee, Taeyeop and Lee, Byeong-Uk and Kim, Myungchul and Kweon, In So},
-  month    = oct,
-  year     = {2021},
-  keywords = {Augmented reality, Pose estimation, Robot manipulation, Shape, Three-dimensional displays, augmented reality, object pose estimation, object shape estimation},
-  pages    = {8575--8582}
-}
-
-@inproceedings{tran_analyzing_2024,
-  address   = {Minato-ku Tokyo Japan},
-  title     = {Analyzing {Swimming} {Performance} {Using} {Drone} {Captured} {Aerial} {Videos}},
-  isbn      = {9798400706561},
-  url       = {https://dl.acm.org/doi/10.1145/3661810.3663464},
-  doi       = {10.1145/3661810.3663464},
-  language  = {en},
-  urldate   = {2025-08-11},
-  booktitle = {Proceedings of the 10th {Workshop} on {Micro} {Aerial} {Vehicle} {Networks}, {Systems}, and {Applications}},
-  publisher = {ACM},
-  author    = {Tran, Thu and Choo, Kenny Tsu Wei and Foong, Shaohui and Bhardwaj, Hitesh and Win, Shane Kyi Hla and Ang, Wei Jun and Goh, Kenneth and Balan, Rajesh Krishna},
-  month     = jun,
-  year      = {2024},
-  pages     = {7--12}
-}
-
-@article{giulietti_swimmernet_2023,
-  title      = {{SwimmerNET}: {Underwater} {2D} {Swimmer} {Pose} {Estimation} {Exploiting} {Fully} {Convolutional} {Neural} {Networks}},
-  volume     = {23},
-  copyright  = {http://creativecommons.org/licenses/by/3.0/},
-  issn       = {1424-8220},
-  shorttitle = {{SwimmerNET}},
-  url        = {https://www.mdpi.com/1424-8220/23/4/2364},
-  doi        = {10.3390/s23042364},
-  abstract   = {Professional swimming coaches make use of videos to evaluate their athletes’ performances. Specifically, the videos are manually analyzed in order to observe the movements of all parts of the swimmer’s body during the exercise and to give indications for improving swimming technique. This operation is time-consuming, laborious and error prone. In recent years, alternative technologies have been introduced in the literature, but they still have severe limitations that make their correct and effective use impossible. In fact, the currently available techniques based on image analysis only apply to certain swimming styles; moreover, they are strongly influenced by disturbing elements (i.e., the presence of bubbles, splashes and reflections), resulting in poor measurement accuracy. The use of wearable sensors (accelerometers or photoplethysmographic sensors) or optical markers, although they can guarantee high reliability and accuracy, disturb the performance of the athletes, who tend to dislike these solutions. In this work we introduce swimmerNET, a new marker-less 2D swimmer pose estimation approach based on the combined use of computer vision algorithms and fully convolutional neural networks. By using a single 8 Mpixel wide-angle camera, the proposed system is able to estimate the pose of a swimmer during exercise while guaranteeing adequate measurement accuracy. The method has been successfully tested on several athletes (i.e., different physical characteristics and different swimming technique), obtaining an average error and a standard deviation (worst case scenario for the dataset analyzed) of approximately 1 mm and 10 mm, respectively.},
-  language   = {en},
-  number     = {4},
-  urldate    = {2025-08-05},
-  journal    = {Sensors},
-  author     = {Giulietti, Nicola and Caputo, Alessia and Chiariotti, Paolo and Castellini, Paolo},
-  month      = jan,
-  year       = {2023},
-  keywords   = {athlete’s performance measurements, fully convolutional neural networks, swimmers pose estimation, vision-based underwater measurements},
-  pages      = {2364}
-}
-
-@article{cao_pose_2024,
-  title    = {Pose estimation for swimmers in video surveillance},
-  volume   = {83},
-  issn     = {1573-7721},
-  url      = {https://doi.org/10.1007/s11042-023-16618-w},
-  doi      = {10.1007/s11042-023-16618-w},
-  abstract = {Traditional models for pose estimation in video surveillance are based on graph structures, in this paper, we propose a method that breaks the limitation of template matching within a range of pose changes to obtain robust results. We implement our swimmer pose estimation method based on deep learning. We take use of High-Resolution Net (HRNet) to extract and fuse visual features of visual object and complete the object detection using the key points of human joint. The proposed model could be applied to all kinds of swimming styles throughout appropriate training. Compared with the methods that require multimodel combinations and training, the proposed method directly achieves the end-to-end prediction, which is easily to be implemented and deployed. In addition, a cross-fusion module is added between parallel networks, which assists the network to make use of the characteristics of multiple resolutions. The proposed network has achieved ideal results in the pose estimation of swimmers by comparing HRNet-W32 and HRNet-W48. In addition, we propose an annotated key point dataset of swimmers which was created from the view of underwater swimmers. Compared with side view, the torso of swimmers collected by the underwater view is much suitable for a broad spectrum of machine vision tasks.},
-  language = {en},
-  number   = {9},
-  urldate  = {2025-08-05},
-  journal  = {Multimedia Tools and Applications},
-  author   = {Cao, Xiaowen and Yan, Wei Qi},
-  month    = mar,
-  year     = {2024},
-  keywords = {Biometrics, Computer Imaging, Vision, Pattern Recognition and Graphics, Computer Vision, DCNN, HRNet, Motion Detection, Object Recognition, Pose estimation, Swimmer, Time-lapse Imaging},
-  pages    = {26565--26580}
-}
-
-@article{zhou_artificial_nodate,
-  title      = {Artificial intelligence in sport: {A} narrative review of applications, challenges and future trends},
-  volume     = {0},
-  issn       = {0264-0414},
-  shorttitle = {Artificial intelligence in sport},
-  url        = {https://doi.org/10.1080/02640414.2025.2518694},
-  doi        = {10.1080/02640414.2025.2518694},
-  abstract   = {This narrative review explores the transformative impact of artificial intelligence (AI) in sport, covering its applications, challenges and future directions across key areas such as biomechanics, performance enhancement, sports medicine, health monitoring, coaching and talent identification. AI can potentially empower athletes to optimise movement, personalise training, improve diagnostics and accelerate rehabilitation. However, integrating AI into sport presents challenges, particularly around data privacy, ethical concerns and adoption within sport organisations. This review also addresses these issues, highlighting strategies for responsible data governance and transparency. Furthermore, the review explores the promising future trends for AI in sport, which suggest a profound impact how sport is practiced and managed globally, pointing towards an era of enhanced performance, health and inclusivity.},
-  number     = {0},
-  urldate    = {2025-08-05},
-  journal    = {Journal of Sports Sciences},
-  author     = {Zhou, Diwei and Keogh, Justin W.L. and Ma, Yingliang and Tong, Raymond K.Y. and Khan, Abdul R. and Jennings, Nicholas R.},
-  pmid       = {40518658},
-  keywords   = {Machine learning, biomechanics, data and ethical considerations, performance enhancement, sports medicaine and health, talent identification},
-  pages      = {1--16}
-}
-
-@article{al-majnoni_moar_2025,
-  title      = {Moar: {A} {Swimmer} {Motion} {Swimming} {Style} {Identification} {Model} using {Deep} {Learning}},
-  volume     = {15},
-  copyright  = {Copyright (c) 2024 Atheer Al-Majnoni, Jumana Al-Sahli, Dana Al-Ahmady, Amani Al-Mutairi, Areej Alsini, Manal Alharbi},
-  issn       = {1792-8036},
-  shorttitle = {Moar},
-  url        = {https://etasr.com/index.php/ETASR/article/view/9309},
-  doi        = {10.48084/etasr.9309},
-  abstract   = {Received: 17 October 2024 {\textbar} Revised: 17 November 2024 {\textbar} Accepted: 21 November 2024 {\textbar} Online: 2 February 2025Corresponding author: Manal Alharbi},
-  language   = {en},
-  number     = {1},
-  urldate    = {2025-08-05},
-  journal    = {Engineering, Technology \& Applied Science Research},
-  author     = {Al-Majnoni, Atheer and Al-Sahli, Jumana and Al-Ahmady, Dana and Al-Mutairi, Amani and Alsini, Areej and Alharbi, Manal},
-  month      = feb,
-  year       = {2025},
-  keywords   = {YOLOv8, artificial intelligence, computer vision, human motion capture, incorrect movement, swimming flaws, swimming styles},
-  pages      = {19295--19302}
-}
-
-
-@misc{hsieh_comprehensive_2024,
-  title      = {A {Comprehensive} {Guide} to {Explainable} {AI}: {From} {Classical} {Models} to {LLMs}},
-  copyright  = {arXiv.org perpetual, non-exclusive license},
-  shorttitle = {A {Comprehensive} {Guide} to {Explainable} {AI}},
-  url        = {https://arxiv.org/abs/2412.00800},
-  doi        = {10.48550/ARXIV.2412.00800},
-  abstract   = {Explainable Artificial Intelligence (XAI) addresses the growing need for transparency and interpretability in AI systems, enabling trust and accountability in decision-making processes. This book offers a comprehensive guide to XAI, bridging foundational concepts with advanced methodologies. It explores interpretability in traditional models such as Decision Trees, Linear Regression, and Support Vector Machines, alongside the challenges of explaining deep learning architectures like CNNs, RNNs, and Large Language Models (LLMs), including BERT, GPT, and T5. The book presents practical techniques such as SHAP, LIME, Grad-CAM, counterfactual explanations, and causal inference, supported by Python code examples for real-world applications.
-                Case studies illustrate XAI's role in healthcare, finance, and policymaking, demonstrating its impact on fairness and decision support. The book also covers evaluation metrics for explanation quality, an overview of cutting-edge XAI tools and frameworks, and emerging research directions, such as interpretability in federated learning and ethical AI considerations. Designed for a broad audience, this resource equips readers with the theoretical insights and practical skills needed to master XAI. Hands-on examples and additional resources are available at the companion GitHub repository: https://github.com/Echoslayer/XAI\_From\_Classical\_Models\_to\_LLMs.},
-  urldate    = {2025-12-30},
-  publisher  = {arXiv},
-  author     = {Hsieh, Weiche and Bi, Ziqian and Jiang, Chuanqi and Liu, Junyu and Peng, Benji and Zhang, Sen and Pan, Xuanhe and Xu, Jiawei and Wang, Jinlang and Chen, Keyu and Feng, Pohsun and Wen, Yizhu and Song, Xinyuan and Wang, Tianyang and Liu, Ming and Yang, Junjie and Li, Ming and Jing, Bowen and Ren, Jintao and Song, Junhao and Tseng, Hong-Ming and Zhang, Yichao and Yan, Lawrence K. Q. and Niu, Qian and Chen, Silin and Wang, Yunze and Liang, Chia Xin},
-  year       = {2024},
-  keywords   = {Artificial Intelligence (cs.AI), FOS: Computer and information sciences, Machine Learning (cs.LG)}
-}
-
-
-@misc{jocher_ultralytics_2023,
-  title     = {Ultralytics {YOLO}},
-  copyright = {AGPL-3.0},
-  url       = {https://github.com/ultralytics/ultralytics},
-  abstract  = {Ultralytics YOLO 🚀},
-  urldate   = {2026-04-27},
-  author    = {Jocher, Glenn and Qiu, Jing and Chaurasia, Ayush},
-  month     = jan,
-  year      = {2023},
-  note      = {original-date: 2022-09-11T16:39:45Z}
-}
-
-
-@inproceedings{wang2023yolov7,
-  title     = {YOLOv7: Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors},
-  author    = {Wang, Chien-Yao and Bochkovskiy, Alexey and Liao, Hong-Yuan Mark},
-  booktitle = {Proceedings of the IEEE/CVF conference on computer vision and pattern recognition},
-  pages     = {7464--7475},
-  year      = {2023}
-}
-
-@inproceedings{kirillov2023segment,
-  title     = {Segment anything},
-  author    = {Kirillov, Alexander and Mintun, Eric and Ravi, Nikhila and Mao, Hanzi and Rolland, Chloe and Gustafson, Laura and Xiao, Tete and Whitehead, Spencer and Berg, Alexander C and Lo, Wan-Yen and others},
-  booktitle = {Proceedings of the IEEE/CVF international conference on computer vision},
-  pages     = {4015--4026},
-  year      = {2023}
-}
-
-@article{ravi2024sam,
-  title   = {Sam 2: Segment anything in images and videos},
-  author  = {Ravi, Nikhila and Gabeur, Valentin and Hu, Yuan-Ting and Hu, Ronghang and Ryali, Chaitanya and Ma, Tengyu and Khedr, Haitham and R{\"a}dle, Roman and Rolland, Chloe and Gustafson, Laura and others},
-  journal = {arXiv preprint arXiv:2408.00714},
-  year    = {2024}
-}
-
-@article{xu2022vitpose,
-  title   = {Vitpose: Simple vision transformer baselines for human pose estimation},
-  author  = {Xu, Yufei and Zhang, Jing and Zhang, Qiming and Tao, Dacheng},
-  journal = {Advances in neural information processing systems},
-  volume  = {35},
-  pages   = {38571--38584},
-  year    = {2022}
-}
-
-@article{dosovitskiy2020image,
-  title   = {An image is worth 16x16 words: Transformers for image recognition at scale},
-  author  = {Dosovitskiy, Alexey and Beyer, Lucas and Kolesnikov, Alexander and Weissenborn, Dirk and Zhai, Xiaohua and Unterthiner, Thomas and Dehghani, Mostafa and Minderer, Matthias and Heigold, Georg and Gelly, Sylvain and others},
-  journal = {arXiv preprint arXiv:2010.11929},
-  year    = {2020}
-}
-
-@book{hartley2003multiple,
-  title     = {Multiple view geometry in computer vision},
-  author    = {Hartley, Richard and Zisserman, Andrew},
-  year      = {2003},
-  publisher = {Cambridge university press}
-}
-
-@article{kalman1960new,
-  title  = {A new approach to linear filtering and prediction problems},
-  author = {Kalman, Rudolph Emil},
-  year   = {1960}
-}
-
-@inproceedings{agrawal2012theory,
-  title        = {A theory of multi-layer flat refractive geometry},
-  author       = {Agrawal, Amit and Ramalingam, Srikumar and Taguchi, Yuichi and Chari, Visesh},
-  booktitle    = {2012 IEEE conference on computer vision and pattern recognition},
-  pages        = {3346--3353},
-  year         = {2012},
-  organization = {IEEE}
-}
-
-@book{tukey1977exploratory,
-  title     = {Exploratory data analysis},
-  author    = {Tukey, John Wilder and others},
-  volume    = {2},
-  year      = {1977},
-  publisher = {Springer}
-}
-
-@article{leys2013detecting,
-  title     = {Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median},
-  author    = {Leys, Christophe and Ley, Christophe and Klein, Olivier and Bernard, Philippe and Licata, Laurent},
-  journal   = {Journal of experimental social psychology},
-  volume    = {49},
-  number    = {4},
-  pages     = {764--766},
-  year      = {2013},
-  publisher = {Elsevier}
 }
