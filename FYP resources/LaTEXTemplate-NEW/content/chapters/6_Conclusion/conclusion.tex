@@ -1,26 +1,108 @@
-\chapter{Conclusion}
-\label{ch:conclusion}
+\chapter{Conclusion}\label{chp:conclusion}
 
-\section{Project Summary}
-This project successfully developed an AI-based proof-of-concept system for the non-intrusive extraction of swimming kinematics from uncalibrated, handheld poolside video footage. Driven by the need to overcome severe visual distortions present in aquatic environments, such as refraction, turbulence, and occlusion, a modular computer vision pipeline was proposed. By introducing a novel dynamic pixel-to-meter scaling methodology utilizing custom-designed underwater markers, the system demonstrated the feasibility of extracting real-world metric data without relying on rigid camera setups. The integration of advanced deep learning foundation models, including SAM 2 for temporal segmentation, YOLO26 for marker detection, and ViTPose for human pose estimation, provided a robust framework for tracking swimmer movements and addressing domain-specific data scarcity.
+\section{Summary of Contributions}
 
-\section{Achievement of Objectives}
-The project successfully met its core objectives:
-\begin{enumerate}
-    \item \textbf{Marker Design:} A highly visible, modular 3D-printed marker system was developed to withstand underwater turbulence and provide a reliable calibration reference at 2.5\,m intervals.
-    \item \textbf{Dataset Generation (MITL):} A Model-in-the-Loop annotation pipeline leveraging SAM 2, statistical outlier filtering (IQR), and human verification was implemented to construct a domain-specific dataset for training a custom YOLO26s detector.
-    \item \textbf{Dynamic Scale Extraction:} A refraction-aware pipeline was established, utilizing Median Absolute Deviation (MAD) filtering to stabilize the pixel-to-meter scale derived from the known marker spacing.
-    \item \textbf{Kinematic Metric Extraction:} Combining ego-motion compensation, ViTPose localization, and a Kalman filter smoothing stage, the system successfully produced absolute positional and velocity profiles from the raw tracking output. 
-\end{enumerate}
+This project demonstrates that end-to-end extraction of positional and kinematic metrics from
+handheld, uncalibrated poolside video is achievable using only open-source models and a
+low-cost 3D-printed physical marker, with no fixed poolside infrastructure required. Evaluated
+on a single 50\,m breaststroke sequence (participant P035), the system recovered 18 of 20
+spatial checkpoints with a mean absolute split-time error of 1.005\,s and an RMSE of 1.210\,s
+(Table~\ref{tab:split_errors_updated}). At the macro scale, the direction and phasing of the
+breaststroke arm cycle are recoverable from centroid-relative wrist signals; sub-stroke wrist
+kinematics, however, remain too noisy for reliable technique analysis under current conditions.
+The system is therefore best characterised as a proof-of-concept that validates the core
+approach and identifies the challenges that a production deployment would need to
+address, rather than a system ready for competitive coaching use.
 
-\section{Limitations and Challenges}
-Despite proving the feasibility of the concept, the evaluation highlighted several inherent challenges in the aquatic domain. The positional accuracy evaluation on a 50\,m breaststroke sequence yielded a Mean Absolute Error (MAE) of 1.005\,s and a Root Mean Square Error (RMSE) of 1.210\,s across 18 checkpoints. A primary limitation was the non-linear fluctuation in scale estimation on the outbound leg, leading to alternating periods of overestimated and underestimated swimming speeds. Furthermore, while macroscopic centroid tracking was successfully extracted, tracking distal keypoints such as the wrists remained noisy underwater and exhibited substantial high-frequency artefacts. Consequently, fine-grain kinematic noise limited the utility of the current system for precision technique analysis. Lastly, the evaluation relied on single-observer manual ground truth split times, which inherently introduces a limitation regarding inter-rater reliability.
+\section{Critical Reflection: Limitations and Trade-offs}
+
+The system's central value proposition is deployability: a coach can record a training session
+with a standard handheld camera and obtain split times and a velocity profile without
+installing any permanent poolside equipment. A fixed camera on a motorised rail, or a
+multi-camera rig with overlapping fields of view, would eliminate the need for ego-motion
+compensation entirely and would likely yield a substantially lower positional MAE. Such systems
+require venue-specific installation, a permanent power supply, and ongoing maintenance, placing
+them beyond the reach of most club-level coaching environments. The 1.005\,s MAE achieved here
+is therefore best understood not as a deficiency relative to laboratory-grade systems, but as
+the cost of deployability. Whether this accuracy level is sufficient for practical coaching
+depends on the application: at a typical breaststroke speed of approximately 1.0\,m/s, a 1\,s
+timing error corresponds to roughly 1\,m of positional uncertainty, which is adequate for lap
+timing and gross stroke-rate counting but insufficient for resolving inter-stroke speed
+modulations on the order of 0.1--0.2\,m/s that are characteristic of detectable technique
+faults.
+
+Beyond accuracy, the proof-of-concept scope introduces a significant generalisation risk. The
+fine-tuned YOLO26s detector was trained and evaluated on a single pool, swimmer, and lighting
+configuration; the MITL pseudo-labels encode the visual properties of that specific
+environment, and the detector inherits that specificity. Refraction introduces a systematic
+lateral bias in distal keypoint positions, particularly the wrists, that the current pipeline
+does not correct, as doing so would require knowledge of water depth and camera angle at every
+frame. ViTPose~\cite{xu2022vitpose}, pre-trained on the terrestrial COCO
+dataset~\cite{lin2014microsoft}, exhibits confidence collapse and occasional hallucination on
+submerged body parts where image statistics diverge sharply from its training distribution;
+this accounts for much of the high-frequency artefact observed in the wrist velocity signals.
+Transient occlusions from bubbles and surface glare can persist across multiple frames,
+exceeding the temporal scope of the MAD filter~\cite{leys2013detecting} and causing the scale
+estimate to carry forward stale values, while rapid camera panning during the swimmer's turn
+produces brief ego-motion estimation failures. Finally, the single-observer ground truth split
+times carry an unknown but non-zero perceptual timing uncertainty. Each of these limitations
+is individually manageable; together they imply that the reported MAE represents a lower bound
+on real-world deployment error rather than a performance ceiling.
+
+\section{Ethical and Practical Considerations}
+
+Video analysis of athletes raises immediate questions of privacy and consent. In this project,
+participation was governed by an institutional consent process; a deployed coaching tool would
+require explicit policies covering data retention periods, access controls, and athletes'
+rights to withdraw their data and request its deletion, none of which are determined by the
+technical architecture of the system.
+
+Kinematic data derived from athlete footage constitutes performance intelligence with
+potential commercial value, relevant to talent identification, training optimisation, and
+competitive scouting. Whether such data belongs to the athlete, the coach, the club, or a
+technology provider is not resolved by how the pipeline is implemented; it requires explicit
+governance frameworks agreed upon before any deployment.
+
+A further concern is the risk of over-reliance on numerical outputs. A system that produces
+split times and velocity profiles may lead coaches to treat those figures as ground truth
+rather than as noisy estimates subject to the failure modes described in
+Chapter~\ref{chp:evaluation}. A deployable version of this system should surface uncertainty
+estimates or confidence intervals alongside its point predictions, making the limitations of
+the measurements legible to non-technical users and mitigating the risk of systematic
+over-interpretation.
 
 \section{Future Work}
-Building upon this proof of concept, several avenues for future research and refinement have been identified:
-\begin{itemize}
-    \item \textbf{Enhancement of Pose Estimation:} Future iterations should target the refinement of distal keypoint tracking (particularly for wrists) to enable detailed, centroid-relative technique analysis.
-    \item \textbf{Advanced Scale Stabilisation:} Methods to mitigate the non-linear scaling fluctuations caused by severe refraction should be explored to improve the continuous monotonic accuracy of the estimated swimming speed. 
-    \item \textbf{Broader Dataset Validation:} While the proof of concept successfully evaluated a breaststroke sequence, future work should validate the system's robustness across different strokes, variable lighting, and different pools.
-    \item \textbf{Automated Ground Truth Collection:} Replacing manual, single-observer timestamp recording with sensor-based timing systems (such as touchpads) would provide a more objective baseline for positional accuracy evaluation.
-\end{itemize}
+
+The most impactful near-term improvement to keypoint quality would be fine-tuning
+ViTPose~\cite{xu2022vitpose} on an aquatic-domain dataset. The MITL pipeline developed in
+this project could be adapted to generate pseudo-labelled pose annotations at scale, creating
+a self-reinforcing data flywheel that progressively reduces the COCO distribution
+gap~\cite{lin2014microsoft}. A domain-adapted model would directly address both the confidence
+collapse and the hallucination failures observed in wrist tracking, and would lay the
+groundwork for the sub-stroke technique analysis that the current system cannot reliably
+deliver.
+
+Fusing the video-based trajectory with data from a waterproof inertial measurement unit worn
+by the swimmer offers a complementary sensing modality that is immune to optical refraction.
+IMU acceleration readings could serve as an additional observation in the Kalman
+filter~\cite{kalman1960new}, tightening the position estimate during marker-loss intervals and
+reducing dependence on the scale carry-forward heuristic that is a primary source of
+non-linear drift.
+
+The current pipeline treats each frame largely independently, relying on the Kalman filter for
+inter-frame coherence. Replacing the YOLO-plus-Kalman tracking stack with a temporal
+transformer architecture, such as a video-based variant of SAM~2~\cite{ravi2024sam} or a
+transformer-based multi-object tracker, would allow the model to reason over a window of
+learned temporal context. This could recover occluded marker positions and keypoints more
+robustly than the carry-forward heuristic and would reduce sensitivity to rapid camera motion
+during the turn.
+
+Finally, the system currently operates as an offline post-processing pipeline. Adapting it for
+real-time inference would require profiling and optimising the YOLO26s~\cite{jocher_ultralytics_2023}
+and ViTPose inference steps for GPU or NPU execution, and developing a coach-facing interface
+that presents split times, speed profiles, and stroke-symmetry indicators in a form accessible
+to non-technical users. Consistent with the considerations raised in
+Section~\ref{chp:conclusion}.3, this interface should expose calibrated uncertainty estimates
+alongside point predictions rather than presenting a single authoritative number, ensuring
+that the system is used as a decision-support aid rather than as a source of unquestioned
+ground truth.
