@@ -1,7 +1,6 @@
 \graphicspath{{content/chapters/4_Methodology/figures/}}
 
-\chapter{Methodology}
-\label{chp:methodology}
+\chapter{Methodology}\label{chp:methodology}
 
 This chapter details the technical implementation of the proof-of-concept system. The
 methodology is structured around the four primary project objectives, transitioning from
@@ -13,8 +12,7 @@ kinematic metric. The decisions documented here are therefore presented as a cha
 engineering arguments rather than a sequence of independent implementation choices.
 
 % ============================================================
-\section{Marker Design and Visibility}
-\label{sec:marker-design}
+\section{Marker Design and Visibility}\label{sec:marker-design}
 % ============================================================
 
 The first objective required a modular marker design capable of withstanding the
@@ -63,8 +61,8 @@ alternating pattern is a necessary characteristic of a valid detection.
 
 \subsection{Physical Form Factor: Cylindrical and 3D-Printed}
 
-Off-the-shelf calibration targets such as checkerboard boards or ArUco markers were considered
-as alternatives. These planar targets are well-characterised in the literature~\cite{hartley2003multiple}
+Off-the-shelf calibration targets such as chequerboard boards or ArUco markers were considered
+as alternatives. These planar targets are well-characterized in the literature~\cite{hartley2003multiple}
 and are the standard choice for metric calibration in controlled laboratory settings. However,
 they present a fundamental geometric limitation in the poolside context: their detectability
 is highly sensitive to viewing angle. At the oblique angles typical of handheld poolside
@@ -91,7 +89,7 @@ and stored when not in use. The 10 cm segment height was determined by the requi
 the marker subtend a sufficient number of pixels to be reliably detected at the maximum
 anticipated operating distance: at a camera-to-marker distance of approximately two to three
 metres, a 10 cm feature projects to roughly 50 pixels at a 1080p resolution, which is
-sufficient for a YOLO-family one-stage detector to localise accurately. A smaller segment
+sufficient for a YOLO-family one-stage detector to localize accurately. A smaller segment
 height would have reduced this pixel count below the threshold of reliable detection, while a
 larger height would have increased physical mass and the risk of the marker toppling in
 turbulent conditions.
@@ -101,7 +99,7 @@ turbulent conditions.
 The spacing between the markers was determined based on multiple tests, which revealed that an
 interval of 2.5 m provided a good balance between visibility and the number of markers required
 for accurate calibration. This spacing allows for sufficient coverage along the lane while
-minimising the number of markers needed, which is crucial for minimising setup time and
+minimizing the number of markers needed, which is crucial for minimizing setup time and
 complexity.
 
 The spacing decision involved explicit consideration of the failure modes at both extremes. A
@@ -111,12 +109,12 @@ swimmer's body passes between the camera and multiple adjacent markers simultane
 spacing would reduce the probability of two or more markers being simultaneously visible within
 the camera's field of view at any given moment, which is the minimum condition for a stable
 pixel-to-metre ratio estimate. With only a single marker visible, no inter-marker distance can
-be computed and the scale calibration must fall back to a carried-forward estimate from the
+be computed, and the scale calibration must fall back to a carried-forward estimate from the
 previous valid frame, introducing temporal staleness. The 2.5 m spacing was identified through
 empirical trials as the minimum spacing at which at least two markers reliably remained within
 the camera's field of view throughout the swimmer's traversal of the monitored segment, given
 the focal length and field of view of the camera used in the trials. This provides a stable
-baseline for pixel-to-metre ratio estimation at every frame, minimising reliance on the
+baseline for pixel-to-metre ratio estimation at every frame, minimizing reliance on the
 carry-forward fallback described in Section~\ref{sec:scale-extraction}.
 
 \subsection{Prototyping Iterations}
@@ -129,14 +127,13 @@ difficult to detect reliably beyond 2 m, while larger diameters increased buoyan
 required heavier weighting to remain upright. These observations collectively converged on the final configuration: a 5 cm diameter cylinder with 10 cm alternating segments, spaced at 2.5 m intervals.
 
 % ============================================================
-\section{Dataset Generation and Model-in-the-Loop Annotation}
-\label{sec:dataset-generation}
+\section{Dataset Generation and Model-in-the-Loop Annotation}\label{sec:dataset-generation}
 % ============================================================
 
 To address the second objective, necessitated by the lack of annotated underwater datasets, a
-``Model-in-the-Loop'' (MITL) workflow was developed. This phase utilised foundation models to
+``Model-in-the-Loop'' (MITL) workflow was developed. This phase utilized foundation models to
 automate the labelling process for the downstream YOLO26 detector. The entire dataset creation
-pipeline is visualised in Figure~\ref{fig:training_pipeline}.
+pipeline is visualized in Figure~\ref{fig:training_pipeline}.
 
 \begin{figure}[htbp]
     \centering
@@ -228,8 +225,7 @@ pipeline is visualised in Figure~\ref{fig:training_pipeline}.
 
         \end{tikzpicture}
     }
-    \caption{Marker Detection Model Training Pipeline.}
-    \label{fig:training_pipeline}
+    \caption{Marker Detection Model Training Pipeline.}\label{fig:training_pipeline}
 \end{figure}
 
 \subsection{Motivation for the MITL Approach}
@@ -251,14 +247,14 @@ terrestrial calibration target datasets was similarly infeasible: no public data
 annotated underwater cylindrical calibration targets exists, and the visual characteristics
 of the markers, strongly shaped by the aquatic optical environment, are sufficiently different
 from terrestrial equivalents to make direct transfer learning unreliable without substantial
-domain adaptation. The MITL approach, by contrast, exploited the zero-shot generalisation
+domain adaptation. The MITL approach, by contrast, exploited the zero-shot generalization
 capability of a large foundation model to generate approximate labels at near-zero marginal
 cost, with subsequent stages refining quality to the standard required for training a precision
 detector.
 
 \subsection{Automated Labelling with SAM 2}
 
-The Segment Anything Model 2 (SAM 2)~\cite{ravi2024sam} was utilised to propagate marker
+The Segment Anything Model 2 (SAM 2)~\cite{ravi2024sam} was utilized to propagate marker
 bounding boxes across video sequences. Prompts were provided from the initial frames,
 propagated through the video. Once all tracked markers exited the frame, the process was
 repeated for the next chunk of frames until the entire video was annotated. This approach
@@ -291,7 +287,7 @@ stage was implemented to prune the raw SAM 2 output.
 The filtering process focuses on the geometric consistency of the generated bounding boxes.
 Based on the assumption that the physical dimensions of the markers are constant, any
 significant variation in the predicted box area or aspect ratio was flagged as tracking noise.
-The system utilises the Interquartile Range (IQR) method~\cite{tukey1977exploratory} to
+The system utilizes the Interquartile Range (IQR) method~\cite{tukey1977exploratory} to
 identify and remove these outliers. For a set of bounding box areas $A$, the filtering bounds
 are defined as:
 \begin{equation}
@@ -346,9 +342,9 @@ quality in a measurable way, thus was selected for the final training of the YOL
 \subsection{Human-in-the-Loop Verification}
 
 To ensure the high precision required for metric extraction, a custom-developed graphical
-verification tool was utilised to perform a final audit of the filtered dataset. This tool, shown in Figure~\ref{fig:bbox_editor}, implemented using the Tkinter framework, allowed for the rapid visual inspection of the SAM-generated labels.
+verification tool was utilized to perform a final audit of the filtered dataset. This tool, shown in Figure~\ref{fig:bbox_editor}, implemented using the Tkinter framework, allowed for the rapid visual inspection of the SAM-generated labels.
 
-The interface displayed all the video frames with their bounding boxes overlaid, allowing the user to quickly navigate through the entire dataset. The user could click on any frame to maximise it, and then manually add, remove, or adjust bounding boxes as needed. This step was crucial for catching any remaining errors that automated filtering might have missed, such as subtle mask bleed or borderline identity switches that did not trigger the IQR outlier detection. Thanks to the initial filtering, the main use of this tool was to manually add bounding boxes for frames where SAM 2 failed to detect a marker at all, which is a critical failure mode for scale estimation since it reduces the number of visible reference pairs. The tool's design prioritised efficiency, allowing the user to audit thousands of frames in a matter of hours, thus ensuring that the final training set was of the highest possible quality before being used to train the YOLO26s model.
+The interface displayed all the video frames with their bounding boxes overlaid, allowing the user to quickly navigate through the entire dataset. The user could click on any frame to maximize it, and then manually add, remove, or adjust bounding boxes as needed. This step was crucial for catching any remaining errors that automated filtering might have missed, such as subtle mask bleed or borderline identity switches that did not trigger the IQR outlier detection. Thanks to the initial filtering, the main use of this tool was to manually add bounding boxes for frames where SAM 2 failed to detect a marker at all, which is a critical failure mode for scale estimation since it reduces the number of visible reference pairs. The tool's design prioritized efficiency, allowing the user to audit thousands of frames in a matter of hours, thus ensuring that the final training set was of the highest possible quality before being used to train the YOLO26s model.
 This hybrid approach of combining foundation model automation with human oversight exemplifies the MITL paradigm, leveraging the strengths of both machine and human intelligence to create a robust dataset for training a precision detection model. This step was crucial for establishing a ground truth
 used for the final model fine-tuning and the subsequent accuracy evaluations in Chapter~\ref{chp:evaluation}.
 
@@ -358,13 +354,11 @@ used for the final model fine-tuning and the subsequent accuracy evaluations in 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{bbox_editor.png}
-    \caption{Human-in-the-loop verification tool interface for annotated bounding boxes.}
-    \label{fig:bbox_editor}
+    \caption{Human-in-the-loop verification tool interface for annotated bounding boxes.}\label{fig:bbox_editor}
 \end{figure}
 
 % ============================================================
-\section{Dynamic Scale Extraction Pipeline}
-\label{sec:scale-extraction}
+\section{Dynamic Scale Extraction Pipeline}\label{sec:scale-extraction}
 % ============================================================
 
 Objective 3 focuses on establishing a stable reference for converting image coordinates into
@@ -377,40 +371,40 @@ over alternative detection architectures. Two-stage detectors such as Faster R-C
 higher accuracy on standard benchmarks by separating region proposal from classification, but
 their inference speed is incompatible with the requirement to process full video sequences at
 interactive rates. For a single-class detection task on visually distinctive markers, a
-one-stage YOLO variant provides sufficient localisation accuracy at a fraction of the
+one-stage YOLO variant provides sufficient localization accuracy at a fraction of the
 computational cost, making the accuracy-throughput trade-off clearly favourable for the
 proposed pipeline. Among the YOLO family, earlier versions such as v7, v8, and v10 were
 considered but YOLO26 was selected for its improved small-object detection head and its
 anchor-free regression formulation, which is better suited to cylindrical targets whose
 bounding box aspect ratios vary continuously with viewing distance rather than clustering
-around a small number of predefined anchor aspect ratios.
+around a few predefined anchor aspect ratios.
 
 \subsection{Marker Detection via YOLO26}
 
 A custom YOLO26s model~\cite{jocher_ultralytics_2023} was fine-tuned on the SAM-generated
-dataset to provide a robust method for localising markers. To ensure high localisation
+dataset to provide a robust method for localizing markers. To ensure high localization
 accuracy, which is critical for the subsequent pixel-to-metre ratio calculation, the training
-process utilised a Distribution Focal Loss (DFL) gain of $1.5$ and a Box Loss gain of $7.5$.
-These settings prioritise bounding box regression over classification accuracy, as the project
+process utilized a Distribution Focal Loss (DFL) gain of $1.5$ and a Box Loss gain of $7.5$.
+These settings prioritize bounding box regression over classification accuracy, as the project
 involves a single-class detection task where classification loss is trivially small and
 allocating representational capacity to it would be wasteful: upweighting the box regression
-terms forces the model to refine its localisation precision, which is the property that
+terms forces the model to refine its localization precision, which is the property that
 directly governs the accuracy of the scale calibration downstream.
 
 Training was conducted over 200 epochs with an image resolution of $640 \times 640$ pixels.
 Higher resolutions were considered but rejected on the grounds that the markers occupy
-sufficient pixels at 640 that sub-pixel localisation precision is not the limiting factor in
+sufficient pixels at 640 that sub-pixel localization precision is not the limiting factor in
 scale estimation, and the associated increase in GPU memory consumption would have required
 reducing the batch size, adversely affecting gradient estimate quality. To mitigate overfitting
-on the SAM-generated dataset, several regularisation and augmentation strategies were
+on the SAM-generated dataset, several regularization and augmentation strategies were
 employed.
 
 An initial learning rate of $0.01$ was used with a 3-epoch warm-up period and a momentum of
-$0.937$ to stabilise early gradient descent, preventing the large gradient steps in the
+$0.937$ to stabilize early gradient descent, preventing the large gradient steps in the
 initial epochs from perturbing the pre-trained feature representations before the learning
-rate scheduler had converged. The model utilised Mosaic augmentation ($1.0$) and Random
+rate scheduler had converged. The model utilized Mosaic augmentation ($1.0$) and Random
 Erasing ($0.4$) to simulate occlusions and varying marker densities, forcing the network to
-learn robust features rather than memorising specific marker placements. Mosaic augmentation
+learn robust features rather than memorizing specific marker placements. Mosaic augmentation
 directly addresses the scenario where markers appear at different apparent scales within the
 same field of view, as occurs when the camera is closer to some markers than others along the
 lane. Random Erasing simulates transient occlusions caused by splashing water, training the
@@ -438,7 +432,7 @@ the optimal point on the accuracy-throughput trade-off curve for this applicatio
 \subsection{Refraction-Aware Scaling}
 
 As identified in preliminary experiments, frame-independent scaling is susceptible to
-refractive noise. To stabilise the scale, the system implements a Median Absolute Deviation
+refractive noise. To stabilize the scale, the system implements a Median Absolute Deviation
 (MAD) inlier mask~\cite{leys2013detecting}. This filter calculates the pixel-to-metre ratio
 ($px/m$) for all visible marker pairs and rejects outliers that deviate by more than $k$ times
 the MAD from the median, where $k$ was set to accommodate the expected variance in
@@ -461,11 +455,10 @@ zero-order hold in control systems and is a standard approach in tracking pipeli
 sensor observations are intermittent.
 
 % ============================================================
-\section{Kinematic Metric Extraction}
-\label{sec:kinematic-extraction}
+\section{Kinematic Metric Extraction}\label{sec:kinematic-extraction}
 % ============================================================
 
-The final phase synthesises the outputs of marker detection, ego-motion compensation, and pose
+The final phase synthesizes the outputs of marker detection, ego-motion compensation, and pose
 estimation to produce absolute positional and kinematic metrics for the swimmer.
 
 \subsection{Ego-Motion Compensation}
@@ -475,7 +468,7 @@ are subject to both lateral drift and incidental shake between frames, making th
 across time without compensation. The choice of handheld video over a fixed camera installation
 was a deliberate architectural decision rather than a pragmatic compromise. A fixed camera
 would eliminate the need for ego-motion compensation entirely, but it would cover only a
-fraction of the lane from a single vantage point, requiring either multiple synchronised
+fraction of the lane from a single vantage point, requiring either multiple synchronized
 cameras or an acceptance that the majority of the swim would not be monitored. The handheld
 approach requires no permanent poolside infrastructure, making the system deployable at any
 competition or training venue without modification to the facility. The operator can pan or move the camera to keep the swimmer in frame throughout the full length of the pool, and it reflects the realistic
@@ -507,12 +500,12 @@ The global pixel position of the swimmer is then:
     p_{\text{global}} = p_{\text{pixel}} + X_{\text{cam}}
 \end{equation}
 
-where $p_{\text{pixel}}$ is the swimmer's raw horizontal pixel coordinate in the current frame.
+Where $p_{\text{pixel}}$ is the swimmer's raw horizontal pixel coordinate in the current frame.
 
 Feature-based optical flow, specifically the Lucas-Kanade tracker, was evaluated as a
 classical alternative for ego-motion estimation. However, the pool environment's repetitive
 textures generate numerous ambiguous feature matches that violate the spatial smoothness assumption
-underpinning optical flow methods. Electronic image stabilisation, available in some consumer
+underpinning optical flow methods. Electronic image stabilization, available in some consumer
 cameras, was considered as a hardware-level alternative but was unavailable on the recording
 hardware used in this project. The marker-based approach is semantically grounded in the
 geometry of the scene and is therefore more reliable in the repetitively textured aquatic
@@ -537,13 +530,13 @@ metres is then:
     x_{\text{m}} = \frac{p_{\text{global}}}{\rho}
 \end{equation}
 
-\subsection{Swimmer Localisation via ViTPose}
+\subsection{Swimmer Localization via ViTPose}
 
-The swimmer's position is localised using the ViTPose pose estimation model~\cite{xu2022vitpose}.
+The swimmer's position is localized using the ViTPose pose estimation model~\cite{xu2022vitpose}.
 ViTPose was selected over two principal alternatives. The OpenPose bottom-up approach~\cite{cao2019openpose}
 was evaluated during preliminary testing but was found to fail frequently when a swimmer's
 limbs crossed the water-air boundary, as the part affinity field grouping mechanism relied on
-localised gradient features that are disrupted by refraction and surface glare at this
+localized gradient features that are disrupted by refraction and surface glare at this
 interface. HRNet-based top-down models~\cite{wang2020deep} were considered as a technically
 competitive alternative, however, ViTPose's plain Vision Transformer backbone~\cite{dosovitskiy2020image}
 offers a specific advantage in the aquatic domain: its global self-attention mechanism
@@ -551,7 +544,7 @@ aggregates contextual information from the full image at every layer, allowing t
 infer a joint's position from the broader kinematic context of the body even when that joint
 is locally indistinguishable from the water surface. This global receptive field is
 architecturally absent in convolutional HRNet variants, which rely on local convolutions and
-can be confused when localised keypoint evidence is obliterated by water.
+can be confused when localized keypoint evidence is obliterated by water.
 
 Rather than using the bounding box centroid, the system extracts the left and right hip
 keypoints (COCO indices 11 and 12) and computes their midpoint as a proxy for the centre of
@@ -644,8 +637,7 @@ From the smoothed velocity estimates, summary kinematic metrics are derived: abs
 profile, peak velocity, and mean velocity over the analysed swim segment.
 
 % ============================================================
-\section{Summary}
-\label{sec:methodology-summary}
+\section{Summary}\label{sec:methodology-summary}
 % ============================================================
 
 This chapter presented a four-phase methodology for extracting swimmer kinematics from
@@ -659,11 +651,11 @@ intractable at scale, synthetic generation as insufficiently realistic, and dire
 learning as impractical in the absence of domain-matched public data. The Model-in-the-Loop
 pipeline, combining SAM 2 propagation with IQR-based outlier filtering and human verification,
 was therefore developed to construct a domain-specific training set at manageable cost. A
-refraction-aware MAD inlier filter was applied to stabilise the per-frame pixel-to-metre scale
+refraction-aware MAD inlier filter was applied to stabilize the per-frame pixel-to-metre scale
 estimate derived from the known marker spacing, with the MAD selected over the IQR specifically
 because it remains valid when the number of observable reference pairs is small. Finally,
 ego-motion compensation using the markers as stationary anchors, ViTPose-based hip
-localisation selected for its global attention mechanism and anatomical proximity to the centre
+localization selected for its global attention mechanism and anatomical proximity to the centre
 of mass, and a Kalman filter smoothing stage were combined to produce absolute positional and
 velocity profiles from the raw tracking output. Feature-based optical flow was rejected for
 ego-motion estimation due to the repetitive textures of the pool environment, OpenPose was
@@ -675,5 +667,5 @@ trajectory, a role for which its non-causal polynomial formulation is well suite
 
 The system described in this chapter constitutes a complete pipeline from physical marker
 placement to calibrated kinematic output. Chapter~\ref{chp:evaluation} evaluates each
-component against quantitative accuracy benchmarks and characterises the residual error sources
+component against quantitative accuracy benchmarks and characterizes the residual error sources
 that remain after the mitigation strategies described here have been applied.

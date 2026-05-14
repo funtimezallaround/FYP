@@ -13,7 +13,7 @@ While these early systems represented a step toward automation, they relied on h
 observation and were notoriously fragile, frequently failing under the non-uniform lighting and
 high-entropy background noise characteristic of aquatic environments.
 
-The paradigm shift occurred following the ``Deep Learning revolution,'' catalysed in large part
+The paradigm shift occurred following the ``Deep Learning revolution'', catalysed in large part
 by the success of AlexNet in the 2012 ImageNet challenge~\cite{krizhevsky2012imagenet}. This
 milestone demonstrated that hierarchical feature extraction through Deep Convolutional Neural
 Networks (CNNs) could outperform any human-engineered descriptor. Building on the foundations
@@ -30,7 +30,7 @@ As noted by~\cite{Zhou2025}, AI-driven systems are now the standard for extracti
 data and estimating pose in real time, but their application in swimming remains a frontier of
 computer vision. The current paradigm is moving toward Foundation Models, defined as large-scale
 models trained on massive, diverse datasets that exhibit zero-shot
-generalisation~\cite{dosovitskiy2020image}. This thesis utilises models such as SAM~2 and
+generalization~\cite{dosovitskiy2020image}. This thesis utilizes models such as SAM~2 and
 ViTPose, which provide a level of geometric and spatial reasoning, as well as temporal
 consistency, previously unavailable in sports-specific contexts. Tools such as
 DeepLabCut~\cite{mathis2018deeplabcut} and OpenPose~\cite{cao2019openpose} pioneered the
@@ -50,7 +50,7 @@ $n_1 \sin \theta_1 = n_2 \sin \theta_2$. Because the refractive index of water (
 1.33$) differs significantly from air ($n \approx 1.00$), the apparent position of a swimmer's
 joint underwater is displaced from its true anatomical
 coordinate~\cite{harvey1998calibration}. Underwater camera systems require careful calibration
-to compensate for this distortion, often necessitating specialised refractive camera models or
+to compensate for this distortion, often necessitating specialized refractive camera models or
 dedicated underwater calibration rigs~\cite{shortis2015calibration}. Without such compensation,
 standard pose estimation models produce systematic errors in joint angle calculations, rendering
 them insufficient for high-performance biomechanical analysis.
@@ -61,7 +61,7 @@ and surface glare. These elements introduce severe, transient occlusions and
 ``caustics'', the dancing light patterns on the pool floor caused by the focusing effect of
 surface waves. Indoor pool lighting often exacerbates these effects, creating high-contrast
 reflections that can be mistaken for anatomical features by naive detectors. Furthermore,
-swimming involves a unique ``multi-phase'' appearance problem: an athlete alternates between
+swimming involves a unique multiphase appearance problem: an athlete alternates between
 above-water and below-water states. During a butterfly stroke recovery or a freestyle tumble
 turn, the swimmer's body undergoes sudden, drastic changes in visual texture and limb visibility
 that have no direct terrestrial analogue.
@@ -69,10 +69,10 @@ that have no direct terrestrial analogue.
 These environmental stressors explain why terrestrial benchmarks, such as
 COCO~\cite{lin2014microsoft} or the MPII Human Pose dataset~\cite{andriluka20142d}, are largely
 inadequate for the aquatic domain. While a model trained on COCO may excel at identifying a
-pedestrian on a sidewalk, it lacks exposure to the blurred, refracted, and partially occluded
+pedestrian on a pavement, it lacks exposure to the blurred, refracted, and partially occluded
 silhouettes of a submerged athlete. Einfalt et al.~\cite{einfalt2018activity} demonstrate that
 even fine-tuned CNNs evaluated on real swimming footage exhibit systematic error modes in the
-aquatic environment, confirming that models pre-trained on terrestrial data generalise poorly to
+aquatic environment, confirming that models pre-trained on terrestrial data generalize poorly to
 this domain. This necessitates the use of temporal memory mechanisms, such as the memory bank
 implemented in SAM~2~\cite{ravi2024sam}, which allows a system to maintain object features even
 when they are obscured by a splash or submerged beyond clear visibility. By treating the aquatic
@@ -109,7 +109,7 @@ interact with every other token. Models such as ViTPose~\cite{xu2022vitpose} exp
 context to process the entire frame simultaneously, allowing the model to leverage the context of
 the swimmer's torso to accurately predict the position of a wrist or ankle, even if that
 specific joint is visually distorted by surface ripples. ViTPose is particularly notable for its
-``plain ViT'' backbone and simple decoder head, an architectural choice that prioritises feature
+``plain ViT'' backbone and simple decoder head, an architectural choice that prioritizes feature
 richness over complex structural engineering and tends to improve robustness on
 out-of-distribution data such as underwater footage.
 
@@ -131,7 +131,7 @@ without a reference scale. In sports biomechanics, the ``gold standard'' for thi
 3D multi-camera calibration, often using Direct Linear Transformation (DLT). As the constraints
 of multi-camera acquisition in swimming demonstrate~\cite{sanders2015reliability}, poolside data
 collection is limited by installation space, the requirement for waterproof housing, and the
-difficulty of camera synchronisation, making this approach impractical in routine coaching
+difficulty of camera synchronization, making this approach impractical in routine coaching
 environments.
 
 Alternative paradigms include wearable Inertial Measurement Units (IMUs), which can provide
@@ -139,7 +139,7 @@ direct acceleration data. However, IMUs face significant challenges in swimming,
 contamination from water resistance and the fact that they are often prohibited in official
 competitions. This leaves CV-based planar homography as the most viable alternative. Homography
 assumes a mapping between two planes, for example the plane of the swimmer's lane and the camera
-sensor. While~\cite{Tran2024} utilised lane ropes for this purpose, discrete, underwater markers
+sensor. While~\cite{Tran2024} utilized lane ropes for this purpose, discrete, underwater markers
 provide a more stable reference.
 
 A critical issue in homography-based scaling is error propagation. Because velocity is a derived
@@ -159,11 +159,11 @@ images~\cite{lin2014microsoft}, with aquatic datasets such as
 SwimmerNET~\cite{giulietti_swimmernet_2023}, which are orders of magnitude smaller and often
 lack specific features such as underwater markers. This scarcity is driven by ethical
 restrictions on filming athletes, the logistical difficulty of underwater data collection, and a
-lack of standardised annotation protocols for the aquatic domain.
+lack of standardized annotation protocols for the aquatic domain.
 
 A solution emerging in recent literature is Model-in-the-Loop (MITL) annotation, which sits
 within the broader landscape of semi-supervised learning. Traditional semi-supervised techniques
-such as pseudo-labelling~\cite{lee2013pseudo} and consistency regularisation (for example,
+such as pseudo-labelling~\cite{lee2013pseudo} and consistency regularization (for example,
 FixMatch~\cite{sohn2020fixmatch}) attempt to leverage unlabelled data by having a model predict
 its own labels. MITL refines this by using high-capacity Foundation Models to generate
 pseudo-labels. For example, by using SAM~2's zero-shot segmentation to identify markers in a
@@ -172,7 +172,7 @@ training set can be generated for a more efficient, task-specific detector such 
 
 This approach is further supported by self-supervised models such as
 DINOv2~\cite{oquab2023dinov2}, which learn robust visual features without any labels at all.
-However, MITL carries risks, the primary concern being ``confirmation bias,'' whereby the
+However, MITL carries risks, the primary concern being ``confirmation bias'', whereby the
 student model (for example, YOLO) learns to replicate the systematic errors of the teacher model
 (for example, SAM~2). This project mitigates such risks through human-in-the-loop verification,
 ensuring that the automated MITL pipeline produces markers that are anatomically and
@@ -187,7 +187,7 @@ hampered by three persistent challenges: the failure of traditional trackers dur
 high-turbulence occlusions; metric inaccuracy caused by refraction and poor calibration; and the
 ``cold start'' problem resulting from a lack of labelled underwater data.
 
-This research bridges these gaps by synthesising a multi-stage pipeline that leverages recent
+This research bridges these gaps by synthesizing a multi-stage pipeline that leverages recent
 advances in Foundation Models. By using SAM~2 for stable temporal segmentation, the challenge of
 occlusion and splash noise is addressed directly. By implementing a marker-based homography, a
 robust solution to the metric scaling problem is provided that accounts for the refractive

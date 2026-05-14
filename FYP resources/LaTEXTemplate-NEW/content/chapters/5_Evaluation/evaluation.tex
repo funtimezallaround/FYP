@@ -94,6 +94,7 @@ where a negative value indicates that the system reached checkpoint $i$ earlier 
 \subsection{Analysis of Errors}
 The system achieves an overall MAE of 1.005 s and an RMSE of 1.210 s across 18 recoverable checkpoints. The error distribution exhibits distinct fluctuations rather than a uniform trend across phases. On the outbound leg, the system initially overestimates swimming speed in the mid-pool section—arriving at checkpoints early and reaching a peak error of $-2.70$ s at the 15.0 m mark. However, this trend reverses towards the end of the lap, where the system underestimates speed and arrives late, generating a $+2.02$ s error at 22.5 m. This suggests non-linear tracking distortions or fluctuating pixel-to-metre scale estimations rather than a simple accumulating drift. On the return leg, errors are slightly smaller in magnitude and more consistent; after initial late arrivals near the turn, the system reliably arrives slightly early, with errors clustering between $-0.58$ s and $-1.48$ s. The full trajectory comparison against ground truth checkpoints is shown in Figure~\ref{fig:trajectory_eval}.
 
+%! IMPORTANT: when referencing this figure, explain that the peaks are not due to some error, but caused by the swimmer's incorrect technique.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{trajectory_eval.png}
