@@ -2,107 +2,99 @@
 
 \section{Summary of Contributions}
 
-This project demonstrates that end-to-end extraction of positional and kinematic metrics from
-handheld, uncalibrated poolside video is achievable using only open-source models and a
-low-cost 3D-printed physical marker, with no fixed poolside infrastructure required. Evaluated
-on a single 50\,m breaststroke sequence (participant P035), the system recovered 18 of 20
-spatial checkpoints with a mean absolute split-time error of 1.005\,s and an RMSE of 1.210\,s
-(Table~\ref{tab:split_errors_updated}). At the macro scale, the direction and phasing of the
-breaststroke arm cycle are recoverable from centroid-relative wrist signals; sub-stroke wrist
-kinematics, however, remain too noisy for reliable technique analysis under current conditions.
-The system is therefore best characterised as a proof-of-concept that validates the core
-approach and identifies the challenges that a production deployment would need to
-address, rather than a system ready for competitive coaching use.
+This project demonstrates that composing open-source foundation models into a domain-specific
+pipeline can extract positional and kinematic metrics from handheld poolside video without
+bespoke large-scale training data collection. The central AI contribution is the
+Model-in-the-Loop (MITL) annotation pipeline, which leverages SAM~2~\cite{ravi2024sam} and
+statistical filtering to generate pseudo-labelled training data, enabling a YOLO26s
+detector~\cite{jocher_ultralytics_2023} to be fine-tuned for an underwater domain in which no
+prior labelled dataset existed. Applied to a single 50\,m breaststroke sequence, the resulting
+system recovered 18 of 20 spatial checkpoints with an MAE of 1.005\,s and an RMSE of 1.210\,s
+(Table~\ref{tab:split_errors_updated}). At the macro level, stroke-phase symmetry is
+recoverable from centroid-relative signals, while sub-stroke wrist kinematics, degraded by model
+domain shift, are not yet reliable. The system establishes a feasibility baseline for
+foundation-model composition in a visually challenging domain where labelled data is scarce,
+rather than a production-ready coaching tool.
 
 \section{Critical Reflection: Limitations and Trade-offs}
 
-The system's central value proposition is deployability: a coach can record a training session
-with a standard handheld camera and obtain split times and a velocity profile without
-installing any permanent poolside equipment. A fixed camera on a motorised rail, or a
-multi-camera rig with overlapping fields of view, would eliminate the need for ego-motion
-compensation entirely and would likely yield a substantially lower positional MAE. Such systems
-require venue-specific installation, a permanent power supply, and ongoing maintenance, placing
-them beyond the reach of most club-level coaching environments. The 1.005\,s MAE achieved here
-is therefore best understood not as a deficiency relative to laboratory-grade systems, but as
-the cost of deployability. Whether this accuracy level is sufficient for practical coaching
-depends on the application: at a typical breaststroke speed of approximately 1.0\,m/s, a 1\,s
-timing error corresponds to roughly 1\,m of positional uncertainty, which is adequate for lap
-timing and gross stroke-rate counting but insufficient for resolving inter-stroke speed
-modulations on the order of 0.1--0.2\,m/s that are characteristic of detectable technique
-faults.
+The MITL pipeline's core strength is its ability to bootstrap a task-specific detector from
+unlabelled domain footage. Its central limitation follows from the same mechanism:
+pseudo-labels generated from a single pool encode the visual statistics of that environment,
+and the fine-tuned detector inherits this specificity. Marker confidence jitter on
+out-of-distribution footage (Section~\ref{sec:marker_detection}) illustrates the resulting
+fragility: even within the same physical pool, changes in lighting and turbidity introduce a
+domain shift sufficient to destabilize the scale estimate. A pseudo-labelling flywheel seeded
+across multiple environments would directly address this, but the present evaluation cannot
+quantify the performance boundary, and the two unrecoverable N/A splits in
+Table~\ref{tab:split_errors_updated} are a concrete symptom of this model specificity.
 
-Beyond accuracy, the proof-of-concept scope introduces a significant generalisation risk. The
-fine-tuned YOLO26s detector was trained and evaluated on a single pool, swimmer, and lighting
-configuration; the MITL pseudo-labels encode the visual properties of that specific
-environment, and the detector inherits that specificity. Refraction introduces a systematic
-lateral bias in distal keypoint positions, particularly the wrists, that the current pipeline
-does not correct, as doing so would require knowledge of water depth and camera angle at every
-frame. ViTPose~\cite{xu2022vitpose}, pre-trained on the terrestrial COCO
-dataset~\cite{lin2014microsoft}, exhibits confidence collapse and occasional hallucination on
-submerged body parts where image statistics diverge sharply from its training distribution;
-this accounts for much of the high-frequency artefact observed in the wrist velocity signals.
-Transient occlusions from bubbles and surface glare can persist across multiple frames,
-exceeding the temporal scope of the MAD filter~\cite{leys2013detecting} and causing the scale
-estimate to carry forward stale values, while rapid camera panning during the swimmer's turn
-produces brief ego-motion estimation failures. Finally, the single-observer ground truth split
-times carry an unknown but non-zero perceptual timing uncertainty. Each of these limitations
-is individually manageable; together they imply that the reported MAE represents a lower bound
-on real-world deployment error rather than a performance ceiling.
+ViTPose~\cite{xu2022vitpose}, pre-trained on the terrestrial COCO
+dataset~\cite{lin2014microsoft}, was selected for its strong general-purpose pose estimation
+performance. In the aquatic domain, this choice introduces a systematic distribution gap:
+caustic lighting patterns, chromatic aberration, surface occlusion, and motion blur from
+limited exposure are collectively absent from COCO's training distribution. The observable
+consequences are confidence collapse and keypoint hallucination at distal joints, both visible
+in the wrist velocity artefacts reported in Section~\ref{sec:kinematic_outputs}. Refraction
+further introduces a systematic lateral bias in submerged keypoint positions that a
+rectilinear camera model cannot correct without depth and angle-of-incidence information.
+These failure modes reflect a principled limit on how far a terrestrial foundation model can
+generalize under optical domain shift without adaptation. Taken together with the unknown
+timing uncertainty inherent in single-observer ground truth, the reported MAE of 1.005\,s is
+best understood as a lower bound on real-world deployment error rather than a performance
+ceiling.
 
 \section{Ethical and Practical Considerations}
 
-Video analysis of athletes raises immediate questions of privacy and consent. In this project,
-participation was governed by an institutional consent process; a deployed coaching tool would
-require explicit policies covering data retention periods, access controls, and athletes'
-rights to withdraw their data and request its deletion, none of which are determined by the
-technical architecture of the system.
+AI-based analysis of athletes raises immediate questions of privacy and consent. In this
+project, participation was governed by an institutional consent process, whereas a deployed system
+would require explicit policies covering data retention periods, access controls, and
+athletes' rights to withdraw their data and request its deletion, none of which are determined
+by the model architecture or training pipeline.
 
-Kinematic data derived from athlete footage constitutes performance intelligence with
-potential commercial value, relevant to talent identification, training optimisation, and
-competitive scouting. Whether such data belongs to the athlete, the coach, the club, or a
-technology provider is not resolved by how the pipeline is implemented; it requires explicit
-governance frameworks agreed upon before any deployment.
+Positional and kinematic data generated by an AI pipeline from athlete footage constitute
+performance intelligence with potential commercial value, relevant to talent identification,
+training optimization, and competitive scouting. Whether such data belongs to the athlete, the
+coach, the club, or the technology provider is not resolved by any technical design decision, and
+it requires explicit governance frameworks established before deployment.
 
-A further concern is the risk of over-reliance on numerical outputs. A system that produces
-split times and velocity profiles may lead coaches to treat those figures as ground truth
-rather than as noisy estimates subject to the failure modes described in
-Chapter~\ref{chp:evaluation}. A deployable version of this system should surface uncertainty
-estimates or confidence intervals alongside its point predictions, making the limitations of
-the measurements legible to non-technical users and mitigating the risk of systematic
-over-interpretation.
+A further concern specific to AI-generated metrics is the risk of over-reliance. A system
+that produces numerical outputs such as split times and velocity profiles may lead users to
+treat those figures as ground truth rather than as estimates produced by models with the
+distributional limitations described in Chapter~\ref{chp:evaluation}. A deployable system
+should surface confidence intervals alongside point predictions, making model uncertainty
+legible to non-technical users and mitigating the risk of systematic over-interpretation.
 
 \section{Future Work}
 
 The most impactful near-term improvement to keypoint quality would be fine-tuning
 ViTPose~\cite{xu2022vitpose} on an aquatic-domain dataset. The MITL pipeline developed in
-this project could be adapted to generate pseudo-labelled pose annotations at scale, creating
-a self-reinforcing data flywheel that progressively reduces the COCO distribution
-gap~\cite{lin2014microsoft}. A domain-adapted model would directly address both the confidence
-collapse and the hallucination failures observed in wrist tracking, and would lay the
-groundwork for the sub-stroke technique analysis that the current system cannot reliably
-deliver.
+this project provides a natural mechanism for generating pseudo-labelled pose annotations
+across diverse pool environments at scale, creating a self-reinforcing data flywheel that
+progressively reduces the COCO distribution gap~\cite{lin2014microsoft}. A domain-adapted
+pose model would directly address confidence collapse and keypoint hallucination at distal
+joints, and would lay the groundwork for the sub-stroke technique analysis that the current
+system cannot reliably support.
 
-Fusing the video-based trajectory with data from a waterproof inertial measurement unit worn
-by the swimmer offers a complementary sensing modality that is immune to optical refraction.
-IMU acceleration readings could serve as an additional observation in the Kalman
-filter~\cite{kalman1960new}, tightening the position estimate during marker-loss intervals and
-reducing dependence on the scale carry-forward heuristic that is a primary source of
-non-linear drift.
+The current pipeline treats each frame largely independently, delegating inter-frame coherence
+to the Kalman filter~\cite{kalman1960new}. Replacing the detection and filtering stack with a
+temporal transformer architecture, such as a video-based extension of SAM~2~\cite{ravi2024sam}
+or a transformer-based multi-object tracker, would allow the model to reason over a learned
+temporal context window. This architectural change could recover occluded marker positions and
+keypoints more robustly than the present carry-forward heuristic, and would reduce sensitivity
+to rapid camera motion without relying on hand-crafted filtering parameters.
 
-The current pipeline treats each frame largely independently, relying on the Kalman filter for
-inter-frame coherence. Replacing the YOLO-plus-Kalman tracking stack with a temporal
-transformer architecture, such as a video-based variant of SAM~2~\cite{ravi2024sam} or a
-transformer-based multi-object tracker, would allow the model to reason over a window of
-learned temporal context. This could recover occluded marker positions and keypoints more
-robustly than the carry-forward heuristic and would reduce sensitivity to rapid camera motion
-during the turn.
+Fusing the video-based trajectory with readings from a waterproof inertial measurement unit
+worn by the swimmer would introduce a sensing modality that is immune to optical domain shift.
+IMU acceleration data could serve as an additional observation in the Kalman filter process
+model, constraining the position estimate during marker-loss intervals and providing a
+physically grounded check on the scale carry-forward mechanism that is the primary source of
+non-linear drift in the current system.
 
-Finally, the system currently operates as an offline post-processing pipeline. Adapting it for
-real-time inference would require profiling and optimising the YOLO26s~\cite{jocher_ultralytics_2023}
-and ViTPose inference steps for GPU or NPU execution, and developing a coach-facing interface
-that presents split times, speed profiles, and stroke-symmetry indicators in a form accessible
-to non-technical users. Consistent with the considerations raised in
-Section~\ref{chp:conclusion}.3, this interface should expose calibrated uncertainty estimates
-alongside point predictions rather than presenting a single authoritative number, ensuring
-that the system is used as a decision-support aid rather than as a source of unquestioned
-ground truth.
+Finally, realizing the system's practical potential requires adapting it for real-time
+inference. This entails profiling and optimizing the YOLO26s~\cite{jocher_ultralytics_2023}
+and ViTPose inference graphs for GPU or NPU execution, and developing an interface that
+presents model outputs alongside calibrated uncertainty estimates. Consistent with the
+considerations raised in Section~\ref{chp:conclusion}.3, surfacing uncertainty is not a
+cosmetic addition but a structural requirement for responsible deployment of AI-generated
+performance metrics.
