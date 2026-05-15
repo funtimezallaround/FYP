@@ -29,12 +29,12 @@ Figure~\ref{fig:marker_detection_comparison} presents this comparison. The left 
     \caption{Comparison of marker detection accuracy. Left: Inference on test frames from the training video, showing high confidence and precision. Right: Inference on an unseen video from the same pool.\label{fig:marker_detection_comparison}}
 \end{figure}
 
-Consequently, the model experiences variations in confidence scores and occasional bounding box jitter in the unseen footage. This highlights a common limitation in underwater computer vision: high sensitivity to environmental fluctuations. These variations directly impact the stability of the frame-to-frame pixel-to-metre scale estimation. The subsequent application of the MAD-based inlier filter and Kalman smoothing (discussed in Section~\ref{sec:trajectory_optimisation}) is therefore critical to mitigate these detection inconsistencies and prevent them from propagating as severe positional drift.
+Consequently, the model experiences variations in confidence scores and occasional bounding box jitter in the unseen footage. This highlights a common limitation in underwater \gls{cv}: high sensitivity to environmental fluctuations. These variations directly impact the stability of the frame-to-frame pixel-to-metre scale estimation. The subsequent application of the \gls{mad}-based inlier filter and Kalman smoothing is therefore critical to mitigate these detection inconsistencies and prevent them from propagating as severe positional drift.
 
 \section{Trajectory Optimization and Pre-Evaluation Processing}\label{sec:trajectory_optimisation}
 
 \subsection{Outlier Removal}
-Prior to evaluation, the raw tracking records were subjected to the MAD-based inlier filter and temporal jump filter described in Chapter~\ref{chp:methodology}. Of the 4,052 raw records, 723 were flagged as significant deviations and removed, leaving 3,329 records for downstream processing. A secondary velocity ceiling of 5.0 m/s was subsequently applied, removing a further 32 records whose implied speed was physiologically implausible for competitive breaststroke swimming, justified by world-record 50 m breaststroke splits, which correspond to mean speeds of approximately 1.92 m/s~\cite{worldaquatics}. Any inferred speed exceeding 5.0 m/s therefore constitutes an unambiguous tracking artefact.
+Prior to evaluation, the raw tracking records were subjected to the \gls{mad}-based inlier filter and temporal jump filter described in Chapter~\ref{chp:methodology}. Of the 4,052 raw records, 723 were flagged as significant deviations and removed, leaving 3,329 records for downstream processing. A secondary velocity ceiling of 5.0 m/s was subsequently applied, removing a further 32 records whose implied speed was physiologically implausible for competitive breaststroke swimming, justified by world-record 50 m breaststroke splits, which correspond to mean speeds of approximately 1.92 m/s~\cite{worldaquatics}. Any inferred speed exceeding 5.0 m/s therefore constitutes an unambiguous tracking artefact.
 
 \subsection{Loop Closure Correction}
 The system detects the turn point as the frame index at which the Kalman-filtered position estimate reaches its maximum. For this sequence, the turn was detected at $t = 44.92$ s with a raw maximum position of 27.12 m, requiring an outbound scale correction factor of 0.9218 to anchor the peak exactly at 25.0 m. The return trajectory was subsequently re-mapped using a linear interpolation between the corrected peak and the expected return endpoint. Following loop closure, a Savitzky--Golay filter (window length 61, polynomial order 3) was applied to the centroid velocity signal to suppress residual high-frequency noise.
@@ -50,7 +50,11 @@ Table~\ref{tab:split_errors_updated} presents the per-checkpoint comparison betw
 \end{equation}
 where a negative value indicates that the system reached checkpoint $i$ earlier than the ground truth observation.
 
-\begin{table}[htbp] %TODO: move this to appendix to save a page?
+\subsection{Analysis of Errors}
+The system achieves an overall \gls{mae} of 1.005 s and an \gls{rmse} of 1.210 s across 18 recoverable checkpoints. The error distribution exhibits distinct fluctuations rather than a uniform trend across phases. On the outbound leg, the system initially overestimates swimming speed in the mid-pool section, arriving at checkpoints early and reaching a peak error of $-2.70$ s at the 15.0 m mark. However, this trend reverses towards the end of the lap, where the system underestimates speed and arrives late, generating a $+2.02$ s error at 22.5 m. This suggests non-linear tracking distortions or fluctuating pixel-to-metre scale estimations rather than a simple accumulating drift. On the return leg, errors are slightly smaller in magnitude and more consistent, after initial late arrivals near the turn, the system reliably arrives slightly early, with errors clustering between $-0.58$ s and $-1.48$ s. The full trajectory comparison against ground truth checkpoints is shown in Figure~\ref{fig:trajectory_eval}, where oscillatory peaks are visible, reflecting the swimmer's imperfect stroke-cycle mechanics, exacerbated by the slight tracking errors.
+
+
+\begin{table}[htbp] 
     \centering
     \caption{Updated per-checkpoint split time comparison: automated system vs.\ ground truth. Error $= t_{\text{auto}} - t_{\text{true}}$. (Start at index 385, Turn at index 2041)}\label{tab:split_errors_updated}
     \begin{tabular}{llrrr}
@@ -84,9 +88,6 @@ where a negative value indicates that the system reached checkpoint $i$ earlier 
         \hline
     \end{tabular}
 \end{table}
-
-\subsection{Analysis of Errors}
-The system achieves an overall MAE of 1.005 s and an RMSE of 1.210 s across 18 recoverable checkpoints. The error distribution exhibits distinct fluctuations rather than a uniform trend across phases. On the outbound leg, the system initially overestimates swimming speed in the mid-pool section, arriving at checkpoints early and reaching a peak error of $-2.70$ s at the 15.0 m mark. However, this trend reverses towards the end of the lap, where the system underestimates speed and arrives late, generating a $+2.02$ s error at 22.5 m. This suggests non-linear tracking distortions or fluctuating pixel-to-metre scale estimations rather than a simple accumulating drift. On the return leg, errors are slightly smaller in magnitude and more consistent, after initial late arrivals near the turn, the system reliably arrives slightly early, with errors clustering between $-0.58$ s and $-1.48$ s. The full trajectory comparison against ground truth checkpoints is shown in Figure~\ref{fig:trajectory_eval}, where oscillatory peaks are visible, reflecting the swimmer's imperfect stroke-cycle mechanics, exacerbated by the slight tracking errors.
 
 \begin{figure}[htbp]
     \centering
@@ -129,10 +130,10 @@ Despite the inherent noise in individual trajectories, evaluating the coordinati
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{wrist_symmetry_heatmap.png}
-    \caption{Symmetry heatmap illustrating the spatial correlation between the left and right wrist motions relative to the swimmer's centroid. High-density areas indicate the most common spatial relationship between the limbs during the stroke cycle.\label{fig:wrist_symmetry}}
+    \caption{Symmetry heatmap illustrating the spatial correlation between the left and right wrist motions relative to the swimmer's camera-facing shoulder. High-density areas indicate the most common spatial relationship between the limbs during the stroke cycle.\label{fig:wrist_symmetry}}
 \end{figure}
 
 The generated heatmap exhibits distinct central densities that indicate the underlying stroke rhythm and the overall synchronous nature of the breaststroke pull. However, the presence of asymmetrical dispersion and outliers in the heatmap further corroborates the tracking noise observed in the velocity profiles. While the macro-level phase correspondence between the arms is correctly captured by the model, remaining roughly in phase and appropriately positioned in front of the waist, the fine-grain kinematic noise limits the utility of the current system for precision technique analysis.
 
 \section{Summary}
-The system achieves a mean absolute split-time error of 1.005 s and an RMSE of 1.210 s across 18 checkpoints over a 50 m breaststroke sequence, demonstrating that marker-based ego-motion compensation and Kalman filtering can produce a usable positional trajectory from handheld, uncalibrated poolside footage. The primary positional limitation identified is the non-linear fluctuation in scale estimation on the outbound leg, resulting in alternating periods of overestimated and underestimated swimming speed rather than a strict, continuous monotonic drift. Distal keypoint tracking, particularly for the wrists, remains noisy in aquatic environments and represents the primary target for future refinement.
+The system achieves a mean absolute split-time error of 1.005 s and a \gls{rmse} of 1.210 s across 18 checkpoints over a 50 m breaststroke sequence, demonstrating that marker-based ego-motion compensation and Kalman filtering can produce a usable positional trajectory from handheld, uncalibrated poolside footage. The primary positional limitation identified is the non-linear fluctuation in scale estimation on the outbound leg, resulting in alternating periods of overestimated and underestimated swimming speed rather than a strict, continuous monotonic drift. Distal keypoint tracking, particularly for the wrists, remains noisy in aquatic environments and represents the primary target for future refinement.

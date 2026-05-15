@@ -19,7 +19,7 @@ The first objective required a modular marker design capable of withstanding the
 high-turbulence environment of a swimming pool while remaining identifiable under varying
 refractive conditions.
 
-The lack of existing documentation on underwater marker design for computer vision applications
+The lack of existing documentation on underwater marker design for \gls{cv} applications
 necessitated an iterative prototyping approach. This led to the decision to create a modular
 design for a 3D-printed marker that could be easily set up along the lane. The final design, as
 shown in Figure~\ref{fig:marker-design}, consists of high-contrast, alternating black and white
@@ -81,7 +81,7 @@ decision to 3D-print the markers allowed rapid iteration over design parameters 
 the final geometry was precisely controlled.
 
 Each segment is 10 cm in height, with a 5 cm diameter, and the alternating pattern provides a
-unique visual signature that can be reliably detected by computer vision algorithms. The design
+unique visual signature that can be reliably detected by \gls{cv} algorithms. The design
 also incorporates a screw mechanism that allows for easy assembly and disassembly, enabling
 quick setup along the lane for calibration purposes. This modularity not only facilitates
 testing different configurations but also ensures that the markers can be easily transported
@@ -89,7 +89,7 @@ and stored when not in use. The 10 cm segment height was determined by the requi
 the marker subtend a sufficient number of pixels to be reliably detected at the maximum
 anticipated operating distance: at a camera-to-marker distance of approximately two to three
 metres, a 10 cm feature projects to roughly 50 pixels at a 1080p resolution, which is
-sufficient for a YOLO-family one-stage detector to localize accurately. A smaller segment
+sufficient for a \gls{yolo}-family one-stage detector to localize accurately. A smaller segment
 height would have reduced this pixel count below the threshold of reliable detection, while a
 larger height would have increased physical mass and the risk of the marker toppling in
 turbulent conditions.
@@ -127,11 +127,11 @@ difficult to detect reliably beyond 2 m, while larger diameters increased buoyan
 required heavier weighting to remain upright. These observations collectively converged on the final configuration: a 5 cm diameter cylinder with 10 cm alternating segments, spaced at 2.5 m intervals.
 
 % ============================================================
-\section{Dataset Generation and Model-in-the-Loop Annotation}\label{sec:dataset-generation}
+\section{Dataset Generation and \gls{mitl} Annotation}\label{sec:dataset-generation}
 % ============================================================
 
 To address the second objective, necessitated by the lack of annotated underwater datasets, a
-``Model-in-the-Loop'' (MITL) workflow was developed. This phase utilized foundation models to
+\gls{mitl} workflow was developed. This phase utilized foundation models to
 automate the labelling process for the downstream YOLO26 detector. The entire dataset creation
 pipeline is visualized in Figure~\ref{fig:training_pipeline}.
 
@@ -228,9 +228,9 @@ pipeline is visualized in Figure~\ref{fig:training_pipeline}.
     \caption{Marker Detection Model Training Pipeline.}\label{fig:training_pipeline}
 \end{figure}
 
-\subsection{Motivation for the MITL Approach}
+\subsection{Motivation for the \gls{mitl} Approach}
 
-Before describing the implementation, it is necessary to justify why the MITL paradigm was
+Before describing the implementation, it is necessary to justify why the \gls{mitl} paradigm was
 selected over the three principal alternatives. Full manual annotation was the most obvious
 baseline: a trained annotator can produce a bounding box label in approximately two to five
 minutes per frame when working carefully in visually challenging material. At 25 frames per
@@ -247,14 +247,14 @@ terrestrial calibration target datasets was similarly infeasible: no public data
 annotated underwater cylindrical calibration targets exists, and the visual characteristics
 of the markers, strongly shaped by the aquatic optical environment, are sufficiently different
 from terrestrial equivalents to make direct transfer learning unreliable without substantial
-domain adaptation. The MITL approach, by contrast, exploited the zero-shot generalization
+domain adaptation. The \gls{mitl} approach, by contrast, exploited the zero-shot generalization
 capability of a large foundation model to generate approximate labels at near-zero marginal
 cost, with subsequent stages refining quality to the standard required for training a precision
 detector.
 
-\subsection{Automated Labelling with SAM 2}
+\subsection{Automated Labelling with \gls{sam} 2}
 
-The Segment Anything Model 2 (SAM 2)~\cite{ravi2024sam} was utilized to propagate marker
+The \gls{sam} 2~\cite{ravi2024sam} was utilized to propagate marker
 bounding boxes across video sequences. Prompts were provided from the initial frames,
 propagated through the video. Once all tracked markers exited the frame, the process was
 repeated for the next chunk of frames until the entire video was annotated. This approach
@@ -262,17 +262,17 @@ reduced manual annotation time substantially while maintaining high-quality labe
 was repeated for multiple videos, resulting in a dataset of over 4,000 annotated frames, and
 over 7,000 bounding boxes.
 
-SAM 2 was selected over the original SAM v1 because its architecture incorporates a temporal
+\gls{sam} 2 was selected over the original \gls{sam} v1 because its architecture incorporates a temporal
 memory bank that allows object identity to be propagated across video frames rather than
 requiring independent prompting of each image~\cite{ravi2024sam}. For a video annotation
 task, this temporal propagation is the core requirement: without it, the model is simply
 applied frame-by-frame with no continuity guarantee, offering no advantage over per-frame
 automated segmentation followed by bounding box extraction. The memory bank design means that
 an object prompted in frame $t$ can be tracked through subsequent frames without further
-human input, which is precisely the efficiency gain the MITL pipeline depends on.
+human input, which is precisely the efficiency gain the \gls{mitl} pipeline depends on.
 
 Propagation was performed in chunks rather than as a single pass over each video for a
-principled reason. Since the video footage follows the swimmer along the lane, markers will be popping in and out of the frame as the camera pans. If the entire video is processed in one pass, once all the tracked objects are out of the frame, the model will have no active prompts to track and will effectively be operating in zero-shot mode, producing unreliable segmentations. By processing in chunks, the model is reset with new prompts at regular intervals, ensuring that it always has a valid reference for tracking and preventing the degradation of segmentation quality over time. Before ingestion into SAM 2, frames were extracted
+principled reason. Since the video footage follows the swimmer along the lane, markers will be popping in and out of the frame as the camera pans. If the entire video is processed in one pass, once all the tracked objects are out of the frame, the model will have no active prompts to track and will effectively be operating in zero-shot mode, producing unreliable segmentations. By processing in chunks, the model is reset with new prompts at regular intervals, ensuring that it always has a valid reference for tracking and preventing the degradation of segmentation quality over time. Before ingestion into \gls{sam} 2, frames were extracted
 from video at the native frame rate to preserve temporal continuity, and no resolution
 downsampling was applied, as the markers' small pixel footprint made preserving full resolution
 important for accurate mask boundaries.
@@ -281,25 +281,25 @@ important for accurate mask boundaries.
 
 Automated tracking via foundation models, while efficient, is susceptible to ``mask jitter''
 and drift, particularly when visual features are distorted by water refraction or transient
-occlusions. To ensure the robustness of the downstream YOLO detector, a statistical filtering
-stage was implemented to prune the raw SAM 2 output.
+occlusions. To ensure the robustness of the downstream \gls{yolo} detector, a statistical filtering
+stage was implemented to prune the raw \gls{sam} 2 output.
 
 The filtering process focuses on the geometric consistency of the generated bounding boxes.
 Based on the assumption that the physical dimensions of the markers are constant, any
 significant variation in the predicted box area or aspect ratio was flagged as tracking noise.
-The system utilizes the Interquartile Range (IQR) method~\cite{tukey1977exploratory} to
+The system utilizes the \gls{iqr} method~\cite{tukey1977exploratory} to
 identify and remove these outliers. For a set of bounding box areas $A$, the filtering bounds
 are defined as:
 \begin{equation}
-    [\text{Lower Bound}, \text{Upper Bound}] = [Q_1 - 1.5 \times \text{IQR}, Q_3 +
-    1.5 \times \text{IQR}]
+    [\text{Lower Bound}, \text{Upper Bound}] = [Q_1 - 1.5 \times \text{\gls{iqr}}, Q_3 +
+    1.5 \times \text{\gls{iqr}}]
 \end{equation}
 where $Q_1$ and $Q_3$ represent the first and third quartiles, respectively.
 
-The IQR was preferred over the standard deviation as the basis for outlier detection because
+The \gls{iqr} was preferred over the standard deviation as the basis for outlier detection because
 the standard deviation is a non-robust statistic: it is sensitive to the very extreme values
 it is attempting to identify, since each outlier inflates both the mean and the standard
-deviation and thereby raises the rejection threshold~\cite{leys2013detecting}. The IQR, by
+deviation and thereby raises the rejection threshold~\cite{leys2013detecting}. The \gls{iqr}, by
 contrast, is computed entirely from the central half of the distribution and is therefore
 resistant to extreme values by construction. The Tukey fence multiplier of 1.5 was retained
 rather than adopting a stricter value such as 3.0, because the goal at this stage is to
@@ -308,8 +308,8 @@ produce a clean training set rather than to preserve maximum data volume: a fals
 positive (discarding a valid label), and the 1.5 multiplier provides a conservative rejection
 criterion appropriate for this asymmetric cost.
 
-The specific failure modes observed in the raw SAM 2 output fell into two categories.
-The first was mask bleed, wherein SAM 2 expanded a marker's mask boundary to incorporate an
+The specific failure modes observed in the raw \gls{sam} 2 output fell into two categories.
+The first was mask bleed, wherein \gls{sam} 2 expanded a marker's mask boundary to incorporate an
 adjacent splash event, substantially increasing the bounding box area and reducing the
 inferred aspect ratio. The second was identity switching, wherein the tracker attached to a
 lane rope buoy rather than the intended marker, producing a bounding box of markedly different
@@ -325,27 +325,27 @@ representations of the underwater markers.
 
 To ensure the YOLO26 model was trained using the best possible dataset, an A/B testing
 approach was implemented. Two datasets were created: Dataset A, which included all
-SAM-generated labels, and Dataset B, which included only the filtered labels after the IQR
+\gls{sam}-generated labels, and Dataset B, which included only the filtered labels after the \gls{iqr}
 outlier removal process. Both datasets were used to train separate YOLO26n models, and their
-performance was compared using standard metrics such as mean Average Precision (mAP) and visual
+performance was compared using standard metrics such as \gls{map} and visual
 inspection of the predicted bounding boxes.
 
 The nano variant was used for the comparative experiment rather than the small variant that
 was ultimately deployed, because the lower training time of the nano architecture allows the
 A/B comparison to be completed within a practical iteration cycle. If the quality benefit of
-filtering is genuine, it will manifest at nano scale as a consistent improvement in mAP
+filtering is genuine, it will manifest at nano scale as a consistent improvement in \gls{map}
 across evaluation thresholds, constituting sufficient evidence to justify applying the same
-pipeline to the larger model. The filtered dataset yielded a consistently higher mAP across
-all evaluation thresholds, confirming that the IQR removal stage improved training data
+pipeline to the larger model. The filtered dataset yielded a consistently higher \gls{map} across
+all evaluation thresholds, confirming that the \gls{iqr} removal stage improved training data
 quality in a measurable way, thus was selected for the final training of the YOLO26s model.
 
 \subsection{Human-in-the-Loop Verification}
 
 To ensure the high precision required for metric extraction, a custom-developed graphical
-verification tool was utilized to perform a final audit of the filtered dataset. This tool, shown in Figure~\ref{fig:bbox_editor}, implemented using the Tkinter framework, allowed for the rapid visual inspection of the SAM-generated labels.
+verification tool was utilized to perform a final audit of the filtered dataset. This tool, shown in Figure~\ref{fig:bbox_editor}, implemented using the Tkinter framework, allowed for the rapid visual inspection of the \gls{sam}-generated labels.
 
-The interface displayed all the video frames with their bounding boxes overlaid, allowing the user to quickly navigate through the entire dataset. The user could click on any frame to maximize it, and then manually add, remove, or adjust bounding boxes as needed. This step was crucial for catching any remaining errors that automated filtering might have missed, such as subtle mask bleed or borderline identity switches that did not trigger the IQR outlier detection. Thanks to the initial filtering, the main use of this tool was to manually add bounding boxes for frames where SAM 2 failed to detect a marker at all, which is a critical failure mode for scale estimation since it reduces the number of visible reference pairs. The tool's design prioritized efficiency, allowing the user to audit thousands of frames in a matter of hours, thus ensuring that the final training set was of the highest possible quality before being used to train the YOLO26s model.
-This hybrid approach of combining foundation model automation with human oversight exemplifies the MITL paradigm, leveraging the strengths of both machine and human intelligence to create a robust dataset for training a precision detection model. This step was crucial for establishing a ground truth
+The interface displayed all the video frames with their bounding boxes overlaid, allowing the user to quickly navigate through the entire dataset. The user could click on any frame to maximize it, and then manually add, remove, or adjust bounding boxes as needed. This step was crucial for catching any remaining errors that automated filtering might have missed, such as subtle mask bleed or borderline identity switches that did not trigger the \gls{iqr} outlier detection. Thanks to the initial filtering, the main use of this tool was to manually add bounding boxes for frames where \gls{sam} 2 failed to detect a marker at all, which is a critical failure mode for scale estimation since it reduces the number of visible reference pairs. The tool's design prioritized efficiency, allowing the user to audit thousands of frames in a matter of hours, thus ensuring that the final training set was of the highest possible quality before being used to train the YOLO26s model.
+This hybrid approach of combining foundation model automation with human oversight exemplifies the \gls{mitl} paradigm, leveraging the strengths of both machine and human intelligence to create a robust dataset for training a precision detection model. This step was crucial for establishing a ground truth
 used for the final model fine-tuning and the subsequent accuracy evaluations in Chapter~\ref{chp:evaluation}.
 
 
@@ -367,13 +367,13 @@ metric units.
 \subsection{Model Selection Rationale}
 
 Before describing the training configuration, it is necessary to justify the choice of YOLO26
-over alternative detection architectures. Two-stage detectors such as Faster R-CNN achieve
+over alternative detection architectures. Two-stage detectors such as Faster \gls{rcnn} achieve
 higher accuracy on standard benchmarks by separating region proposal from classification, but
 their inference speed is incompatible with the requirement to process full video sequences at
 interactive rates. For a single-class detection task on visually distinctive markers, a
-one-stage YOLO variant provides sufficient localization accuracy at a fraction of the
+one-stage \gls{yolo} variant provides sufficient localization accuracy at a fraction of the
 computational cost, making the accuracy-throughput trade-off clearly favourable for the
-proposed pipeline. Among the YOLO family, earlier versions such as v7, v8, and v10 were
+proposed pipeline. Among the \gls{yolo} family, earlier versions such as v7, v8, and v10 were
 considered but YOLO26 was selected for its improved small-object detection head and its
 anchor-free regression formulation, which is better suited to cylindrical targets whose
 bounding box aspect ratios vary continuously with viewing distance rather than clustering
@@ -381,10 +381,10 @@ around a few predefined anchor aspect ratios.
 
 \subsection{Marker Detection via YOLO26}
 
-A custom YOLO26s model~\cite{jocher_ultralytics_2023} was fine-tuned on the SAM-generated
+A custom YOLO26s model~\cite{jocher_ultralytics_2023} was fine-tuned on the \gls{sam}-generated
 dataset to provide a robust method for localizing markers. To ensure high localization
 accuracy, which is critical for the subsequent pixel-to-metre ratio calculation, the training
-process utilized a Distribution Focal Loss (DFL) gain of $1.5$ and a Box Loss gain of $7.5$.
+process utilized a \gls{dfl} gain of $1.5$ and a Box Loss gain of $7.5$.
 These settings prioritize bounding box regression over classification accuracy, as the project
 involves a single-class detection task where classification loss is trivially small and
 allocating representational capacity to it would be wasteful: upweighting the box regression
@@ -394,9 +394,9 @@ directly governs the accuracy of the scale calibration downstream.
 Training was conducted over 200 epochs with an image resolution of $640 \times 640$ pixels.
 Higher resolutions were considered but rejected on the grounds that the markers occupy
 sufficient pixels at 640 that sub-pixel localization precision is not the limiting factor in
-scale estimation, and the associated increase in GPU memory consumption would have required
+scale estimation, and the associated increase in \gls{gpu} memory consumption would have required
 reducing the batch size, adversely affecting gradient estimate quality. To mitigate overfitting
-on the SAM-generated dataset, several regularization and augmentation strategies were
+on the \gls{sam}-generated dataset, several regularization and augmentation strategies were
 employed.
 
 An initial learning rate of $0.01$ was used with a 3-epoch warm-up period and a momentum of
@@ -409,7 +409,7 @@ directly addresses the scenario where markers appear at different apparent scale
 same field of view, as occurs when the camera is closer to some markers than others along the
 lane. Random Erasing simulates transient occlusions caused by splashing water, training the
 model to produce valid detections even when part of the marker is obscured. Variations in
-lighting and glare were accounted for by adjusting HSV (Hue, Saturation, Value) gains
+lighting and glare were accounted for by adjusting \gls{hsv} gains
 ($hsv\_h=0.015$, $hsv\_s=0.7$, $hsv\_v=0.4$). The saturation jitter value of $0.7$ is
 intentionally high because pool environments vary dramatically in colour temperature between
 outdoor venues under natural daylight and indoor venues under fluorescent or LED illumination,
@@ -417,7 +417,7 @@ and the model must remain effective across this range without retraining. An ear
 patience of 20 epochs was implemented to terminate training if the validation fitness failed to
 improve, providing an automatic mechanism for balancing the risk of underfitting at low epoch
 counts against the risk of overfitting at high epoch counts given the limited dataset size.
-Training was performed on a CUDA-capable GPU, and the resulting model outputs high-confidence
+Training was performed on a \gls{cuda}-capable \gls{gpu}, and the resulting model outputs high-confidence
 bounding boxes that serve as the foundation for physical distance estimation, leveraging the
 known dimensions of the physical markers to establish spatial scale.
 
@@ -432,14 +432,13 @@ the optimal point on the accuracy-throughput trade-off curve for this applicatio
 \subsection{Refraction-Aware Scaling}
 
 As identified in preliminary experiments, frame-independent scaling is susceptible to
-refractive noise. To stabilize the scale, the system implements a Median Absolute Deviation
-(MAD) inlier mask~\cite{leys2013detecting}. This filter calculates the pixel-to-metre ratio
+refractive noise. To stabilize the scale, the system implements a \gls{mad} inlier mask~\cite{leys2013detecting}. This filter calculates the pixel-to-metre ratio
 ($px/m$) for all visible marker pairs and rejects outliers that deviate by more than $k$ times
-the MAD from the median, where $k$ was set to accommodate the expected variance in
-refraction-induced scale jitter while retaining the majority of valid observations. The MAD
-was preferred over the IQR for this inference-time filtering task because the number of visible
-marker pairs per frame can be very small, making the IQR either
-undefined or unreliable at such small sample sizes, whereas the MAD operates on the
+the \gls{mad} from the median, where $k$ was set to accommodate the expected variance in
+refraction-induced scale jitter while retaining the majority of valid observations. The \gls{mad}
+was preferred over the \gls{iqr} for this inference-time filtering task because the number of visible
+marker pairs per frame can be very small, making the \gls{iqr} either
+undefined or unreliable at such small sample sizes, whereas the \gls{mad} operates on the
 point-wise distribution of per-pair ratios and remains statistically valid even with a handful
 of observations. This ensures a stable calibration constant $C$ for each frame.
 
@@ -537,35 +536,34 @@ ViTPose was selected over two principal alternatives. The OpenPose bottom-up app
 was evaluated during preliminary testing but was found to fail frequently when a swimmer's
 limbs crossed the water-air boundary, as the part affinity field grouping mechanism relied on
 localized gradient features that are disrupted by refraction and surface glare at this
-interface. HRNet-based top-down models~\cite{wang2020deep} were considered as a technically
-competitive alternative, however, ViTPose's plain Vision Transformer backbone~\cite{dosovitskiy2020image}
+interface. \gls{hrnet}-based top-down models~\cite{wang2020deep} were considered as a technically
+competitive alternative, however, ViTPose's plain \gls{vit} backbone~\cite{dosovitskiy2020image}
 offers a specific advantage in the aquatic domain: its global self-attention mechanism
 aggregates contextual information from the full image at every layer, allowing the model to
 infer a joint's position from the broader kinematic context of the body even when that joint
 is locally indistinguishable from the water surface. This global receptive field is
-architecturally absent in convolutional HRNet variants, which rely on local convolutions and
+architecturally absent in convolutional \gls{hrnet} variants, which rely on local convolutions and
 can be confused when localized keypoint evidence is obliterated by water.
 
 Rather than using the bounding box centroid, the system extracts the left and right hip
-keypoints (COCO indices 11 and 12) and computes their midpoint as a proxy for the centre of
-mass (CoM):
+keypoints (\gls{coco} indices 11 and 12) and computes their midpoint as a proxy for the \gls{com}:
 
 \begin{equation}
     \mathbf{c}_{\text{hip}} = \frac{\mathbf{k}_{11} + \mathbf{k}_{12}}{2}
 \end{equation}
 
-The biomechanical rationale for this choice is that the centre of mass of a swimmer is located
+The biomechanical rationale for this choice is that the \gls{com} of a swimmer is located
 near the pelvis and hip region throughout all stroke phases. Using the bounding box centroid
 as a position proxy introduces a systematic error: during the arm entry phase of the stroke
 cycle, the extended arm shifts the bounding box centroid forward by a body-length fraction,
 introducing an artificial velocity oscillation at the stroke frequency that would contaminate
-the kinematic profile. The hip midpoint is anatomically stable relative to the true CoM across
+the kinematic profile. The hip midpoint is anatomically stable relative to the true \gls{com} across
 all stroke phases and is therefore a more appropriate proxy for a quantity intended to reflect
 whole-body translation. To account for any lateral offset between the swimmer and the marker
 baseline, the hip centroid is orthogonally projected onto the line segment connecting the
 outermost detected markers before the position is converted to metres.
 
-Wrist keypoints (COCO indices 9 and 10) are additionally extracted with a confidence threshold
+Wrist keypoints (\gls{coco} indices 9 and 10) are additionally extracted with a confidence threshold
 of $0.3$, providing left- and right-wrist positions in the global reference frame for
 downstream stroke-cycle analysis. The lower confidence threshold for wrists relative to hips
 reflects the deliberate asymmetry in their detectability: the hips are typically below the
@@ -575,8 +573,8 @@ pipeline.
 
 \subsection{Velocity and Kinematic Profile Extraction}
 
-The raw per-frame position records are first subjected to a Median Absolute Deviation (MAD)
-outlier filter and a temporal jump filter to remove implausible discontinuities. The MAD
+The raw per-frame position records are first subjected to a \gls{mad}
+outlier filter and a temporal jump filter to remove implausible discontinuities. The \gls{mad}
 pre-filter is applied before the Kalman filter rather than relying on the filter alone because
 the Kalman filter's Gaussian noise model is not robust to large impulsive errors: a gross
 outlier, such as a pose estimation failure that places the hip keypoint at the edge of the
@@ -627,7 +625,7 @@ would attenuate such features in proportion to their sharpness.
 
 For wrist velocity signals, an extended cleaning pipeline is applied before the Savitzky-Golay
 smoothing stage: biological thresholding removes physically impossible velocity values,
-linear interpolation fills the resulting gaps produced by NaN-valued frames where the wrist
+linear interpolation fills the resulting gaps produced by \gls{nan}-valued frames where the wrist
 keypoints were not detected, and a median filter suppresses residual impulse noise before the
 Savitzky-Golay filter is applied with a shorter window of 15 frames. The shorter window
 reflects the higher temporal frequency of the wrist motion relative to the whole-body
@@ -648,11 +646,11 @@ conditions of the aquatic environment, with the alternating binary pattern and c
 geometry chosen to overcome the contrast and viewpoint-sensitivity failure modes that preclude
 the use of conventional planar calibration targets. Manual annotation was rejected as
 intractable at scale, synthetic generation as insufficiently realistic, and direct transfer
-learning as impractical in the absence of domain-matched public data. The Model-in-the-Loop
-pipeline, combining SAM 2 propagation with IQR-based outlier filtering and human verification,
+learning as impractical in the absence of domain-matched public data. The \gls{mitl}
+pipeline, combining \gls{sam} 2 propagation with \gls{iqr}-based outlier filtering and human verification,
 was therefore developed to construct a domain-specific training set at manageable cost. A
-refraction-aware MAD inlier filter was applied to stabilize the per-frame pixel-to-metre scale
-estimate derived from the known marker spacing, with the MAD selected over the IQR specifically
+refraction-aware \gls{mad} inlier filter was applied to stabilize the per-frame pixel-to-metre scale
+estimate derived from the known marker spacing, with the \gls{mad} selected over the \gls{iqr} specifically
 because it remains valid when the number of observable reference pairs is small. Finally,
 ego-motion compensation using the markers as stationary anchors, ViTPose-based hip
 localization selected for its global attention mechanism and anatomical proximity to the centre
