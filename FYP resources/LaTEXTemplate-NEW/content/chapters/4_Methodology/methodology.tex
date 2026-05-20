@@ -15,7 +15,7 @@ engineering arguments rather than a sequence of independent implementation choic
 \section{Marker Design and Visibility}\label{sec:marker-design}
 % ============================================================
 
-The first objective required a modular marker design capable of withstanding the
+Objective~\ref{obj:marker_design} required a modular marker design capable of withstanding the
 high-turbulence environment of a swimming pool while remaining identifiable under varying
 refractive conditions.
 
@@ -130,7 +130,7 @@ required heavier weighting to remain upright. These observations collectively co
 \section{Dataset Generation and \gls{mitl} Annotation}\label{sec:dataset-generation}
 % ============================================================
 
-To address the second objective, necessitated by the lack of annotated underwater datasets, a
+To address Objective~\ref{obj:dataset_creation}, necessitated by the lack of annotated underwater datasets, a
 \gls{mitl} workflow was developed. This phase utilized foundation models to
 automate the labelling process for the downstream \gls{yolo26} detector. The entire dataset creation
 pipeline is visualized in Figure~\ref{fig:training_pipeline}.
@@ -362,7 +362,7 @@ used for the final model fine-tuning and the subsequent accuracy evaluations in 
 \section{Dynamic Scale Extraction Pipeline}\label{sec:scale-extraction}
 % ============================================================
 
-Objective 3 focuses on establishing a stable reference for converting image coordinates into
+Objective~\ref{obj:calibration} focuses on establishing a stable reference for converting image coordinates into
 metric units.
 
 \subsection{Model Selection Rationale}
@@ -458,7 +458,7 @@ sensor observations are intermittent.
 \section{Kinematic Metric Extraction}\label{sec:kinematic-extraction}
 % ============================================================
 
-The final phase synthesizes the outputs of marker detection, ego-motion compensation, and pose
+The final phase (Objective~\ref{obj:kinematic_metrics}) synthesizes the outputs of marker detection, ego-motion compensation, and pose
 estimation to produce absolute positional and kinematic metrics for the swimmer.
 
 \subsection{Ego-Motion Compensation}
