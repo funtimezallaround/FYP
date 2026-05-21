@@ -1,5 +1,4 @@
 \graphicspath{{content/chapters/4_Methodology/figures/}}
-
 \chapter{Methodology}\label{chp:methodology}
 
 This chapter details the technical implementation of the proof-of-concept system. The
@@ -345,18 +344,16 @@ quality in a measurable way, thus was selected for the final training of the \gl
 To ensure the high precision required for metric extraction, a custom-developed graphical
 verification tool was utilized to perform a final audit of the filtered dataset. This tool, shown in Figure~\ref{fig:bbox_editor}, implemented using the Tkinter framework, allowed for the rapid visual inspection of the \gls{sam}-generated labels.
 
-The interface displayed all the video frames with their bounding boxes overlaid, allowing the user to quickly navigate through the entire dataset. The user could click on any frame to maximize it, and then manually add, remove, or adjust bounding boxes as needed. This step was crucial for catching any remaining errors that automated filtering might have missed, such as subtle mask bleed or borderline identity switches that did not trigger the \gls{iqr} outlier detection. Thanks to the initial filtering, the main use of this tool was to manually add bounding boxes for frames where \gls{sam} 2 failed to detect a marker at all, which is a critical failure mode for scale estimation since it reduces the number of visible reference pairs. The tool's design prioritized efficiency, allowing the user to audit thousands of frames in a matter of hours, thus ensuring that the final training set was of the highest possible quality before being used to train the \gls{yolo26}s model.
-This hybrid approach of combining foundation model automation with human oversight exemplifies the \gls{mitl} paradigm, leveraging the strengths of both machine and human intelligence to create a robust dataset for training a precision detection model. This step was crucial for establishing a ground truth
-used for the final model fine-tuning and the subsequent accuracy evaluations in Chapter~\ref{chp:evaluation}.
-
-
-
-
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{bbox_editor.png}
     \caption{Human-in-the-loop verification tool interface for annotated bounding boxes.}\label{fig:bbox_editor}
 \end{figure}
+
+The interface displayed all the video frames with their bounding boxes overlaid, allowing the user to quickly navigate through the entire dataset. The user could click on any frame to maximize it, and then manually add, remove, or adjust bounding boxes as needed. This step was crucial for catching any remaining errors that automated filtering might have missed, such as subtle mask bleed or borderline identity switches that did not trigger the \gls{iqr} outlier detection. Thanks to the initial filtering, the main use of this tool was to manually add bounding boxes for frames where \gls{sam} 2 failed to detect a marker at all, which is a critical failure mode for scale estimation since it reduces the number of visible reference pairs. The tool's design prioritized efficiency, allowing the user to audit thousands of frames in a matter of hours, thus ensuring that the final training set was of the highest possible quality before being used to train the \gls{yolo26}s model.
+This hybrid approach of combining foundation model automation with human oversight exemplifies the \gls{mitl} paradigm, leveraging the strengths of both machine and human intelligence to create a robust dataset for training a precision detection model. This step was crucial for establishing a ground truth
+used for the final model fine-tuning and the subsequent accuracy evaluations in Chapter~\ref{chp:evaluation}.
+
 
 % ============================================================
 \section{Dynamic Scale Extraction Pipeline}\label{sec:scale-extraction}
@@ -403,21 +400,27 @@ employed.
 An initial learning rate of $0.01$ was used with a 3-epoch warm-up period and a momentum of
 $0.937$ to stabilize early gradient descent, preventing the large gradient steps in the
 initial epochs from perturbing the pre-trained feature representations before the learning
-rate scheduler had converged. The model utilized Mosaic augmentation ($1.0$) and Random
+rate scheduler had converged. 
+
+The model utilized Mosaic augmentation ($1.0$) and Random
 Erasing ($0.4$) to simulate occlusions and varying marker densities, forcing the network to
 learn robust features rather than memorizing specific marker placements. Mosaic augmentation
 directly addresses the scenario where markers appear at different apparent scales within the
 same field of view, as occurs when the camera is closer to some markers than others along the
 lane. Random Erasing simulates transient occlusions caused by splashing water, training the
-model to produce valid detections even when part of the marker is obscured. Variations in
+model to produce valid detections even when part of the marker is obscured. 
+
+Variations in
 lighting and glare were accounted for by adjusting \gls{hsv} gains
 ($hsv\_h=0.015$, $hsv\_s=0.7$, $hsv\_v=0.4$). The saturation jitter value of $0.7$ is
 intentionally high because pool environments vary dramatically in colour temperature between
 outdoor venues under natural daylight and indoor venues under fluorescent or LED illumination,
-and the model must remain effective across this range without retraining. An early stopping
-patience of 20 epochs was implemented to terminate training if the validation fitness failed to
+and the model must remain effective across this range without retraining. 
+
+An early stopping patience of $20$ epochs was implemented to terminate training if the validation fitness failed to
 improve, providing an automatic mechanism for balancing the risk of underfitting at low epoch
 counts against the risk of overfitting at high epoch counts given the limited dataset size.
+
 Training was performed on a \gls{cuda}-capable \gls{gpu}, and the resulting model outputs high-confidence
 bounding boxes that serve as the foundation for physical distance estimation, leveraging the
 known dimensions of the physical markers to establish spatial scale.
@@ -521,6 +524,10 @@ is therefore:
 \begin{equation}
     \rho = \frac{\lVert \mathbf{p}_N - \mathbf{p}_1 \rVert_2}{(N-1)\, d_{\text{real}}}
 \end{equation}
+
+\noindent Where $\mathbf{p}_1, \mathbf{p}_N \in \mathbb{R}^2$ are the pixel coordinates of the
+leftmost and rightmost detected markers respectively, and $\lVert \cdot \rVert_2$ denotes the
+Euclidean distance between them in the image plane.
 
 The estimate from the most recent frame in which two or more markers are visible is carried
 forward to frames where the marker count drops below two. The swimmer's absolute position in
@@ -647,7 +654,7 @@ specific error mode introduced by the preceding phase's output. The modular 3D-p
 system was designed to remain visually identifiable under the refractive and turbulent
 conditions of the aquatic environment, with the alternating binary pattern and cylindrical
 geometry chosen to overcome the contrast and viewpoint-sensitivity failure modes that preclude
-the use of conventional planar calibration targets. 
+the use of conventional planar calibration targets.
 
 Manual annotation was rejected as
 intractable at scale, synthetic generation as insufficiently realistic, and direct transfer
@@ -656,7 +663,7 @@ pipeline, combining \gls{sam} 2 propagation with \gls{iqr}-based outlier filteri
 was therefore developed to construct a domain-specific training set at manageable cost. A
 refraction-aware \gls{mad} inlier filter was applied to stabilize the per-frame pixel-to-metre scale
 estimate derived from the known marker spacing, with the \gls{mad} selected over the \gls{iqr} specifically
-because it remains valid when the number of observable reference pairs is small. 
+because it remains valid when the number of observable reference pairs is small.
 
 Finally,
 ego-motion compensation using the markers as stationary anchors, ViTPose-based hip

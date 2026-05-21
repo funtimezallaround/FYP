@@ -1,6 +1,8 @@
 \graphicspath{{content/chapters/5_Evaluation/figures/}}
 
 \chapter{Evaluation}\label{chp:evaluation}
+
+\section{Overview}
 This chapter evaluates the proof-of-concept system against quantitative ground truth data. The evaluation is conducted on a single controlled sequence, and while indicative, does not constitute a large-scale validation. Given the exploratory nature of the project, the evaluation focuses on a single representative swim sequence (participant P035, stroke breaststroke, pool length 25.0 m) in which the swimmer completes one full length and returns, yielding a 50 m trajectory. The primary metric is the temporal accuracy with which the system can recover the swimmer's position at known spatial checkpoints. Kinematic outputs, including velocity and wrist-relative motion profiles, are additionally presented and discussed.
 
 \section{Ground Truth Collection}
@@ -10,20 +12,15 @@ All splits were recorded by a single observer, thus no inter-rater reliability m
 \section{Marker Detection Accuracy}\label{sec:marker_detection}
 A foundational element of the positional tracking pipeline is the robust identification of the 2.5 m pool markers. To evaluate the generalizability of the trained object detection model, qualitative assessments were performed comparing its accuracy on the original training video's test split against an unseen video captured in the same pool but under varying environmental conditions.
 
-Figure~\ref{fig:marker_detection_comparison} presents this comparison. The left panels demonstrate the model's performance on test frames extracted from the same sequence used during training. Under these consistent conditions, the model exhibits high confidence and precise bounding box localization. The right panels depict the model's inference on the unseen sequence. While the physical pool geometry remains identical, differences in ambient lighting, water turbidity, surface glare, and camera positioning introduce a noticeable domain shift. %!TODO: add images to illustrate different env conditions
+Figure~\ref{fig:marker_detection_comparison} presents this comparison. The left panels demonstrate the model's performance on test frames extracted from the same sequence used during training. Under these consistent conditions, the model exhibits high confidence and precise bounding box localization. The right panels depict the model's inference on the unseen sequence. While the physical pool geometry remains identical, differences in ambient lighting, water turbidity, surface glare, and camera positioning introduce a noticeable domain shift. 
 
 \begin{figure}[htbp]
     \centering
-    \begin{minipage}{0.48\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{image_011a7b.png}\\[0.2cm]
+        \includegraphics[width=\linewidth]{image_011a7b.png}
         \includegraphics[width=\linewidth]{image_011a60.png}
-    \end{minipage}\hfill
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{image_0116a2.png}\\[0.2cm]
+        \includegraphics[width=\linewidth]{image_0116a2.png}
         \includegraphics[width=\linewidth]{image_01169b.png}
-    \end{minipage}
     \caption{Comparison of marker detection accuracy. Left: Inference on test frames from the training video, showing high confidence and precision. Right: Inference on an unseen video from the same pool.\label{fig:marker_detection_comparison}}
 \end{figure}
 
@@ -49,7 +46,7 @@ Table~\ref{tab:split_errors_updated} presents the per-checkpoint comparison betw
 where a negative value indicates that the system reached checkpoint $i$ earlier than the ground truth observation.
 
 \subsection{Analysis of Errors}
-The system achieves an overall \gls{mae} of 1.005 s and an \gls{rmse} of 1.210 s across 18 recoverable checkpoints. The error distribution exhibits distinct fluctuations rather than a uniform trend across phases. On the outbound leg, the system initially overestimates swimming speed in the mid-pool section, arriving at checkpoints early and reaching a peak error of $-2.70$ s at the 15.0 m mark. However, this trend reverses towards the end of the lap, where the system underestimates speed and arrives late, generating a $+2.02$ s error at 22.5 m. This suggests non-linear tracking distortions or fluctuating pixel-to-metre scale estimations rather than a simple accumulating drift. On the return leg, errors are slightly smaller in magnitude and more consistent, after initial late arrivals near the turn, the system reliably arrives slightly early, with errors clustering between $-0.58$ s and $-1.48$ s. The full trajectory comparison against ground truth checkpoints is shown in Figure~\ref{fig:trajectory_eval}, where oscillatory peaks are visible, reflecting the swimmer's imperfect stroke-cycle mechanics, exacerbated by the slight tracking errors.
+The system achieves an overall \gls{mae} of 1.005 s and a \gls{rmse} of 1.210 s across 18 recoverable checkpoints. The error distribution exhibits distinct fluctuations rather than a uniform trend across phases. On the outbound leg, the system initially overestimates swimming speed in the mid-pool section, arriving at checkpoints early and reaching a peak error of $-2.70$ s at the 15.0 m mark. However, this trend reverses towards the end of the lap, where the system underestimates speed and arrives late, generating a $+2.02$ s error at 22.5 m. This suggests non-linear tracking distortions or fluctuating pixel-to-metre scale estimations rather than a simple accumulating drift. On the return leg, errors are slightly smaller in magnitude and more consistent, after initial late arrivals near the turn, the system reliably arrives slightly early, with errors clustering between $-0.58$ s and $-1.48$ s. The full trajectory comparison against ground truth checkpoints is shown in Figure~\ref{fig:trajectory_eval}, where oscillatory peaks are visible, reflecting the swimmer's imperfect stroke-cycle mechanics, exacerbated by the slight tracking errors.
 
 
 \begin{table}[htbp] 
@@ -90,7 +87,7 @@ The system achieves an overall \gls{mae} of 1.005 s and an \gls{rmse} of 1.210 s
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{trajectory_eval.png}
-    \caption{Full 50 m trajectory evaluation: system trajectory (black line) versus manually recorded ground truth split times (red points). The swimmer travels from 0 m to 25 m (outbound) and returns to 0 m.\label{fig:trajectory_eval}}
+    \caption{Full 50 m trajectory evaluation: system trajectory (black line) versus manually recorded ground truth split times (red points). The y-axis represents the distance from the origin (start wall). The swimmer travels from 0 m to 25 m (outbound) and returns to 0 m.\label{fig:trajectory_eval}}
 \end{figure}
 
 \section{Kalman Filter Noise Reduction}
