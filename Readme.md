@@ -5,7 +5,7 @@ This README describes the repository layout. Many large/derived files (build art
 Top-level files and folders :
 
 - `.gitignore`: repository ignore rules.
-- `requirements.txt`: Python dependencies.
+- `environment.yaml`: Python dependencies.
 - `Article/article.pdf`: final article PDF.
 - `FYP Writeup/main.pdf`: thesis main PDF.
 - `Progress Report/Progress Report.pdf`: thesis progress report PDF (submitted in December).

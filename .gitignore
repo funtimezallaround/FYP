@@ -57,6 +57,7 @@ videos/
 !videos/**/*.ignore
 swimmer_velocity_annotated.mp4
 *.zip
+!sample.mp4
 
 # Training/inference outputs
 code/runs/
