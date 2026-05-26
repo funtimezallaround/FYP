@@ -32,6 +32,8 @@ Top-level files and folders :
 		- `swimmer_velocity.ipynb`: experimental python notebook for swimmer speed estimation using marker and swimmer detection in a single model
 		- `transformers-vitpose.ipynb`: experimental python notebook for using ViTPose
 		- `vitpose_prototyping.ipynb`: experimental python notebook for using ViTPose on swimming footage with YOLO
+    - `code/output/`: outputs from the scripts and notebooks:
+        - `code/output/sample.mp4`: sample output from `code/video_seq_processing_with_vitpose.ipynb`
 
 Notes
 - This README intentionally documents only files that are currently tracked by Git. Other directories such as raw `frames/`, model weights (`*.pt`), generated LaTeX sources, and many build artifacts are excluded by `.gitignore` and therefore not listed here.
