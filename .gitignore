@@ -54,15 +54,14 @@ code/SAM2/sam2/sam2_env/
 # Large local media and derived outputs
 videos/
 *.mp4
-!videos/**/*.ignore
 swimmer_velocity_annotated.mp4
 *.zip
 !sample.mp4
 
 # Training/inference outputs
 code/runs/
-code/frames/**/*.jpg
-code/frames/**/*.jpeg
+frames/**/*.jpg
+frames/**/*.jpeg
 *.cache
 
 # Datasets and labels generated locally
@@ -71,6 +70,9 @@ temp_*
 
 # Model binaries
 *.pt
+models/
+pipeline/models/
+
 
 # SAM2 local runtime assets/checkpoints
 code/SAM2/*
