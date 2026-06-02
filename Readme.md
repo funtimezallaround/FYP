@@ -9,6 +9,7 @@ Top-level files and folders :
 - `Article/article.pdf`: final article PDF.
 - `FYP Writeup/main.pdf`: thesis main PDF.
 - `Progress Report/Progress Report.pdf`: thesis progress report PDF (submitted in December).
+- `Poster/FYP Poster.pdf`: thesis poster PDF.
 - `Readme.md`: this file.
 - `Marker model files/`: Model files for the 3D-printed marker objects for this project:
 	- `Anchor-Lid_V2-01_26-02-24.stp`
