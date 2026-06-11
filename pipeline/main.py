@@ -41,6 +41,14 @@ SMOOTH_VIDEO_PATH = os.path.join(
 TRACKING_CSV_PATH = os.path.join(
     OUT_DIR, f"tracking_records_{SWIMMING_STYLE.lower()}_{PARTICIPANT_ID}.csv")
 
+# Standard COCO Pose Keypoint Names
+COCO_KEYPOINTS = [
+    "nose", "left_eye", "right_eye", "left_ear", "right_ear",
+    "left_shoulder", "right_shoulder", "left_elbow", "right_elbow",
+    "left_wrist", "right_wrist", "left_hip", "right_hip",
+    "left_knee", "right_knee", "left_ankle", "right_ankle"
+]
+
 # =========================================================================================================
 
 
@@ -233,7 +241,7 @@ def main():
     prev_delta_x = 0.0
 
     # --- Setup the Queue and Producer Thread ---
-    MAX_QUEUED_BATCHES = 4  # Queue will hold a max of 5 batches in RAM
+    MAX_QUEUED_BATCHES = 4  # Queue will hold a max of 4 batches in RAM
     frame_queue = queue.Queue(maxsize=MAX_QUEUED_BATCHES)
 
     producer = threading.Thread(
@@ -299,7 +307,6 @@ def main():
                     if crop.size > 0:
                         crop_h, crop_w = crop.shape[:2]
                         # ViTPose expects bounding box coordinates relative to the input image passed to it.
-                        # Since we pass only the cropped image, the box is the entire cropped frame bounds:
                         v_box = np.array([[0, 0, crop_w, crop_h]])
                         vitpose_boxes_list.append(v_box)
 
@@ -346,7 +353,7 @@ def main():
                 swimmer_hbox = swimmer_hboxes[idx_in_batch]
                 current_marker_detections = []
 
-                # Process Markers (Exactly as before)
+                # Process Markers
                 for box in m_res.boxes:
                     if int(box.cls) == 0:
                         x1, y1, x2, y2 = box.xyxy[0].tolist()
@@ -371,7 +378,7 @@ def main():
 
                         swimmer_kpts, swimmer_kpt_scores = kpts, scores
 
-                        # Map joints (Exactly as before)
+                        # Map joints
                         if len(kpts) > 12 and scores[11] > 0.1 and scores[12] > 0.1:
                             lh, rh = kpts[11], kpts[12]
                             swimmer_centroid = (
@@ -404,7 +411,7 @@ def main():
                             cv2.circle(
                                 out_frame, (int(kp[0]), int(kp[1])), 6, color, -1)
 
-                # Ego-Motion Displacement Calculation (NOW RUNNING ON EVERY SINGLE FRAME)
+                # Ego-Motion Displacement Calculation
                 current_markers_x = [m["pt"][0]
                                      for m in current_marker_detections]
                 delta_x = 0.0
@@ -483,25 +490,6 @@ def main():
                             rwrist_pos_m = (
                                 swimmer_rwrist[0] + global_camera_x) / px_per_m if px_per_m > 0 else 0.0
 
-                    # Appending dataset records frame-by-frame (Corrected time_s calculation)
-                    tracking_records.append({
-                        "frame_idx": frame_idx,
-                        "time_s": ((batch_idx * BATCH_SIZE) + idx_in_batch) / FPS,
-                        "pos_m": float(global_pos_m),
-                        "lwrist_pos_m": float(lwrist_pos_m) if not np.isnan(lwrist_pos_m) else None,
-                        "rwrist_pos_m": float(rwrist_pos_m) if not np.isnan(rwrist_pos_m) else None,
-                        "px_per_m": float(px_per_m),
-                        "selection_mode": "auto",
-                        "lwrist_x": swimmer_lwrist[0] if swimmer_lwrist else None,
-                        "lwrist_y": swimmer_lwrist[1] if swimmer_lwrist else None,
-                        "rwrist_x": swimmer_rwrist[0] if swimmer_rwrist else None,
-                        "rwrist_y": swimmer_rwrist[1] if swimmer_rwrist else None,
-                        "lshoulder_x": swimmer_lshoulder[0] if swimmer_lshoulder else None,
-                        "lshoulder_y": swimmer_lshoulder[1] if swimmer_lshoulder else None,
-                        "rshoulder_x": swimmer_rshoulder[0] if swimmer_rshoulder else None,
-                        "rshoulder_y": swimmer_rshoulder[1] if swimmer_rshoulder else None
-                    })
-
                     S_px = tuple(np.array(swimmer_centroid).astype(int))
                     cv2.circle(out_frame, S_px, 8,
                                (255, 191, 0), -1, cv2.LINE_AA)
@@ -522,6 +510,43 @@ def main():
                         out_frame, f"Scale: {px_per_m:.1f} px/m", (40, 40), (0, 255, 255), scale=0.9)
                     put_text_bg(
                         out_frame, f"Global Pos: {global_pos_m:.2f} m", (40, 80), (0, 165, 255), scale=0.9)
+
+                # Create the core tracking record dictionary
+                record = {
+                    "frame_idx": frame_idx,
+                    "time_s": ((batch_idx * BATCH_SIZE) + idx_in_batch) / FPS,
+                    "pos_m": float(global_pos_m) if swimmer_centroid is not None else None,
+                    "lwrist_pos_m": float(lwrist_pos_m) if (swimmer_centroid is not None and not np.isnan(lwrist_pos_m)) else None,
+                    "rwrist_pos_m": float(rwrist_pos_m) if (swimmer_centroid is not None and not np.isnan(rwrist_pos_m)) else None,
+                    "px_per_m": float(px_per_m),
+                    "selection_mode": "auto",
+                    # Legacy coordinate mapping (for backward compatibility)
+                    "lwrist_x": swimmer_lwrist[0] if swimmer_lwrist else None,
+                    "lwrist_y": swimmer_lwrist[1] if swimmer_lwrist else None,
+                    "rwrist_x": swimmer_rwrist[0] if swimmer_rwrist else None,
+                    "rwrist_y": swimmer_rwrist[1] if swimmer_rwrist else None,
+                    "lshoulder_x": swimmer_lshoulder[0] if swimmer_lshoulder else None,
+                    "lshoulder_y": swimmer_lshoulder[1] if swimmer_lshoulder else None,
+                    "rshoulder_x": swimmer_rshoulder[0] if swimmer_rshoulder else None,
+                    "rshoulder_y": swimmer_rshoulder[1] if swimmer_rshoulder else None
+                }
+
+                # Pre-populate all COCO keypoint columns with None to maintain clean column structures
+                for name in COCO_KEYPOINTS:
+                    record[f"{name}_x"] = None
+                    record[f"{name}_y"] = None
+                    record[f"{name}_score"] = None
+
+                # Populate dynamic COCO keypoint columns with actual tracking data if available
+                if swimmer_kpts is not None and swimmer_kpt_scores is not None:
+                    for i, (kp, score) in enumerate(zip(swimmer_kpts, swimmer_kpt_scores)):
+                        name = COCO_KEYPOINTS[i] if i < len(
+                            COCO_KEYPOINTS) else f"keypoint_{i}"
+                        record[f"{name}_x"] = float(kp[0])
+                        record[f"{name}_y"] = float(kp[1])
+                        record[f"{name}_score"] = float(score)
+
+                tracking_records.append(record)
 
                 prev_markers_x = current_markers_x
 
@@ -564,7 +589,8 @@ def main():
                 if viz_queue is not None:
                     while True:
                         if viz_errors:
-                            raise RuntimeError(f"Video writer failed: {viz_errors[0]}")
+                            raise RuntimeError(
+                                f"Video writer failed: {viz_errors[0]}")
                         try:
                             viz_queue.put(out_frame, timeout=0.5)
                             break
