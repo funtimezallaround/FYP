@@ -136,14 +136,57 @@ def batch_producer(frame_paths, batch_size, out_queue):
     out_queue.put(None)
 
 
-def viz_writer(proc, q):
+def viz_writer(proc, q, error_holder=None):
     """Background thread to handle pushing frames into FFmpeg"""
-    while True:
-        item = q.get()
-        if item is None:
-            break
-        if proc.stdin is not None:
-            proc.stdin.write(item.tobytes())
+    try:
+        while True:
+            item = q.get()
+            if item is None:
+                break
+
+            if proc.poll() is not None:
+                err = ""
+                if proc.stderr is not None:
+                    err = proc.stderr.read().decode("utf-8", errors="replace")
+                raise RuntimeError(f"ffmpeg exited early:\n{err}")
+
+            frame = np.ascontiguousarray(item)
+            if frame.dtype != np.uint8:
+                frame = frame.astype(np.uint8)
+
+            try:
+                if proc.stdin is not None:
+                    proc.stdin.write(frame.tobytes())
+            except BrokenPipeError as exc:
+                err = ""
+                if proc.stderr is not None:
+                    err = proc.stderr.read().decode("utf-8", errors="replace")
+                raise RuntimeError(
+                    f"Video writer pipe closed unexpectedly.\nffmpeg stderr:\n{err}"
+                ) from exc
+    except Exception as exc:
+        if error_holder is not None:
+            error_holder.append(exc)
+    finally:
+        try:
+            if proc.stdin is not None:
+                proc.stdin.close()
+        except Exception:
+            pass
+
+        try:
+            if proc.stderr is not None:
+                proc.stderr.close()
+        except Exception:
+            pass
+
+        try:
+            proc.wait(timeout=5)
+        except Exception:
+            try:
+                proc.terminate()
+            except Exception:
+                pass
 
 
 def main():
@@ -167,6 +210,7 @@ def main():
     ffmpeg_process = None
     viz_queue = None
     viz_thread = None
+    viz_errors = []
     target_h, target_w = 0, 0
     tracking_records = []
 
@@ -501,13 +545,13 @@ def main():
                         ffmpeg_cmd,
                         stdin=subprocess.PIPE,
                         stdout=subprocess.DEVNULL,
-                        stderr=subprocess.DEVNULL,
+                        stderr=subprocess.PIPE,
                     )
                     # Initialize queue and start background thread here
                     viz_queue = queue.Queue(maxsize=128)
                     viz_thread = threading.Thread(
                         target=viz_writer,
-                        args=(ffmpeg_process, viz_queue),
+                        args=(ffmpeg_process, viz_queue, viz_errors),
                         daemon=True
                     )
                     viz_thread.start()
@@ -518,7 +562,14 @@ def main():
 
                 # Push to background thread instead of writing directly
                 if viz_queue is not None:
-                    viz_queue.put(out_frame)
+                    while True:
+                        if viz_errors:
+                            raise RuntimeError(f"Video writer failed: {viz_errors[0]}")
+                        try:
+                            viz_queue.put(out_frame, timeout=0.5)
+                            break
+                        except queue.Full:
+                            continue
 
             pbar.update(1)
             batch_idx += 1
@@ -526,15 +577,24 @@ def main():
     producer.join()
 
     # Gracefully shut down the background thread before closing ffmpeg
-    if viz_queue is not None:
+    if viz_queue is not None and not viz_errors:
         viz_queue.put(None)
     if viz_thread is not None:
         viz_thread.join()
 
+    if viz_errors:
+        raise RuntimeError(f"Video writer failed: {viz_errors[0]}")
+
     if ffmpeg_process is not None:
-        if ffmpeg_process.stdin is not None:
-            ffmpeg_process.stdin.close()
-        ffmpeg_process.wait()
+        try:
+            if ffmpeg_process.stdin is not None:
+                ffmpeg_process.stdin.close()
+        except Exception:
+            pass
+        try:
+            ffmpeg_process.wait()
+        except Exception:
+            pass
 
     # --- Convert and Save Outputs to CSV ---
     if tracking_records:
