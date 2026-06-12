@@ -30,14 +30,14 @@ POSE_ENGINE = "all"
 
 START_FRAME_IDX = 0
 NUM_FRAMES = -1  # Set to -1 to process all frames
-FPS = 120
+FPS = 60
 BATCH_SIZE = 64
 MARKER_REAL_DIST_M = 2.5
 YOLO_CONF = 0.3
 
 # Paths
 PROJECT_ROOT = str(Path(__file__).resolve().parent.parent)
-OUT_DIR = f"output/{SWIMMING_STYLE}_{PARTICIPANT_ID}_{POSE_ENGINE}"
+OUT_DIR = f"output/{SWIMMING_STYLE}_{PARTICIPANT_ID}"
 
 # Model-specific paths
 YOLO_MARKER_MODEL_PATH = "models/marker_detector.pt"
@@ -49,8 +49,8 @@ MP_POSE_MODEL_PATH = "models/pose_landmarker_heavy.task"
 VITPOSE_MODEL_NAME = "usyd-community/vitpose-plus-huge"
 
 # Output files
-TRACKING_CSV_PATH = f"{OUT_DIR}/tracking_results.csv"
-OUT_VIDEO_PATH = f"{OUT_DIR}/tracking_visualization.mp4"
+TRACKING_CSV_PATH = f"{OUT_DIR}/tracking_results_{POSE_ENGINE}.csv"
+OUT_VIDEO_PATH = f"{OUT_DIR}/tracking_visualization_{POSE_ENGINE}.mp4"
 
 # Ensure output directory exists
 os.makedirs(OUT_DIR, exist_ok=True)
@@ -269,7 +269,7 @@ class VitPoseEstimator:
 
         # Post-process to get absolute landmarks
         results = self.processor.post_process_pose_estimation(
-            outputs, boxes=box, target_sizes=[pil_img.size[::-1]])[0][0]
+            outputs, boxes=box)[0][0]
 
         landmarks_dict = {}
         for idx, (kp, score) in enumerate(zip(results["keypoints"], results["scores"])):
@@ -539,6 +539,8 @@ def main():
         '-c:v', 'libx264',
         '-pix_fmt', 'yuv420p',
         '-preset', 'ultrafast',
+        '-nostats',
+        '-v', 'error',
         OUT_VIDEO_PATH
     ]
 
