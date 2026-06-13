@@ -11,6 +11,9 @@ Progress Report/*
 !Progress Report.pdf
 !Poster/FYP Poster.pdf
 
+# Powerpoint presentation
+~$*
+
 # LaTeX build artifacts
 *.tex
 *.aux
