@@ -1,0 +1,65 @@
+{
+  "input_sessions": {
+    "P049 Breaststroke": {
+      "ABOVE_WATER": "C:\\Users\\Daniel\\OneDrive\\Desktop\\Programs\\Python\\FYP-develop\\videos\\above\\Top_Breaststroke_P049.MP4",
+      "UNDER_WATER": "C:\\Users\\Daniel\\OneDrive\\Desktop\\Programs\\Python\\FYP-develop\\videos\\under\\Bottom_Breaststroke_P049.MP4"
+    }
+  },
+  "metadata": {
+    "P049 Breaststroke": {
+      "ABOVE_WATER": {
+        "VIDEO_PATH": "C:\\Users\\Daniel\\OneDrive\\Desktop\\Programs\\Python\\FYP-develop\\videos\\above\\Top_Breaststroke_P049.MP4",
+        "FPS": 119.88011988011988,
+        "DURATION": 102.15205,
+        "CREATED": "2026-06-23T09:18:23.000000Z"
+      },
+      "UNDER_WATER": {
+        "VIDEO_PATH": "C:\\Users\\Daniel\\OneDrive\\Desktop\\Programs\\Python\\FYP-develop\\videos\\under\\Bottom_Breaststroke_P049.MP4",
+        "FPS": 119.88011988011988,
+        "DURATION": 103.488,
+        "CREATED": "2026-06-23T09:18:25.000000Z"
+      }
+    }
+  },
+  "alignment": {
+    "P049 Breaststroke": {
+      "C_i": 2.0
+    }
+  },
+  "outputs": {
+    "P049 Breaststroke": {
+      "above": "output\\P049_Breaststroke\\above.mp4",
+      "under": "output\\P049_Breaststroke\\under.mp4",
+      "stacked": "output\\P049_Breaststroke\\stacked.mp4",
+      "whistles": {
+        "start": 48.512,
+        "end": 100.992,
+        "duration": 52.480000000000004
+      },
+      "trim": {
+        "above": [
+          48.512,
+          100.992
+        ],
+        "under": [
+          46.512,
+          98.992
+        ]
+      }
+    }
+  },
+  "summary": {
+    "P049 Breaststroke": {
+      "whistle_duration": 52.480000000000004,
+      "sync_offset": 2.0,
+      "trim_above": [
+        48.512,
+        100.992
+      ],
+      "trim_under": [
+        46.512,
+        98.992
+      ]
+    }
+  }
+}

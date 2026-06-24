@@ -22,15 +22,16 @@ from concurrent.futures import ThreadPoolExecutor
 # ============ SETUP =====================================================================================
 
 # Configuration
-PARTICIPANT_ID = "P035"
+PARTICIPANT_ID = "P049"
 SWIMMING_STYLE = "Breaststroke"
+
 
 # Pose Engine Options: "vitpose" | "yolo226l-pose" | "mediapipe" | "all"
 POSE_ENGINE = "all"
 
 START_FRAME_IDX = 0
 NUM_FRAMES = -1  # Set to -1 to process all frames
-FPS = 60
+FPS = 120
 BATCH_SIZE = 64
 MARKER_REAL_DIST_M = 2.5
 YOLO_CONF = 0.3
@@ -38,6 +39,14 @@ YOLO_CONF = 0.3
 # Paths
 PROJECT_ROOT = str(Path(__file__).resolve().parent.parent)
 OUT_DIR = f"output/{SWIMMING_STYLE}_{PARTICIPANT_ID}"
+
+# VIDEO_SRC_DIR = os.path.join(PROJECT_ROOT, "videos", "under")
+# FRAME_SRC_DIR = os.path.join(PROJECT_ROOT, "frames", "under")
+# or use stitched videos:
+VIDEO_SRC_DIR = os.path.join(
+    PROJECT_ROOT, "output", f"{PARTICIPANT_ID}_{SWIMMING_STYLE}")
+FRAME_SRC_DIR = os.path.join(
+    PROJECT_ROOT, "frames", "stitched")
 
 # Model-specific paths
 YOLO_MARKER_MODEL_PATH = "models/marker_detector.pt"
@@ -232,7 +241,7 @@ class VitPoseEstimator:
 
         self.processor = AutoProcessor.from_pretrained(local_model_dir)
         self.model = VitPoseForPoseEstimation.from_pretrained(
-            local_model_dir).to(self.device)
+            local_model_dir).to(self.device)  # type: ignore
         self.model.eval()
 
     def process_frame(self, frame_bgr, person_box=None):
@@ -313,7 +322,7 @@ def get_video_properties(video_path):
 
 def find_input_video():
     # Look for video matching SWIMMING_STYLE and PARTICIPANT_ID inside videos/ folder
-    video_dir = os.path.join(PROJECT_ROOT, "videos", "under")
+    video_dir = VIDEO_SRC_DIR
 
     if not os.path.exists(video_dir):
         return None
@@ -480,8 +489,8 @@ def main():
         )
 
     # Establish localized frames directory structure for the current sequence
-    frames_dir = os.path.join(PROJECT_ROOT, "frames",
-                              "under", f"Bottom_{SWIMMING_STYLE}_{PARTICIPANT_ID}")
+    frames_dir = os.path.join(
+        FRAME_SRC_DIR, f"Bottom_{SWIMMING_STYLE}_{PARTICIPANT_ID}")
 
     # 1. One-time extraction routine
     extract_frames_if_needed(video_path, frames_dir)
