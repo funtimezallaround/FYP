@@ -1,5 +1,5 @@
 """
-results.py – Post-processing and visualisation for swimmer tracking CSV.
+results.py - Post-processing and visualisation for swimmer tracking CSV.
 
 Reproduces every plot from the analysis notebook using the CSV saved by main.py.
 
@@ -21,7 +21,7 @@ from scipy.signal import savgol_filter, medfilt
 
 # --- CONFIGURATION ---
 SWIMMING_STYLE = "Breaststroke"
-PARTICIPANT_ID = "P035"
+PARTICIPANT_ID = "P049"
 POSE_ENGINE = "all"  # "vitpose" | "yolo226l-pose" | "mediapipe" | "all"
 
 # Input paths
